@@ -2,7 +2,6 @@ package org.athenian
 
 import kotlinx.coroutines.*
 
-
 fun main() {
     val i = 5
 
