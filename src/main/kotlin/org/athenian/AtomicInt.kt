@@ -1,8 +1,10 @@
 package org.athenian
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.CountDownLatch
+import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
@@ -12,22 +14,26 @@ fun main() {
     val count = 100_000
     coroutineAtomicInt(count)
     threadedAtomicInt(count)
+    executorAtomicInt(count)
 }
 
 fun coroutineAtomicInt(count: Int) {
     val time_ms =
         measureTimeMillis {
-            val counter = AtomicInteger(0)
-
+            val atomic = AtomicInteger(0)
+            var nonatomic = 0
             runBlocking {
-                (1..count).forEach {
-                    launch {
-                        counter.addAndGet(1)
+                repeat(count) {
+                    // Use Dispatchers.Default to involve multiple threads
+                    launch(Dispatchers.Default) {
+                        // log("Incrementing")
+                        atomic.addAndGet(1)
+                        nonatomic++
                     }
                 }
             }
 
-            log("Coroutine counter = ${counter.get()}")
+            log("Coroutine atomic counter: ${atomic.get()} nonatomic counter: $nonatomic")
         }
     log("Coroutine finished in ${time_ms}ms")
 }
@@ -35,19 +41,45 @@ fun coroutineAtomicInt(count: Int) {
 fun threadedAtomicInt(count: Int) {
     val time_ms =
         measureTimeMillis {
-            val counter = AtomicInteger(0)
+            val atomic = AtomicInteger(0)
+            var nonatomic = 0
             val latch = CountDownLatch(count)
 
-            (1..count).forEach {
+            repeat(count) {
                 thread {
-                    counter.addAndGet(1)
+                    atomic.addAndGet(1)
+                    nonatomic++
                     latch.countDown()
                 }
             }
             latch.await()
 
-            log("Threaded counter = ${counter.get()}")
+            log("Threaded atomic counter: ${atomic.get()} nonatomic counter: $nonatomic")
         }
 
     log("Threaded finished in ${time_ms}ms")
+}
+
+fun executorAtomicInt(count: Int) {
+    val time_ms =
+        measureTimeMillis {
+            val atomic = AtomicInteger(0)
+            var nonatomic = 0
+            val latch = CountDownLatch(count)
+            val executor = Executors.newFixedThreadPool(5)
+
+            repeat(count) {
+                executor.submit {
+                    atomic.addAndGet(1)
+                    nonatomic++
+                    latch.countDown()
+                }
+            }
+            latch.await()
+            executor.shutdown()
+
+            log("Executor atomic counter: ${atomic.get()} nonatomic counter: $nonatomic")
+        }
+
+    log("Executor finished in ${time_ms}ms")
 }
