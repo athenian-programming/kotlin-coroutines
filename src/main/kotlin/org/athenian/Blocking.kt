@@ -9,25 +9,27 @@ fun main() {
             runBlocking {
                 repeat(count) {
                     launch {
-                        println("Launching sleepingCall #$it")
+                        log("Launching sleepingCall #$it")
                         sleepingCall()
                     }
                 }
             }
         }
-        println("Total time for $count calls of sleepingCalls: ${sleepingTime / 1000}secs")
+        log("Total time for $count calls of sleepingCalls: ${sleepingTime / 1000}secs")
+        log()
 
         val delayingTime = measureTimeMillis {
             runBlocking {
                 repeat(count) {
                     launch {
-                        println("Launching delayingCall #$it")
+                        log("Launching delayingCall #$it")
                         delayingCall()
                     }
                 }
             }
         }
-        println("Total time for $count calls of delayingCalls: ${delayingTime / 1000}secs")
+        log("Total time for $count calls of delayingCalls: ${delayingTime / 1000}secs")
+        log()
     }
 }
 
