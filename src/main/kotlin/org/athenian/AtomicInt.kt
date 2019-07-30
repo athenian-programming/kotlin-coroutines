@@ -3,6 +3,7 @@ package org.athenian
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.sync.Mutex
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
@@ -20,20 +21,26 @@ fun main() {
 fun coroutineAtomicInt(count: Int) {
     val time_ms =
         measureTimeMillis {
+            val mutex = Mutex()
             val atomic = AtomicInteger(0)
             var nonatomic = 0
+            var mutexcnt = 0
             runBlocking {
                 repeat(count) {
                     // Use Dispatchers.Default to involve multiple threads
                     launch(Dispatchers.Default) {
                         // log("Incrementing")
                         atomic.addAndGet(1)
+                        //mutex.withLock {
+                        //mutexcnt++
+                        //}
                         nonatomic++
+
                     }
                 }
             }
 
-            log("Coroutine atomic counter: ${atomic.get()} nonatomic counter: $nonatomic")
+            log("Coroutine atomic counter: ${atomic.get()} mutex counter: $mutexcnt nonatomic counter: $nonatomic")
         }
     log("Coroutine finished in ${time_ms}ms")
 }
