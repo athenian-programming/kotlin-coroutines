@@ -4,6 +4,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.random.Random
 
 fun main() {
     withoutClose()
@@ -16,7 +17,7 @@ fun withoutClose() {
         launch {
             repeat(5) {
                 channel.send(it * it)
-                delay(System.currentTimeMillis() % 1000)
+                delay(Random.nextLong() % 1000)
             }
         }
 
@@ -31,7 +32,7 @@ fun withClose() {
         launch {
             repeat(5) {
                 channel.send(it * it)
-                delay(System.currentTimeMillis() % 1000)
+                delay(Random.nextLong() % 1000)
             }
             channel.close()
         }

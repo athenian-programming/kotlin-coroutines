@@ -3,6 +3,7 @@ package org.athenian
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
+import kotlin.random.Random
 
 @ExperimentalCoroutinesApi
 fun CoroutineScope.produceNumbers() =
@@ -31,7 +32,7 @@ fun main() {
 
         repeat(5) {
             println("Received ${squares.receive()}")
-            delay(System.currentTimeMillis() % 2000)
+            delay(Random.nextLong() % 2000)
         }
 
         coroutineContext.cancelChildren()
