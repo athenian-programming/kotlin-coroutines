@@ -4,8 +4,9 @@ import kotlin.concurrent.thread
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    //daemonThread()
-    //delayedThread()
+    daemonThread()
+    delayedThread()
+    maxThreadsAtOnce()
 }
 
 fun daemonThread() {
