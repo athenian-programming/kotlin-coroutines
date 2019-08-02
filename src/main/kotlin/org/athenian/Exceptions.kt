@@ -2,29 +2,7 @@ package org.athenian
 
 import kotlinx.coroutines.*
 
-fun main2() =
-    runBlocking {
-        val job = GlobalScope.launch(handler) {
-            log("Throwing exception from launch")
-            throw IndexOutOfBoundsException() // Will be printed to the console by Thread.defaultUncaughtExceptionHandler
-        }
-        job.join()
-        log("Joined failed job")
-
-        val deferred: Deferred<Int> = GlobalScope.async {
-            delay(100)
-            log("Throwing exception from async")
-            throw ArithmeticException() // Nothing is printed, relying on user to call await
-        }
-
-        try {
-            deferred.await()
-            log("Unreached")
-        } catch (e: ArithmeticException) {
-            log("Caught an ArithmeticException")
-        }
-    }
-
+// The key to this working properly is that the launch and async calls use a different CoroutineScope
 fun main() {
     launchException()
     asyncException()

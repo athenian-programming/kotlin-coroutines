@@ -1,27 +1,33 @@
 package org.athenian
 
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
+import kotlin.coroutines.coroutineContext
 
 fun main() {
     runBlocking {
+
+        launch { scopeCheck(this) }
+
+
         launch {
             delay(200)
-            println("Task from runBlocking")
+            log("Task from runBlocking")
         }
 
         coroutineScope {
             launch {
                 delay(500)
-                println("Task from nested launch")
+                log("Task from nested launch")
             }
 
             delay(100)
-            println("Task from coroutine scope")
+            log("Task from coroutine scope")
         }
 
-        println("Coroutine scope is over")
+        log("Coroutine scope is over")
     }
+}
+
+suspend fun scopeCheck(scope: CoroutineScope) {
+    log("coroutineContext are equal: ${scope.coroutineContext === coroutineContext}")
 }

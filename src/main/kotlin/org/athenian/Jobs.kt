@@ -17,21 +17,21 @@ fun main() {
 
             delay(100)
             val inner = coroutineContext[Job]!!
-            println("inner status: ${inner.status}")
+            log("inner status: ${inner.status}")
             inner.cancel(CancellationException("Test cancel"))
-            println("inner status: ${inner.status}")
+            log("inner status: ${inner.status}")
 
             // Manually check for cancellation of call a suspending function
             // if (!inner.isActive) return@launch
             // delay(1)
 
-            println("Should not get here")
+            log("Should not get here")
         }
 
         delay(200)
-        println("outer status: ${outer.status}")
-        println("Cancellation exception: ${outer.getCancellationException()}")
+        log("outer status: ${outer.status}")
+        log("Cancellation exception: ${outer.getCancellationException()}")
     }
 
-    println("Done")
+    log("Done")
 }

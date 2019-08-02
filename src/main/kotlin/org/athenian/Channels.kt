@@ -17,7 +17,7 @@ fun withoutClose() {
         launch {
             repeat(5) {
                 channel.send(it * it)
-                delay(Random.nextLong() % 1000)
+                delay(Random.nextLong(1000))
             }
         }
 
@@ -32,7 +32,7 @@ fun withClose() {
         launch {
             repeat(5) {
                 channel.send(it * it)
-                delay(Random.nextLong() % 1000)
+                delay(Random.nextLong(1000))
             }
             channel.close()
         }

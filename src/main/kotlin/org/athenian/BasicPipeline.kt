@@ -10,7 +10,7 @@ fun CoroutineScope.produceNumbers() =
     produce<Int> {
         var x = 1
         while (true) {
-            println("Sending $x")
+            log("Sending $x")
             send(x++)
         }
     }
@@ -19,7 +19,7 @@ fun CoroutineScope.produceNumbers() =
 fun CoroutineScope.square(numbers: ReceiveChannel<Int>): ReceiveChannel<Int> =
     produce {
         for (x in numbers) {
-            println("Sending squared ${x * x}")
+            log("Sending squared ${x * x}")
             send(x * x)
         }
     }
@@ -31,12 +31,12 @@ fun main() {
         val squares = square(numbers)
 
         repeat(5) {
-            println("Received ${squares.receive()}")
-            delay(Random.nextLong() % 2000)
+            log("Received ${squares.receive()}")
+            delay(Random.nextLong(2000))
         }
 
         coroutineContext.cancelChildren()
 
-        println("Done!")
+        log("Done!")
     }
 }

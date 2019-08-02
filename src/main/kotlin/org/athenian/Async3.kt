@@ -5,7 +5,7 @@ import kotlinx.coroutines.*
 fun main() {
 
     val mult = { a: Int, b: Int ->
-        println("Calculating value")
+        log("Calculating value")
         a * b
     }
 
@@ -14,10 +14,10 @@ fun main() {
 
     runBlocking {
         delay(100)
-        println("Deferred1")
-        println(deferred1.await())
+        log("Deferred1")
+        log(deferred1.await())
 
-        println("Deferred2")
-        println(deferred2.await())
+        log("Deferred2")
+        log(deferred2.await())
     }
 }
