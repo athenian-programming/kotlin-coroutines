@@ -3,6 +3,8 @@ package org.athenian
 import kotlinx.coroutines.*
 
 // The key to this working properly is that the launch and async calls use a different CoroutineScope
+
+@InternalCoroutinesApi
 fun main() {
     launchException()
     asyncException()
@@ -14,18 +16,20 @@ val handler =
         log("Handler caught $exception")
     }
 
-
+@InternalCoroutinesApi
 fun launchException() {
-    val j = GlobalScope.launch(handler) {
-        log("Throwing exception")
-        delay(100)
-        throw IndexOutOfBoundsException("Problem encountered")
-    }
+    val job =
+        GlobalScope.launch(handler) {
+            log("Throwing exception")
+            delay(100)
+            throw IndexOutOfBoundsException()
+        }
 
     runBlocking {
-        j.join()
-        log("Finished launchException()")
+        job.join()
+        log("Caught cancellation exception: ${job.getCancellationException().cause!!.javaClass.simpleName}")
     }
+    log("Finished launchException()")
 }
 
 fun asyncException() {
@@ -33,7 +37,7 @@ fun asyncException() {
     val deferred: Deferred<Int> =
         GlobalScope.async() {
             log("Throwing exception")
-            throw IndexOutOfBoundsException("Problem encountered")
+            throw IndexOutOfBoundsException()
         }
 
     runBlocking(handler) {
