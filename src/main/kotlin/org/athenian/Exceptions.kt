@@ -3,6 +3,7 @@ package org.athenian
 import kotlinx.coroutines.*
 
 // The key to this working properly is that the launch and async calls use a different CoroutineScope
+// See https://proandroiddev.com/coroutines-snags-6bf6fb53a3d1 for other details
 
 @InternalCoroutinesApi
 fun main() {
