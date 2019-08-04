@@ -9,17 +9,41 @@ import kotlinx.coroutines.*
 @InternalCoroutinesApi
 fun main() {
     launchException()
+    launchWithHandlerException()
     asyncException()
     log("Done")
 }
 
+@InternalCoroutinesApi
+fun launchException() {
+    runBlocking {
+        val job =
+            launch {
+                try {
+                    withContext(Dispatchers.Default) {
+                        log("Throwing exception")
+                        delay(100)
+                        throw IndexOutOfBoundsException()
+                    }
+                } catch (e: Exception) {
+                    log("Caught exception ${e.javaClass.simpleName}")
+                }
+            }
+        job.join()
+        log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName ?: "None"}")
+
+    }
+    log("Finished launchException()")
+}
+
 val handler =
-    CoroutineExceptionHandler { context, exception ->
-        log("Handler caught $exception")
+    CoroutineExceptionHandler { context, e ->
+        log("Handler caught $e")
     }
 
 @InternalCoroutinesApi
-fun launchException() {
+fun launchWithHandlerException() {
+    log()
     val job =
         GlobalScope.launch(handler) {
             log("Throwing exception")
@@ -31,14 +55,15 @@ fun launchException() {
         job.join()
         log("Caught cancellation exception: ${job.getCancellationException().cause!!.javaClass.simpleName}")
     }
-    log("Finished launchException()")
+    log("Finished launchWithHandlerException()")
 }
 
 fun asyncException() {
+    log()
+
     // Create a custom CoroutineScope
     val appScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
-    log()
     val deferred: Deferred<Int> =
         appScope.async() {
             log("Throwing exception")
