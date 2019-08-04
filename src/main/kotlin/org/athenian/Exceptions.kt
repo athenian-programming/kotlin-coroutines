@@ -4,6 +4,7 @@ import kotlinx.coroutines.*
 
 // The key to this working properly is that the launch and async calls use a different CoroutineScope
 // See https://proandroiddev.com/coroutines-snags-6bf6fb53a3d1 for other details
+// Also see https://proandroiddev.com/kotlin-coroutines-patterns-anti-patterns-f9d12984c68e
 
 @InternalCoroutinesApi
 fun main() {
@@ -34,9 +35,12 @@ fun launchException() {
 }
 
 fun asyncException() {
+    // Create a custom CoroutineScope
+    val appScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+
     log()
     val deferred: Deferred<Int> =
-        GlobalScope.async() {
+        appScope.async() {
             log("Throwing exception")
             throw IndexOutOfBoundsException()
         }
