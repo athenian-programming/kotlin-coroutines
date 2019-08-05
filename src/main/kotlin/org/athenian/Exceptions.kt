@@ -53,7 +53,7 @@ fun launchWithHandlerException() {
 
     runBlocking {
         job.join()
-        log("Caught cancellation exception: ${job.getCancellationException().cause!!.javaClass.simpleName}")
+        log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName ?: "None"}")
     }
     log("Finished launchWithHandlerException()")
 }
