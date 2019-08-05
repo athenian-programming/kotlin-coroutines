@@ -36,7 +36,7 @@ fun main() {
         }
 
         coroutineContext.cancelChildren()
-
-        log("Done!")
     }
+
+    log("Done")
 }

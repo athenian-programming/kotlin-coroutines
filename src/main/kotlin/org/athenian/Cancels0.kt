@@ -16,6 +16,8 @@ fun main() {
                         }
                     }
                 }
+            }.apply {
+                invokeOnCompletion { log("Completed launch job") }
             }
 
         log("Hello from runBlocking after outer launch")

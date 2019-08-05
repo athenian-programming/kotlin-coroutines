@@ -24,7 +24,6 @@ fun main() {
         delay(100)
         outerLaunch.cancel()
     }
-
     log("Done")
 }
 
