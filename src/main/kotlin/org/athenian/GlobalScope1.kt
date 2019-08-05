@@ -3,7 +3,8 @@ package org.athenian
 import kotlinx.coroutines.*
 import kotlin.system.measureTimeMillis
 
-// From https://medium.com/@elizarov/the-reason-to-avoid-globalscope-835337445abc
+// See https://medium.com/@elizarov/the-reason-to-avoid-globalscope-835337445abc
+
 fun main() {
     nonConcurrent()
     concurrent()
@@ -21,7 +22,6 @@ suspend fun suspendWork(i: Int, desc: String) {
         nosuspendWork(i, desc)
     }
 }
-
 
 fun nonConcurrent() {
     log("Starting nonConcurrent()")
