@@ -9,7 +9,7 @@ import kotlinx.coroutines.runBlocking
 
 @ExperimentalCoroutinesApi
 fun CoroutineScope.numbersFrom(start: Int) =
-    produce<Int> {
+    produce {
         log("Creating numbersFrom")
         var x = start
         while (true)
@@ -18,7 +18,7 @@ fun CoroutineScope.numbersFrom(start: Int) =
 
 @ExperimentalCoroutinesApi
 fun CoroutineScope.filter(numbers: ReceiveChannel<Int>, prime: Int) =
-    produce<Int> {
+    produce {
         log("Creating filter for $prime")
         for (x in numbers)
             if (x % prime != 0)

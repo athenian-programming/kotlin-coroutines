@@ -11,7 +11,7 @@ fun main() {
                 func2()
             }
         }
-        log("Launched in ${millis}ms")
+        log("Finished in ${millis}ms")
     }
 
     runBlocking {
@@ -23,7 +23,7 @@ fun main() {
                 func2()
             }
         }
-        log("Launched in ${millis}ms")
+        log("Finished in ${millis}ms")
     }
     log("Done")
 }
