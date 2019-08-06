@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 
+// See https://proandroiddev.com/an-early-look-at-kotlin-coroutines-flow-62e46baa6eb0
 // Custom flow operators
 
 fun main() {
