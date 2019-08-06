@@ -3,11 +3,12 @@ package org.athenian
 import kotlinx.coroutines.*
 import kotlin.system.measureTimeMillis
 
+// See https://codinginfinite.com/kotlin-coroutines-best-practices-example/
+
 fun main() {
     usingWithContext()
     usingLaunch()
 }
-
 
 fun usingWithContext() =
     runBlocking {

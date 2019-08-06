@@ -65,8 +65,8 @@ fun asyncException() {
     val appScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
     val deferred: Deferred<Int> =
-        appScope.async() {
-            log("Throwing exception")
+        appScope.async {
+            log("Throwing exception in asyncException")
             throw IndexOutOfBoundsException()
         }
 
@@ -74,10 +74,8 @@ fun asyncException() {
         try {
             deferred.await()
         } catch (e: Exception) {
-            log("Catch caught ${e.javaClass.simpleName}")
-            //e.printStackTrace()
+            log("asyncException caught ${e.javaClass.simpleName}")
         }
     }
     log("Finished asyncException()")
 }
-

@@ -7,7 +7,7 @@ import kotlin.random.Random
 
 @ExperimentalCoroutinesApi
 fun CoroutineScope.produceNumbers() =
-    produce<Int> {
+    produce {
         var x = 1
         while (true) {
             log("Sending $x")
