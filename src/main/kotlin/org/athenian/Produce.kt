@@ -6,6 +6,22 @@ import kotlinx.coroutines.channels.produce
 import kotlin.random.Random
 
 @ExperimentalCoroutinesApi
+fun main() {
+    runBlocking {
+        val numbers = produceNumbers()
+        val squares = square(numbers)
+
+        repeat(5) {
+            log("Received ${squares.receive()}")
+            delay(Random.nextLong(2000))
+        }
+
+        coroutineContext.cancelChildren()
+    }
+    log("Done")
+}
+
+@ExperimentalCoroutinesApi
 fun CoroutineScope.produceNumbers() =
     produce {
         var x = 1
@@ -24,19 +40,3 @@ fun CoroutineScope.square(numbers: ReceiveChannel<Int>): ReceiveChannel<Int> =
         }
     }
 
-@ExperimentalCoroutinesApi
-fun main() {
-    runBlocking {
-        val numbers = produceNumbers()
-        val squares = square(numbers)
-
-        repeat(5) {
-            log("Received ${squares.receive()}")
-            delay(Random.nextLong(2000))
-        }
-
-        coroutineContext.cancelChildren()
-    }
-
-    log("Done")
-}

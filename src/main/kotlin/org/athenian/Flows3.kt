@@ -1,46 +1,66 @@
 package org.athenian
 
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.delayEach
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
+import kotlin.system.measureTimeMillis
 
-// Custom flow operators
+// See https://medium.com/@elizarov/kotlin-flows-and-coroutines-256260fb3bdb
 
+@ExperimentalCoroutinesApi
 fun main() {
-    val vals = flowOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-
-    runBlocking {
-        vals
-            .everyOther()
-            .collect { log(it) }
-        log()
-        vals
-            .everyNth(3)
-            .collect { log(it) }
-    }
+    withSequences()
+    withFlow(false)
+    withFlow(true)
 }
 
-public fun <T> Flow<T>.everyOther(): Flow<T> =
-    flow {
-        var skip = false
-        collect { value ->
-            if (!skip)
-                emit(value)
-            skip = !skip
+fun withSequences() {
+    val seqVals =
+        sequence {
+            repeat(500) {
+                Thread.sleep(10)
+                yield(it)
+            }
         }
-
-    }
-
-public fun <T> Flow<T>.everyNth(inc: Int): Flow<T> =
-    flow {
-        var counter = 0
-        collect { value ->
-            if (counter % inc == 0)
-                emit(value)
-            counter++
+    var counter = 0
+    val millis =
+        measureTimeMillis {
+            for (i in seqVals) {
+                Thread.sleep(10)
+                counter++
+            }
         }
+    log("Total time for $counter vals withSequences(): ${millis}ms")
+}
 
-    }
+@ExperimentalCoroutinesApi
+fun withFlow(useBuffer: Boolean) {
+    val flowVals =
+        flow {
+            repeat(500) {
+                delay(10)
+                emit(it)
+            }
+        }
+    var counter = 0
+    val millis =
+        measureTimeMillis {
+            runBlocking {
+                if (useBuffer)
+                    flowVals
+                        .buffer()
+                        .delayEach(10)
+                        .collect { counter++ }
+                else
+                    flowVals
+                        .delayEach(10)
+                        .collect { counter++ }
 
+            }
+        }
+    log("Total time for $counter vals withFlow(${useBuffer}): ${millis}ms")
+}
