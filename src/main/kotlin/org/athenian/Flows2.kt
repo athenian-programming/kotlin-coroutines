@@ -21,51 +21,55 @@ fun main() {
 fun withSequences() {
     val seqVals =
         sequence {
-            repeat(5) {
-                Thread.sleep(500)
+            repeat(500) {
+                Thread.sleep(10)
                 yield(it)
             }
         }
-
+    var counter = 0
     val millis =
         measureTimeMillis {
             for (i in seqVals) {
-                Thread.sleep(500)
-                println(i)
+                Thread.sleep(10)
+                counter++
             }
         }
-    log("Total time for withSequences(): ${millis}ms")
+    log("Total time for $counter vals withSequences(): ${millis}ms")
 }
 
 val flowVals =
     flow {
-        repeat(5) {
-            delay(500)
+        repeat(500) {
+            delay(10)
             emit(it)
         }
     }
 
 @ExperimentalCoroutinesApi
 fun flowNoBuffer() {
-    val millis = measureTimeMillis {
-        runBlocking {
-            flowVals
-                .delayEach(500)
-                .collect { println(it) }
+    var counter = 0
+    val millis =
+        measureTimeMillis {
+            runBlocking {
+                flowVals
+                    .delayEach(10)
+                    .collect { counter++ }
+            }
         }
-    }
-    log("Total time for flowNoBuffer(): ${millis}ms")
+    log("Total time for $counter vals flowNoBuffer(): ${millis}ms")
 }
 
 @ExperimentalCoroutinesApi
 fun flowWithBuffer() {
-    val millis = measureTimeMillis {
-        runBlocking {
-            flowVals
-                .buffer()
-                .delayEach(500)
-                .collect { println(it) }
+    var counter = 0
+    val millis =
+        measureTimeMillis {
+            runBlocking {
+                flowVals
+                    .buffer()
+                    .delayEach(10)
+                    .collect { counter++ }
+            }
         }
-    }
-    log("Total time for flowWithBuffer(): ${millis}ms")
+    log("Total time for $counter vals flowWithBuffer(): ${millis}ms")
 }
