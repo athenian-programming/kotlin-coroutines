@@ -14,8 +14,8 @@ import kotlin.system.measureTimeMillis
 @ExperimentalCoroutinesApi
 fun main() {
     withSequences()
-    flowNoBuffer()
-    flowWithBuffer()
+    withFlow(false)
+    withFlow(true)
 }
 
 fun withSequences() {
@@ -37,39 +37,30 @@ fun withSequences() {
     log("Total time for $counter vals withSequences(): ${millis}ms")
 }
 
-val flowVals =
-    flow {
-        repeat(500) {
-            delay(10)
-            emit(it)
-        }
-    }
-
 @ExperimentalCoroutinesApi
-fun flowNoBuffer() {
+fun withFlow(useBuffer: Boolean) {
+    val flowVals =
+        flow {
+            repeat(500) {
+                delay(10)
+                emit(it)
+            }
+        }
     var counter = 0
     val millis =
         measureTimeMillis {
             runBlocking {
-                flowVals
-                    .delayEach(10)
-                    .collect { counter++ }
-            }
-        }
-    log("Total time for $counter vals flowNoBuffer(): ${millis}ms")
-}
+                if (useBuffer)
+                    flowVals
+                        .buffer()
+                        .delayEach(10)
+                        .collect { counter++ }
+                else
+                    flowVals
+                        .delayEach(10)
+                        .collect { counter++ }
 
-@ExperimentalCoroutinesApi
-fun flowWithBuffer() {
-    var counter = 0
-    val millis =
-        measureTimeMillis {
-            runBlocking {
-                flowVals
-                    .buffer()
-                    .delayEach(10)
-                    .collect { counter++ }
             }
         }
-    log("Total time for $counter vals flowWithBuffer(): ${millis}ms")
+    log("Total time for $counter vals withFlow(${useBuffer}): ${millis}ms")
 }
