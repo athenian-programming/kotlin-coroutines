@@ -3,7 +3,6 @@ package org.athenian
 import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
@@ -25,40 +24,32 @@ fun threadedAtomicInt(count: Int) {
 
     val time_ms =
         measureTimeMillis {
-            val latch = CountDownLatch(count)
-
-            repeat(count) {
+            List(count) {
                 thread {
                     nonatomic++
                     atomic.incrementAndGet()
-                    latch.countDown()
                 }
-            }
-            latch.await()
+            }.forEach { thread -> thread.join() }
         }
 
     log("Threaded atomic: ${atomic.get()} nonatomic: $nonatomic finished in ${time_ms}ms")
 }
 
 fun executorAtomicInt(count: Int) {
-    val executor = Executors.newFixedThreadPool(5)
+    val executor = Executors.newFixedThreadPool(10)
     val atomic = AtomicInteger(0)
     var nonatomic = 0
 
     val time_ms =
         measureTimeMillis {
-            val latch = CountDownLatch(count)
-
-            repeat(count) {
+            List(count) {
                 executor.submit {
                     nonatomic++
                     atomic.incrementAndGet()
-                    latch.countDown()
                 }
-            }
-            latch.await()
+            }.forEach { future -> future.get() }
         }
-    executor.shutdownNow()
+    executor.shutdown()
 
     log("Executor atomic: ${atomic.get()} nonatomic: $nonatomic finished in ${time_ms}ms")
 }
@@ -88,9 +79,9 @@ fun coroutineAtomicInt(count: Int) {
 }
 
 fun variableContextCounter(count: Int, singleThreaded: Boolean) =
-    runBlocking {
+    runBlocking(Dispatchers.Default) {
         val singleThreadedContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-        var counter = 0
+        var nonatomic = 0
         val context = if (singleThreaded) singleThreadedContext else Dispatchers.Default
 
         val time_ms =
@@ -98,14 +89,14 @@ fun variableContextCounter(count: Int, singleThreaded: Boolean) =
                 withContext(context) {
                     repeat(count) {
                         launch {
-                            counter++
+                            nonatomic++
                         }
                     }
                 }
             }
         singleThreadedContext.close()
 
-        log("Variable context (single threaded = $singleThreaded): $counter finished in ${time_ms}ms")
+        log("Variable context (single threaded = $singleThreaded) nonatomic: $nonatomic finished in ${time_ms}ms")
     }
 
 
