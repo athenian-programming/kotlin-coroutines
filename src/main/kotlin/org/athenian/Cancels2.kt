@@ -17,7 +17,7 @@ fun main() {
                     }
                 }
             }
-        delay(1000)
+        delay(1_000)
         job.cancelAndJoin()
         log("Done")
     }

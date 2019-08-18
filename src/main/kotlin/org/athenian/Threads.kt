@@ -27,7 +27,7 @@ fun delayedThread() {
         List(10) {
             thread(start = false, name = "MyThread-$it") {
                 log("Before sleep in $it")
-                Thread.sleep(2000)
+                Thread.sleep(2_000)
                 log("After sleep in $it")
             }
         }
@@ -46,7 +46,7 @@ fun maxThreadsAtOnce() {
         val threads =
             List(128) {
                 thread {
-                    Thread.sleep(1000)
+                    Thread.sleep(1_000)
                     log("Done")
                 }
             }

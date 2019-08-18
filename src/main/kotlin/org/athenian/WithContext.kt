@@ -19,11 +19,11 @@ fun usingWithContext() =
                         // withContext() invocation blocks
                         withContext(Dispatchers.Default) {
                             log("First task")
-                            delay(1000)
+                            delay(1_000)
                         }
 
                         log("Second task")
-                        delay(1000)
+                        delay(1_000)
                     }
                 job.join()
             }
@@ -39,11 +39,11 @@ fun usingLaunch() =
                         // launch() invocation does not block
                         launch(Dispatchers.Default) {
                             log("First task")
-                            delay(1000)
+                            delay(1_000)
                         }
 
                         log("Second task")
-                        delay(1000)
+                        delay(1_000)
                     }
                 job.join()
             }

@@ -13,7 +13,7 @@ fun main() {
 
         repeat(5) {
             log("Received ${squares.receive()}")
-            delay(Random.nextLong(2000))
+            delay(Random.nextLong(2_000))
         }
 
         coroutineContext.cancelChildren()

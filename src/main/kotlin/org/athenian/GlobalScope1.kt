@@ -13,7 +13,7 @@ fun main() {
 }
 
 fun nosuspendWork(i: Int, desc: String) {
-    Thread.sleep(1000)
+    Thread.sleep(1_000)
     log("Work $i for $desc done")
 }
 

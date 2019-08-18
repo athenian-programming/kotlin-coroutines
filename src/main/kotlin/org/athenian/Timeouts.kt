@@ -13,7 +13,7 @@ fun main() {
 suspend fun timeout1() {
     try {
         withTimeout(1300) {
-            repeat(1000) { i ->
+            repeat(1_000) { i ->
                 log("I'm sleeping $i ...")
                 delay(500)
             }
@@ -26,7 +26,7 @@ suspend fun timeout1() {
 suspend fun timeout2() {
     val result =
         withTimeoutOrNull(1300) {
-            repeat(1000) { i ->
+            repeat(1_000) { i ->
                 log("I'm sleeping $i ...")
                 delay(500)
             }
@@ -37,7 +37,7 @@ suspend fun timeout2() {
 
 suspend fun timeout3() {
     val result =
-        withTimeoutOrNull(1300) {
+        withTimeoutOrNull(1_300) {
             repeat(2) { i ->
                 log("I'm sleeping $i ...")
                 delay(500)

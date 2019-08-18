@@ -27,7 +27,7 @@ fun main() {
 
         repeat(5) {
             log("Recieved ${hot.receive()}")
-            delay(1000)
+            delay(1_000)
         }
 
         log("Cancel hot")
@@ -45,7 +45,7 @@ fun main() {
 
         cold
             .take(5)
-            .delayEach(1000)
+            .delayEach(1_000)
             .collect { log("Collected $it") }
     }
 }

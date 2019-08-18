@@ -20,7 +20,7 @@ fun launchException() {
         val job =
             launch {
                 try {
-                    withContext(Dispatchers.Default) {
+                    withContext(Dispatchers.Default + CoroutineName("launchException")) {
                         log("Throwing exception")
                         delay(100)
                         throw IndexOutOfBoundsException()

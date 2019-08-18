@@ -16,7 +16,7 @@ fun main() {
             tot =
                 (1..reps)
                     .map {
-                        delay(1000)
+                        delay(1_000)
                         it
                     }
                     .sumBy { it }
@@ -29,7 +29,7 @@ fun main() {
                 (1..reps)
                     .map {
                         async {
-                            delay(1000)
+                            delay(1_000)
                             it
                         }
                     }

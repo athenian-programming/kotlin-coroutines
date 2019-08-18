@@ -7,27 +7,27 @@ import kotlinx.coroutines.runBlocking
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    log("With GlobalScope total time: ${measureTimeMillis { withGlobalScope() } / 1000}")
-    log("Without GlobalScope total time: ${measureTimeMillis { withoutGlobalScope() } / 1000}")
+    log("With GlobalScope total time: ${measureTimeMillis { withGlobalScope() } / 1_000}")
+    log("Without GlobalScope total time: ${measureTimeMillis { withoutGlobalScope() } / 1_000}")
 }
 
 fun withGlobalScope() {
     GlobalScope.launch {
-        delay(1000L)
+        delay(1_000)
         log("World!")
     }
 
     log("Hello, ")
 
     runBlocking {
-        delay(2000L)
+        delay(2_000)
     }
 }
 
 fun withoutGlobalScope() {
     runBlocking {
         launch {
-            delay(1000L)
+            delay(1_000)
             log("World!")
         }
 

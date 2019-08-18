@@ -13,7 +13,7 @@ fun main() {
             launch {
 
                 launch {
-                    delay(10000)
+                    delay(10_000)
                 }
 
                 delay(100)

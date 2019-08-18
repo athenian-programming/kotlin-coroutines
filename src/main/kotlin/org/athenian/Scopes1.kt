@@ -25,12 +25,12 @@ fun CoroutineScope.launchingCall() {
 
 suspend fun delayedCall1() {
     log("Starting delayedCall1()")
-    delay(1000)
+    delay(1_000)
     log("Ending delayedCall1()")
 }
 
 suspend fun delayedCall2() {
     log("Starting delayedCall2()")
-    delay(1000)
+    delay(1_000)
     log("Ending delayedCall2()")
 }

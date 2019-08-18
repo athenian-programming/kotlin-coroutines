@@ -30,14 +30,14 @@ fun main() {
 
 suspend fun func1() {
     withContext(Dispatchers.Default + CoroutineName("func1")) {
-        delay(2000)
+        delay(2_000)
         log("I am in func1")
     }
 }
 
 suspend fun func2() {
     withContext(Dispatchers.Default + CoroutineName("func2")) {
-        delay(1000)
+        delay(1_000)
         log("I am in func2")
     }
 }

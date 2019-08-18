@@ -41,6 +41,6 @@ fun main() {
 }
 
 suspend fun calc(): String {
-    delay(3000)
+    delay(3_000)
     return "A String Value"
 }
