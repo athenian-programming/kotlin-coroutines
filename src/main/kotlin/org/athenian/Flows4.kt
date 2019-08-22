@@ -23,7 +23,7 @@ fun main() {
     }
 }
 
-public fun <T> Flow<T>.everyOther(): Flow<T> =
+fun <T> Flow<T>.everyOther(): Flow<T> =
     flow {
         var skip = false
         collect { value ->
@@ -34,7 +34,7 @@ public fun <T> Flow<T>.everyOther(): Flow<T> =
 
     }
 
-public fun <T> Flow<T>.everyNth(inc: Int): Flow<T> =
+fun <T> Flow<T>.everyNth(inc: Int): Flow<T> =
     flow {
         var counter = 0
         collect { value ->
