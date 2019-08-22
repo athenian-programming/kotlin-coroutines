@@ -4,8 +4,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.buffer
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.delayEach
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import kotlin.system.measureTimeMillis
 
@@ -53,11 +53,11 @@ fun withFlow(useBuffer: Boolean) {
                 if (useBuffer)
                     flowVals
                         .buffer()
-                        .delayEach(10)
+                        .onEach { delay(10) }
                         .collect { counter++ }
                 else
                     flowVals
-                        .delayEach(10)
+                        .onEach { delay(10) }
                         .collect { counter++ }
 
             }

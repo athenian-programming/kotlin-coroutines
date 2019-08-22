@@ -46,7 +46,7 @@ fun asFlowExample() =
             .take(5)
             .map { it * it }
             .onEach { log("First asFlowExample onEach()") }
-            .delayEach(100)
+            .onEach { delay(100) }
             .flowOn(Dispatchers.Default) //changes upstream context
             .onEach { log("Second asFlowExample onEach()") }
             .map { it * 2 }
@@ -62,7 +62,7 @@ fun flowOfExample() =
             .take(5)
             .map { it * it }
             .onEach { log("First flowOfExample onEach()") }
-            .delayEach(100)
+            .onEach { delay(100) }
             .flowOn(Dispatchers.Default) //changes upstream context
             .onEach { log("Second flowOfExample onEach()") }
             .map { it * 2 }

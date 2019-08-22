@@ -4,8 +4,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.delayEach
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 
@@ -43,9 +43,8 @@ fun main() {
 
         delay(5000)
 
-        cold
-            .take(5)
-            .delayEach(1_000)
+        cold.take(5)
+            .onEach { delay(1_000) }
             .collect { log("Collected $it") }
     }
 }
