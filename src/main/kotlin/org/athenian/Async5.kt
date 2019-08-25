@@ -1,14 +1,11 @@
 package org.athenian
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withTimeoutOrNull
+import kotlinx.coroutines.*
 
 fun main() {
 
-    fun calc(): String {
-        Thread.sleep(3_000)
+    suspend fun calc(): String {
+        delay(3_000)
         return "A string value"
     }
 
