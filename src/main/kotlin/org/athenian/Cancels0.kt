@@ -1,9 +1,11 @@
 package org.athenian
 
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
+@ExperimentalTime
 fun main() {
     runBlocking {
         val outerLaunch =
@@ -11,7 +13,7 @@ fun main() {
                 repeat(5) {
                     launch {
                         while (true) {
-                            delay(300)
+                            delay(300.milliseconds)
                             log("Hello from first inner launch #$it")
                         }
                     }
@@ -21,7 +23,7 @@ fun main() {
             }
 
         log("Hello from runBlocking after outer launch")
-        delay(800)
+        delay(800.milliseconds)
         outerLaunch.cancel()
     }
 

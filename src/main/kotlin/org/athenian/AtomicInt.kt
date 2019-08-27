@@ -1,92 +1,107 @@
 package org.athenian
 
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import kotlinx.coroutines.sync.Mutex
-import java.util.concurrent.CountDownLatch
+import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
-import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
-
+@ExperimentalTime
 fun main() {
     val count = 100_000
-    coroutineAtomicInt(count)
     threadedAtomicInt(count)
     executorAtomicInt(count)
+    coroutineAtomicInt(count)
+    variableContextCounter(count, false)
+    variableContextCounter(count, true)
 }
 
+@ExperimentalTime
+fun threadedAtomicInt(count: Int) {
+    val atomic = AtomicInteger(0)
+    var nonatomic = 0
+
+    val (_, dur) =
+        measureTimedValue {
+            List(count) {
+                thread {
+                    nonatomic++
+                    atomic.incrementAndGet()
+                }
+            }.forEach { thread -> thread.join() }
+        }
+
+    log("Threaded atomic: ${atomic.get()} nonatomic: $nonatomic finished in ${dur.toLongMilliseconds()}ms")
+}
+
+@ExperimentalTime
+fun executorAtomicInt(count: Int) {
+    val executor = Executors.newFixedThreadPool(10)
+    val atomic = AtomicInteger(0)
+    var nonatomic = 0
+
+    val (_, dur) =
+        measureTimedValue {
+            List(count) {
+                executor.submit {
+                    nonatomic++
+                    atomic.incrementAndGet()
+                }
+            }.forEach { future -> future.get() }
+        }
+    executor.shutdown()
+
+    log("Executor atomic: ${atomic.get()} nonatomic: $nonatomic finished in ${dur.toLongMilliseconds()}ms")
+}
+
+@ExperimentalTime
 fun coroutineAtomicInt(count: Int) {
-    val time_ms =
-        measureTimeMillis {
-            val mutex = Mutex()
-            val atomic = AtomicInteger(0)
-            var nonatomic = 0
-            var mutexcnt = 0
+    val atomic = AtomicInteger(0)
+    var nonatomic = 0
+    var mutexcnt = 0
+
+    val (_, dur) =
+        measureTimedValue {
             runBlocking {
+                val mutex = Mutex()
                 repeat(count) {
-                    // Use Dispatchers.Default to involve multiple threads
+                    // Use Dispatchers.Default to use multiple threads
                     launch(Dispatchers.Default) {
                         // log("Incrementing")
-                        atomic.addAndGet(1)
-                        //mutex.withLock {
-                        //mutexcnt++
-                        //}
                         nonatomic++
-
+                        atomic.incrementAndGet()
+                        mutex.withLock { mutexcnt++ }
                     }
                 }
             }
-
-            log("Coroutine atomic counter: ${atomic.get()} mutex counter: $mutexcnt nonatomic counter: $nonatomic")
         }
-    log("Coroutine finished in ${time_ms}ms")
+
+    log("Coroutine atomic: ${atomic.get()} mutex: $mutexcnt nonatomic: $nonatomic finished in ${dur.toLongMilliseconds()}ms")
 }
 
-fun threadedAtomicInt(count: Int) {
-    val time_ms =
-        measureTimeMillis {
-            val atomic = AtomicInteger(0)
-            var nonatomic = 0
-            val latch = CountDownLatch(count)
+@ExperimentalTime
+fun variableContextCounter(count: Int, singleThreaded: Boolean) =
+    runBlocking(Dispatchers.Default) {
+        val singleThreadedContext = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
+        var nonatomic = 0
+        val context = if (singleThreaded) singleThreadedContext else Dispatchers.Default
 
-            repeat(count) {
-                thread {
-                    atomic.addAndGet(1)
-                    nonatomic++
-                    latch.countDown()
+        val (_, dur) =
+            measureTimedValue {
+                withContext(context) {
+                    repeat(count) {
+                        launch {
+                            nonatomic++
+                        }
+                    }
                 }
             }
-            latch.await()
+        singleThreadedContext.close()
 
-            log("Threaded atomic counter: ${atomic.get()} nonatomic counter: $nonatomic")
-        }
+        log("Variable context (single threaded = $singleThreaded) nonatomic: $nonatomic finished in ${dur.toLongMilliseconds()}ms")
+    }
 
-    log("Threaded finished in ${time_ms}ms")
-}
 
-fun executorAtomicInt(count: Int) {
-    val time_ms =
-        measureTimeMillis {
-            val atomic = AtomicInteger(0)
-            var nonatomic = 0
-            val latch = CountDownLatch(count)
-            val executor = Executors.newFixedThreadPool(5)
-
-            repeat(count) {
-                executor.submit {
-                    atomic.addAndGet(1)
-                    nonatomic++
-                    latch.countDown()
-                }
-            }
-            latch.await()
-            executor.shutdown()
-
-            log("Executor atomic counter: ${atomic.get()} nonatomic counter: $nonatomic")
-        }
-
-    log("Executor finished in ${time_ms}ms")
-}

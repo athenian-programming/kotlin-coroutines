@@ -1,10 +1,12 @@
 package org.athenian
 
 import kotlinx.coroutines.*
-import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
 // See https://medium.com/@elizarov/the-reason-to-avoid-globalscope-835337445abc
 
+@ExperimentalTime
 fun main() {
     nonConcurrent()
     concurrent()
@@ -13,7 +15,7 @@ fun main() {
 }
 
 fun nosuspendWork(i: Int, desc: String) {
-    Thread.sleep(1000)
+    Thread.sleep(1_000)
     log("Work $i for $desc done")
 }
 
@@ -23,60 +25,68 @@ suspend fun suspendWork(i: Int, desc: String) {
     }
 }
 
+@ExperimentalTime
 fun nonConcurrent() {
     log("Starting nonConcurrent()")
-    val time = measureTimeMillis {
-        runBlocking {
-            repeat(2) {
-                launch() {
-                    nosuspendWork(it, "nonConcurrent()")
+    val (_, dur) =
+        measureTimedValue {
+            runBlocking {
+                repeat(2) {
+                    launch() {
+                        nosuspendWork(it, "nonConcurrent()")
+                    }
                 }
             }
         }
-    }
-    log("nonConcurrent() done in $time ms")
+    log("nonConcurrent() done in ${dur.toLongMilliseconds()}ms")
 }
 
+@ExperimentalTime
 fun concurrent() {
     log("Starting concurrent()")
-    val time = measureTimeMillis {
-        runBlocking {
-            repeat(2) {
-                launch(Dispatchers.Default) {
-                    nosuspendWork(it, "concurrent()")
+    val (_, dur) =
+        measureTimedValue {
+            runBlocking {
+                repeat(2) {
+                    launch(Dispatchers.Default) {
+                        nosuspendWork(it, "concurrent()")
+                    }
                 }
             }
         }
-    }
-    log("concurrent() done in $time ms")
+    log("concurrent() done in ${dur.toLongMilliseconds()}ms")
 }
 
+@ExperimentalTime
 fun differentScope() {
     log("Starting differentScope()")
-    val time = measureTimeMillis {
-        runBlocking {
-            repeat(2) {
-                GlobalScope.launch() {
-                    nosuspendWork(it, "differentScope()")
+    val (_, dur) =
+        measureTimedValue {
+            runBlocking {
+                repeat(2) {
+                    GlobalScope.launch() {
+                        nosuspendWork(it, "differentScope()")
+                    }
                 }
             }
         }
-    }
-    log("differentScope() done in $time ms")
+    log("differentScope() done in ${dur.toLongMilliseconds()}ms")
 }
 
+@ExperimentalTime
 fun differentScopeWithJoin() {
     log("Starting differentScopeWithJoin()")
-    val time = measureTimeMillis {
-        runBlocking {
-            val jobs = mutableListOf<Job>()
-            repeat(2) {
-                jobs += GlobalScope.launch() {
-                    nosuspendWork(it, "differentScopeWithJoin()")
+    val (_, dur) =
+        measureTimedValue {
+            runBlocking {
+                val jobs = mutableListOf<Job>()
+                repeat(2) {
+                    jobs += GlobalScope.launch() {
+                        nosuspendWork(it, "differentScopeWithJoin()")
+                    }
                 }
+                jobs.forEach { it.join() }
             }
-            jobs.forEach { it.join() }
         }
-    }
-    log("differentScopeWithJoin() done in $time ms")
+    log("differentScopeWithJoin() done in ${dur.toLongMilliseconds()}ms")
 }

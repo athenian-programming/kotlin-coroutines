@@ -1,8 +1,14 @@
 package org.athenian
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlin.coroutines.coroutineContext
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
+@ExperimentalTime
 fun main() {
     runBlocking {
 
@@ -10,17 +16,17 @@ fun main() {
 
 
         launch {
-            delay(200)
+            delay(200.milliseconds)
             log("Task from runBlocking")
         }
 
         coroutineScope {
             launch {
-                delay(500)
+                delay(500.milliseconds)
                 log("Task from nested launch")
             }
 
-            delay(100)
+            delay(100.milliseconds)
             log("Task from coroutine scope")
         }
 

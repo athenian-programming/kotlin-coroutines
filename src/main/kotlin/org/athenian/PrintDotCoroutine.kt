@@ -1,25 +1,24 @@
 package org.athenian
 
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
+import kotlin.time.seconds
 
+@ExperimentalTime
 fun main() {
-    val count = 100_000
-    val delay_ms = 1_000L
-
-    val mills =
-        measureTimeMillis {
+    val (_, dur) =
+        measureTimedValue {
             runBlocking {
-                repeat(count) {
+                repeat(100_000) {
                     launch {
-                        delay(delay_ms)
+                        delay(1.seconds)
                         print(".")
                     }
                 }
             }
         }
-    log()
-    log("Finished in ${mills}ms")
+
+    log("\nFinished in ${dur.toLongMilliseconds()}ms")
 }

@@ -1,43 +1,50 @@
 package org.athenian
 
 import kotlinx.coroutines.*
-import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
+import kotlin.time.seconds
 
+@ExperimentalTime
 fun main() {
     runBlocking {
-        val millis = measureTimeMillis {
-            launch {
-                func1()
-                func2()
+        val (_, dur) =
+            measureTimedValue {
+                launch {
+                    func1()
+                    func2()
+                }
             }
-        }
-        log("Finished in ${millis}ms")
+        log("Finished serial launch in ${dur.toLongMilliseconds()}ms")
     }
 
     runBlocking {
-        val millis = measureTimeMillis {
-            launch {
-                func1()
+        val (_, dur) =
+            measureTimedValue {
+                launch {
+                    func1()
+                }
+                launch {
+                    func2()
+                }
             }
-            launch {
-                func2()
-            }
-        }
-        log("Finished in ${millis}ms")
+        log("Finished concurrent launch in ${dur.toLongMilliseconds()}ms")
     }
     log("Done")
 }
 
+@ExperimentalTime
 suspend fun func1() {
     withContext(Dispatchers.Default + CoroutineName("func1")) {
-        delay(2000)
+        delay(2.seconds)
         log("I am in func1")
     }
 }
 
+@ExperimentalTime
 suspend fun func2() {
     withContext(Dispatchers.Default + CoroutineName("func2")) {
-        delay(1000)
+        delay(1.seconds)
         log("I am in func2")
     }
 }

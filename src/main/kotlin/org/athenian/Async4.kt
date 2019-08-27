@@ -1,9 +1,15 @@
 package org.athenian
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 val cnt = 5
 
+@ExperimentalTime
 fun main() {
     eagerNoAsync()
     sequenceNoAsync()
@@ -26,8 +32,7 @@ fun eagerNoAsync() {
 }
 
 fun sequenceNoAsync() {
-    log()
-    log("Assigning deferred1")
+    log("\nAssigning deferred1")
 
     val deferred1 =
         (1..1_000)
@@ -43,9 +48,9 @@ fun sequenceNoAsync() {
     log("Sum of deferred1: ${deferred1.sumBy { it }}")
 }
 
+@ExperimentalTime
 fun nonlazyAsync() {
-    log()
-    log("Assigning deferred2")
+    log("\nAssigning deferred2")
 
     val deferred2 =
         (1..cnt)
@@ -59,15 +64,15 @@ fun nonlazyAsync() {
             .onEach { log("Completed deferred2 for $it") }
 
     runBlocking {
-        delay(100)
+        delay(100.milliseconds)
         log("Summing deferred2")
         log("Sum of deferred2: ${deferred2.sumBy { it.await() }}")
     }
 }
 
+@ExperimentalTime
 fun lazyAsync() {
-    log()
-    log("Assigning deferred3")
+    log("\nAssigning deferred3")
     val deferred3 =
         (1..cnt)
             .map {
@@ -80,7 +85,7 @@ fun lazyAsync() {
             .onEach { log("Completed deferred3 for $it") }
 
     runBlocking {
-        delay(100)
+        delay(100.milliseconds)
         log("Summing deferred3")
         log("Sum of deferred3: ${deferred3.sumBy { it.await() }}")
     }

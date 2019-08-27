@@ -1,8 +1,10 @@
 package org.athenian
 
 import kotlin.concurrent.thread
-import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
 
+@ExperimentalTime
 fun main() {
     daemonThread()
     delayedThread()
@@ -27,7 +29,7 @@ fun delayedThread() {
         List(10) {
             thread(start = false, name = "MyThread-$it") {
                 log("Before sleep in $it")
-                Thread.sleep(2000)
+                Thread.sleep(2_000)
                 log("After sleep in $it")
             }
         }
@@ -41,17 +43,19 @@ fun delayedThread() {
     log("After waiting for threads")
 }
 
+@ExperimentalTime
 fun maxThreadsAtOnce() {
-    val time = measureTimeMillis {
-        val threads =
-            List(128) {
-                thread {
-                    Thread.sleep(1000)
-                    log("Done")
+    val (_, dur) =
+        measureTimedValue {
+            val threads =
+                List(128) {
+                    thread {
+                        Thread.sleep(1_000)
+                        log("Done")
+                    }
                 }
-            }
 
-        threads.forEach { it.join() }
-    }
-    log("Total time: $time")
+            threads.forEach { it.join() }
+        }
+    log("Total time: ${dur.toLongMilliseconds()}ms")
 }

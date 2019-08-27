@@ -1,66 +1,75 @@
 package org.athenian
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.buffer
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.delayEach
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
-import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
-// See https://medium.com/@elizarov/kotlin-flows-and-coroutines-256260fb3bdb
+// See https://proandroiddev.com/an-early-look-at-kotlin-coroutines-flow-62e46baa6eb0
 
 @ExperimentalCoroutinesApi
+@ExperimentalTime
 fun main() {
-    withSequences()
-    withFlow(false)
-    withFlow(true)
-}
-
-fun withSequences() {
-    val seqVals =
-        sequence {
-            repeat(500) {
-                Thread.sleep(10)
-                yield(it)
-            }
-        }
-    var counter = 0
-    val millis =
-        measureTimeMillis {
-            for (i in seqVals) {
-                Thread.sleep(10)
-                counter++
-            }
-        }
-    log("Total time for $counter vals withSequences(): ${millis}ms")
+    flowExample()
+    asFlowExample()
+    flowOfExample()
+    asFlowExample()
 }
 
 @ExperimentalCoroutinesApi
-fun withFlow(useBuffer: Boolean) {
-    val flowVals =
+@ExperimentalTime
+fun flowExample() {
+    val intVals =
         flow {
-            repeat(500) {
-                delay(10)
-                emit(it)
+            var i = 0
+            while (true) {
+                log("Emitting flowExample $i")
+                emit(i++)
             }
         }
-    var counter = 0
-    val millis =
-        measureTimeMillis {
-            runBlocking {
-                if (useBuffer)
-                    flowVals
-                        .buffer()
-                        .delayEach(10)
-                        .collect { counter++ }
-                else
-                    flowVals
-                        .delayEach(10)
-                        .collect { counter++ }
 
-            }
-        }
-    log("Total time for $counter vals withFlow(${useBuffer}): ${millis}ms")
+    runBlocking {
+        intVals
+            .take(5)
+            .map { it * it }
+            .onEach { delay(100.milliseconds) }
+            .collect { log("Collecting flowExample $it") }
+    }
 }
+
+@ExperimentalCoroutinesApi
+@ExperimentalTime
+fun asFlowExample() =
+    runBlocking {
+        log()
+        (1..100)
+            .asFlow()
+            .onStart { log("Starting asFlowExample") }
+            .take(5)
+            .map { it * it }
+            .onEach { log("First asFlowExample onEach()") }
+            .onEach { delay(100.milliseconds) }
+            .flowOn(Dispatchers.Default) //changes upstream context
+            .onEach { log("Second asFlowExample onEach()") }
+            .map { it * 2 }
+            .collect { log("Collecting asFlowExample $it") }
+    }
+
+@ExperimentalCoroutinesApi
+@ExperimentalTime
+fun flowOfExample() =
+    runBlocking {
+        log()
+        flowOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
+            .onStart { log("Starting flowOfExample") }
+            .take(5)
+            .map { it * it }
+            .onEach { log("First flowOfExample onEach()") }
+            .onEach { delay(100.milliseconds) }
+            .flowOn(Dispatchers.Default) //changes upstream context
+            .onEach { log("Second flowOfExample onEach()") }
+            .map { it * 2 }
+            .collect { log("Collecting flowOfExample $it") }
+    }

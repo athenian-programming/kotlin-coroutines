@@ -1,9 +1,31 @@
 package org.athenian
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
+
+@ExperimentalCoroutinesApi
+@ExperimentalTime
+fun main() {
+    runBlocking {
+        val numbers = produceNumbers()
+        val squares = square(numbers)
+
+        repeat(5) {
+            log("Received ${squares.receive()}")
+            delay(Random.nextLong(2_000).milliseconds)
+        }
+
+        coroutineContext.cancelChildren()
+    }
+    log("Done")
+}
 
 @ExperimentalCoroutinesApi
 fun CoroutineScope.produceNumbers() =
@@ -24,19 +46,3 @@ fun CoroutineScope.square(numbers: ReceiveChannel<Int>): ReceiveChannel<Int> =
         }
     }
 
-@ExperimentalCoroutinesApi
-fun main() {
-    runBlocking {
-        val numbers = produceNumbers()
-        val squares = square(numbers)
-
-        repeat(5) {
-            log("Received ${squares.receive()}")
-            delay(Random.nextLong(2000))
-        }
-
-        coroutineContext.cancelChildren()
-    }
-
-    log("Done")
-}

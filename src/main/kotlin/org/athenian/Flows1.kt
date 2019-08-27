@@ -1,70 +1,52 @@
 package org.athenian
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
 // See https://proandroiddev.com/an-early-look-at-kotlin-coroutines-flow-62e46baa6eb0
+// Demonstrates a hot stream -- values are produced regardless of a consumer being present
 
 @ExperimentalCoroutinesApi
+@ExperimentalTime
 fun main() {
-    flowExample()
-    asFlowExample()
-    flowOfExample()
-    asFlowExample()
-}
-
-@ExperimentalCoroutinesApi
-fun flowExample() {
-    val intVals =
-        flow {
-            var i = 0
-            while (true) {
-                log("Emitting flowExample $i")
-                emit(i++)
+    runBlocking {
+        val hot =
+            produce(capacity = 5) {
+                repeat(100) {
+                    send(it)
+                    log("sent $it")
+                }
             }
+
+        delay(5.seconds)
+
+        repeat(5) {
+            log("Recieved ${hot.receive()}")
+            delay(1.seconds)
         }
 
-    runBlocking {
-        intVals
-            .take(5)
-            .map { it * it }
-            .onEach { delay(100) }
-            .collect { log("Collecting flowExample $it") }
+        log("Cancel hot")
+        hot.cancel()
+
+        val cold =
+            flow {
+                repeat(100) {
+                    emit(it)
+                    log("emitted $it")
+                }
+            }
+
+        delay(5.seconds)
+
+        cold.take(5)
+            .onEach { delay(1.seconds) }
+            .collect { log("Collected $it") }
     }
 }
-
-@ExperimentalCoroutinesApi
-fun asFlowExample() =
-    runBlocking {
-        log()
-        (1..100)
-            .asFlow()
-            .onStart { log("Starting asFlowExample") }
-            .take(5)
-            .map { it * it }
-            .onEach { log("First asFlowExample onEach()") }
-            .delayEach(100)
-            .flowOn(Dispatchers.Default) //changes upstream context
-            .onEach { log("Second asFlowExample onEach()") }
-            .map { it * 2 }
-            .collect { log("Collecting asFlowExample $it") }
-    }
-
-@ExperimentalCoroutinesApi
-fun flowOfExample() =
-    runBlocking {
-        log()
-        flowOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-            .onStart { log("Starting flowOfExample") }
-            .take(5)
-            .map { it * it }
-            .onEach { log("First flowOfExample onEach()") }
-            .delayEach(100)
-            .flowOn(Dispatchers.Default) //changes upstream context
-            .onEach { log("Second flowOfExample onEach()") }
-            .map { it * 2 }
-            .collect { log("Collecting flowOfExample $it") }
-    }
