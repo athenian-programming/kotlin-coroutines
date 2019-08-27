@@ -1,12 +1,15 @@
 package org.athenian
 
 import kotlinx.coroutines.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 // The key to this working properly is that the launch and async calls use a different CoroutineScope
 // See https://proandroiddev.com/coroutines-snags-6bf6fb53a3d1 for other details
 // Also see https://proandroiddev.com/kotlin-coroutines-patterns-anti-patterns-f9d12984c68e
 
 @InternalCoroutinesApi
+@ExperimentalTime
 fun main() {
     launchException()
     launchWithHandlerException()
@@ -15,6 +18,7 @@ fun main() {
 }
 
 @InternalCoroutinesApi
+@ExperimentalTime
 fun launchException() {
     runBlocking {
         val job =
@@ -22,7 +26,7 @@ fun launchException() {
                 try {
                     withContext(Dispatchers.Default + CoroutineName("launchException")) {
                         log("Throwing exception")
-                        delay(100)
+                        delay(100.milliseconds)
                         throw IndexOutOfBoundsException()
                     }
                 } catch (e: Exception) {
@@ -42,12 +46,13 @@ val handler =
     }
 
 @InternalCoroutinesApi
+@ExperimentalTime
 fun launchWithHandlerException() {
     log()
     val job =
         GlobalScope.launch(handler) {
             log("Throwing exception")
-            delay(100)
+            delay(100.milliseconds)
             throw IndexOutOfBoundsException()
         }
 

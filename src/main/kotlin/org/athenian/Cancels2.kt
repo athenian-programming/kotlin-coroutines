@@ -1,7 +1,10 @@
 package org.athenian
 
 import kotlinx.coroutines.*
+import kotlin.time.ExperimentalTime
+import kotlin.time.seconds
 
+@ExperimentalTime
 fun main() {
     runBlocking {
         val job =
@@ -17,7 +20,7 @@ fun main() {
                     }
                 }
             }
-        delay(1_000)
+        delay(1.seconds)
         job.cancelAndJoin()
         log("Done")
     }

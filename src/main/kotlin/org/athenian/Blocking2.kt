@@ -3,16 +3,17 @@ package org.athenian
 import kotlinx.coroutines.*
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
-import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
+import kotlin.time.seconds
 
+@ExperimentalTime
 fun main() {
-
     Executors.newFixedThreadPool(20).asCoroutineDispatcher()
         .use { poolDispatcher ->
             for (count in listOf(8, 9, 16, 17)) {
-
-                val millis1 =
-                    measureTimeMillis {
+                val (_, dur1) =
+                    measureTimedValue {
                         runBlocking {
                             repeat(count) {
                                 launch(CoroutineName("Dispatchers.Default-item-$it")) {
@@ -21,10 +22,10 @@ fun main() {
                             }
                         }
                     }
-                log("Total time for $count calls of sleepingCalls with Dispatchers.Default: ${millis1 / 1_000}secs\n")
+                log("Total time for $count calls of sleepingCalls with Dispatchers.Default: ${dur1.inSeconds.toInt()} secs\n")
 
-                val millis2 =
-                    measureTimeMillis {
+                val (_, dur2) =
+                    measureTimedValue {
                         runBlocking {
                             repeat(count) {
                                 launch(CoroutineName("poolDispatcher-item-$it")) {
@@ -33,10 +34,10 @@ fun main() {
                             }
                         }
                     }
-                log("Total time for $count calls of sleepingCalls with poolDispatcher: ${millis2 / 1_000}secs\n")
+                log("Total time for $count calls of sleepingCalls with poolDispatcher: ${dur2.inSeconds.toInt()} secs\n")
 
-                val millis3 =
-                    measureTimeMillis {
+                val (_, dur3) =
+                    measureTimedValue {
                         runBlocking {
                             repeat(count) {
                                 launch(CoroutineName("delaying-item-$it")) {
@@ -45,7 +46,7 @@ fun main() {
                             }
                         }
                     }
-                log("Total time for $count calls of delayingCalls: ${millis3 / 1_000}secs\n")
+                log("Total time for $count calls of delayingCalls: ${dur3.inSeconds.toInt()} secs\n")
             }
         }
 }
@@ -57,7 +58,8 @@ suspend fun sleepingCall(context: CoroutineContext) {
     }
 }
 
+@ExperimentalTime
 suspend fun delayingCall() {
     log("delaying")
-    delay(3_000)
+    delay(3.seconds)
 }

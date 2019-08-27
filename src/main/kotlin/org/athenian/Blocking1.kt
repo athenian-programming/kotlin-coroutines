@@ -1,7 +1,13 @@
 package org.athenian
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
+@ExperimentalTime
 fun main() {
     sleepFunction1()
     sleepFunction2()
@@ -24,8 +30,7 @@ fun sleepFunction1() {
 }
 
 fun sleepFunction2() {
-    log()
-    log("sleepFunction2")
+    log("\nsleepFunction2")
     runBlocking {
         launch {
             log("Before first sleep")
@@ -40,8 +45,7 @@ fun sleepFunction2() {
 }
 
 fun sleepFunction3() {
-    log()
-    log("sleepFunction3")
+    log("\nsleepFunction3")
     runBlocking {
         launch(Dispatchers.Default) {
             log("Before first sleep")
@@ -55,18 +59,18 @@ fun sleepFunction3() {
     }
 }
 
+@ExperimentalTime
 fun delayFunction() {
-    log()
-    log("delayFunction")
+    log("\ndelayFunction")
     runBlocking {
         launch {
             log("Before first delay")
-            delay(200)
+            delay(200.milliseconds)
             log("After first delay")
         }
 
         log("Before second delay")
-        delay(300)
+        delay(300.milliseconds)
         log("After second delay")
     }
 }

@@ -2,13 +2,15 @@ package org.athenian
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.runBlocking
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 // See https://proandroiddev.com/an-early-look-at-kotlin-coroutines-flow-62e46baa6eb0
 
 @ExperimentalCoroutinesApi
+@ExperimentalTime
 fun main() {
     flowExample()
     asFlowExample()
@@ -17,6 +19,7 @@ fun main() {
 }
 
 @ExperimentalCoroutinesApi
+@ExperimentalTime
 fun flowExample() {
     val intVals =
         flow {
@@ -31,12 +34,13 @@ fun flowExample() {
         intVals
             .take(5)
             .map { it * it }
-            .onEach { delay(100) }
+            .onEach { delay(100.milliseconds) }
             .collect { log("Collecting flowExample $it") }
     }
 }
 
 @ExperimentalCoroutinesApi
+@ExperimentalTime
 fun asFlowExample() =
     runBlocking {
         log()
@@ -46,7 +50,7 @@ fun asFlowExample() =
             .take(5)
             .map { it * it }
             .onEach { log("First asFlowExample onEach()") }
-            .onEach { delay(100) }
+            .onEach { delay(100.milliseconds) }
             .flowOn(Dispatchers.Default) //changes upstream context
             .onEach { log("Second asFlowExample onEach()") }
             .map { it * 2 }
@@ -54,6 +58,7 @@ fun asFlowExample() =
     }
 
 @ExperimentalCoroutinesApi
+@ExperimentalTime
 fun flowOfExample() =
     runBlocking {
         log()
@@ -62,7 +67,7 @@ fun flowOfExample() =
             .take(5)
             .map { it * it }
             .onEach { log("First flowOfExample onEach()") }
-            .onEach { delay(100) }
+            .onEach { delay(100.milliseconds) }
             .flowOn(Dispatchers.Default) //changes upstream context
             .onEach { log("Second flowOfExample onEach()") }
             .map { it * 2 }

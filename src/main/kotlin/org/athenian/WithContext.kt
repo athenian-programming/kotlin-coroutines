@@ -1,51 +1,59 @@
 package org.athenian
 
-import kotlinx.coroutines.*
-import kotlin.system.measureTimeMillis
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
+import kotlin.time.seconds
 
 // See https://codinginfinite.com/kotlin-coroutines-best-practices-example/
 
+@ExperimentalTime
 fun main() {
     usingWithContext()
     usingLaunch()
 }
 
+@ExperimentalTime
 fun usingWithContext() =
     runBlocking {
-        val millis =
-            measureTimeMillis {
+        val (_, dur) =
+            measureTimedValue {
                 val job =
                     launch {
                         // withContext() invocation blocks
                         withContext(Dispatchers.Default) {
                             log("First task")
-                            delay(1_000)
+                            delay(1.seconds)
                         }
 
                         log("Second task")
-                        delay(1_000)
+                        delay(1.seconds)
                     }
                 job.join()
             }
-        log("Finished usingWithContext() in ${millis}ms")
+        log("Finished usingWithContext() in ${dur.toLongMilliseconds()}ms")
     }
 
+@ExperimentalTime
 fun usingLaunch() =
     runBlocking {
-        val millis =
-            measureTimeMillis {
+        val (_, dur) =
+            measureTimedValue {
                 val job =
                     launch {
                         // launch() invocation does not block
                         launch(Dispatchers.Default) {
                             log("First task")
-                            delay(1_000)
+                            delay(1.seconds)
                         }
 
                         log("Second task")
-                        delay(1_000)
+                        delay(1.seconds)
                     }
                 job.join()
             }
-        log("Finished usingLaunch() in ${millis}ms")
+        log("Finished usingLaunch() in ${dur.toLongMilliseconds()}ms")
     }

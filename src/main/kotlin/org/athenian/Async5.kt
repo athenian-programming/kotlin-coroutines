@@ -1,11 +1,19 @@
 package org.athenian
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withTimeoutOrNull
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
+import kotlin.time.seconds
 
+@ExperimentalTime
 fun main() {
 
+    @ExperimentalTime
     suspend fun calc(): String {
-        delay(3_000)
+        delay(3.seconds)
         return "A string value"
     }
 
@@ -15,7 +23,7 @@ fun main() {
 
         while (true) {
             val completed =
-                withTimeoutOrNull(500) {
+                withTimeoutOrNull(500.milliseconds.toLongMilliseconds()) {
                     println("Waiting")
                     println("Got back: ${calcCall.await()}")
                 }

@@ -1,11 +1,17 @@
 package org.athenian
 
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 @ExperimentalCoroutinesApi
+@ExperimentalTime
 fun main() {
     runBlocking {
         val numbers = produceNumbers()
@@ -13,7 +19,7 @@ fun main() {
 
         repeat(5) {
             log("Received ${squares.receive()}")
-            delay(Random.nextLong(2_000))
+            delay(Random.nextLong(2_000).milliseconds)
         }
 
         coroutineContext.cancelChildren()

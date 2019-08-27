@@ -2,45 +2,45 @@ package org.athenian
 
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import kotlin.system.measureTimeMillis
+import kotlin.time.ExperimentalTime
+import kotlin.time.measureTimedValue
+import kotlin.time.seconds
 
+@ExperimentalTime
 fun main() {
 
     runBlocking {
 
-        val millis1 =
-            measureTimeMillis {
+        val (val1, dur1) =
+            measureTimedValue {
                 val a = calc()
                 val b = calc()
-
-                println("Vals = ${listOf(a, b)}")
+                listOf(a, b)
             }
-        println("Took ${millis1}ms")
+        log("Vals = $val1 took ${dur1.toLongMilliseconds()}ms")
 
-        val millis2 =
-            measureTimeMillis {
+        val (val2, dur2) =
+            measureTimedValue {
                 val a = async { calc() }
                 val b = async { calc() }
-
-                println("Vals = ${listOf(a, b)}")
-                println("Vals = ${listOf(a.await(), b.await())}")
+                println("Vals prior to .await() = ${listOf(a, b)}")
+                listOf(a.await(), b.await())
             }
-        println("Took ${millis2}ms")
+        log("Vals = $val2 took ${dur2.toLongMilliseconds()}ms")
 
-        val millis3 =
-            measureTimeMillis {
+        val (val3, dur3) =
+            measureTimedValue {
                 val a = async(start = CoroutineStart.LAZY) { calc() }
                 val b = async(start = CoroutineStart.LAZY) { calc() }
-
-                println("Vals = ${listOf(a.await(), b.await())}")
+                listOf(a.await(), b.await())
             }
-        println("Took ${millis3}ms")
+        log("Vals = $val3 took ${dur3.toLongMilliseconds()}ms")
     }
 }
 
+@ExperimentalTime
 suspend fun calc(): String {
-    delay(3_000)
-    return "A String Value"
+    delay(3.seconds)
+    return "A string val"
 }
