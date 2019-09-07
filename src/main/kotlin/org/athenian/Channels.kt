@@ -44,5 +44,4 @@ fun withClose() {
         for (y in channel) println(y)
     }
     println("withClose complete")
-
 }
