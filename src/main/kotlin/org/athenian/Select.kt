@@ -6,14 +6,23 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.selects.select
 import kotlin.random.Random
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
+import kotlin.time.milliseconds
 
 class Results(val id: Int, val total: Int)
 
-class Boss(val messageCount: Int, val data: SendChannel<Long>, val results: List<ReceiveChannel<Results>>) {
+@ExperimentalTime
+class Boss constructor(
+    val messageCount: Int,
+    val data: SendChannel<Duration>,
+    val results: List<ReceiveChannel<Results>>
+) {
+    @ExperimentalTime
     suspend fun generateData() {
         repeat(messageCount) {
-            data.send(Random.nextLong(10))
-            delay(Random.nextLong(5))
+            data.send(Random.nextInt(10).milliseconds)
+            delay(Random.nextInt(5).milliseconds)
         }
         data.close()
     }
@@ -38,7 +47,9 @@ class Boss(val messageCount: Int, val data: SendChannel<Long>, val results: List
     }
 }
 
-class Worker(val id: Int, val data: ReceiveChannel<Long>, val results: SendChannel<Results>) {
+@ExperimentalTime
+class Worker constructor(val id: Int, val data: ReceiveChannel<Duration>, val results: SendChannel<Results>) {
+    @ExperimentalTime
     suspend fun process() {
         var counter = 0
         for (d in data) {
@@ -51,10 +62,11 @@ class Worker(val id: Int, val data: ReceiveChannel<Long>, val results: SendChann
     }
 }
 
+@ExperimentalTime
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
 fun CoroutineScope.rockAndRoll(messageCount: Int, workerCount: Int) {
-    val data = Channel<Long>()
+    val data = Channel<Duration>()
     val results = List(workerCount) { Channel<Results>() }
 
     List(workerCount) { i ->
@@ -76,6 +88,7 @@ fun CoroutineScope.rockAndRoll(messageCount: Int, workerCount: Int) {
     }
 }
 
+@ExperimentalTime
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
 fun main() {
