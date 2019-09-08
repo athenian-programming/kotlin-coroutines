@@ -1,8 +1,10 @@
-package org.athenian
+package org.athenian.globalscope
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.athenian.delay
+import org.athenian.log
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 import kotlin.time.seconds

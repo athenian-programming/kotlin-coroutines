@@ -1,10 +1,11 @@
-package org.athenian
+package org.athenian.cancel
 
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.athenian.log
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
@@ -24,7 +25,7 @@ fun main() {
                     }
                 }
             }
-        delay(1.seconds)
+        org.athenian.delay(1.seconds)
         job.cancelAndJoin()
         log("Done")
     }

@@ -1,4 +1,4 @@
-package org.athenian
+package org.athenian.select
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -9,6 +9,7 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
+import org.athenian.delay
 import kotlin.random.Random
 import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
@@ -92,6 +93,6 @@ fun main() {
     }
 
     runBlocking {
-        execute(1000, 100)
+        execute(1_000, 100)
     }
 }

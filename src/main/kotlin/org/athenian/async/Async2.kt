@@ -1,7 +1,9 @@
-package org.athenian
+package org.athenian.async
 
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import org.athenian.delay
+import org.athenian.log
 import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 import kotlin.time.seconds
