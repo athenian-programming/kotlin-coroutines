@@ -10,36 +10,41 @@ import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-class Results(val id: Int, val total: Int)
+class Results3(val id: String, val total: Int)
 
 @ExperimentalTime
-class Boss constructor(
+class Boss3 constructor(
     val messageCount: Int,
-    val data: SendChannel<Duration>,
-    val results: List<ReceiveChannel<Results>>
+    val slowWorker: SendChannel<Int>,
+    val fastWorker: SendChannel<Int>,
+    val results: List<ReceiveChannel<Results3>>
 ) {
     @ExperimentalTime
     suspend fun generateData() {
         repeat(messageCount) {
-            data.send(Random.nextInt(10).milliseconds)
-            delay(Random.nextInt(5).milliseconds)
+            val r = Random.nextInt()
+            select<Unit> {
+                slowWorker.onSend(r) { }
+                fastWorker.onSend(r) { }
+            }
+            delay(10.milliseconds)
         }
-        data.close()
+        slowWorker.close()
+        fastWorker.close()
     }
 
     @ExperimentalCoroutinesApi
     @InternalCoroutinesApi
-    suspend fun aggregateData(): Map<Int, Int> {
-        val resultsMap = mutableMapOf<Int, Int>()
+    suspend fun aggregateData(): Map<String, Int> {
+        val resultsMap = mutableMapOf<String, Int>()
         while (resultsMap.size < results.size)
             select<Unit> {
                 results
                     .filter { !it.isClosedForReceive }
                     .onEach {
                         it.onReceiveOrClosed { value ->
-                            if (!value.isClosed) {
+                            if (!value.isClosed)
                                 resultsMap[value.value.id] = value.value.total
-                            }
                         }
                     }
             }
@@ -48,35 +53,42 @@ class Boss constructor(
 }
 
 @ExperimentalTime
-class Worker constructor(val id: Int, val data: ReceiveChannel<Duration>, val results: SendChannel<Results>) {
+class Worker3 constructor(
+    val id: String,
+    val delay: Duration,
+    val data: ReceiveChannel<Int>,
+    val results: SendChannel<Results3>
+) {
     @ExperimentalTime
     suspend fun process() {
         var counter = 0
         for (d in data) {
-            println("Worker $id got a value: $d")
+            println("$id got value: $d")
             counter++
-            delay(d)
+            delay(delay)
         }
-        println("Worker $id writing results")
-        results.send(Results(id, counter))
+        println("$id writing results")
+        results.send(Results3(id, counter))
     }
 }
 
 @ExperimentalTime
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
-fun CoroutineScope.rockAndRoll(messageCount: Int, workerCount: Int) {
-    val data = Channel<Duration>()
-    val results = List(workerCount) { Channel<Results>() }
+fun CoroutineScope.execute3(messageCount: Int, slowDuration: Duration, fastDuration: Duration) {
+    val slowData = Channel<Int>()
+    val fastData = Channel<Int>()
+    val results = List(2) { Channel<Results3>() }
 
-    List(workerCount) { i ->
-        launch {
-            val worker = Worker(i, data, results[i])
-            worker.process()
-        }
+    launch {
+        Worker3("Slow Worker", slowDuration, slowData, results[0]).process()
     }
 
-    val boss = Boss(messageCount, data, results)
+    launch {
+        Worker3("Fast Worker", fastDuration, fastData, results[1]).process()
+    }
+
+    val boss = Boss3(messageCount, slowData, fastData, results)
 
     launch {
         boss.generateData()
@@ -93,6 +105,6 @@ fun CoroutineScope.rockAndRoll(messageCount: Int, workerCount: Int) {
 @InternalCoroutinesApi
 fun main() {
     runBlocking {
-        rockAndRoll(1000, 100)
+        execute3(1000, 100.milliseconds, 10.milliseconds)
     }
 }
