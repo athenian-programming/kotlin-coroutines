@@ -78,6 +78,7 @@ fun main() {
         val slowData = Channel<Int>()
         val fastData = Channel<Int>()
         val results = List(2) { Channel<Results>() }
+        val boss = Boss(messageCount, slowData, fastData, results)
 
         launch {
             Worker("Slow Worker", slowDuration, slowData, results[0]).process()
@@ -86,8 +87,6 @@ fun main() {
         launch {
             Worker("Fast Worker", fastDuration, fastData, results[1]).process()
         }
-
-        val boss = Boss(messageCount, slowData, fastData, results)
 
         launch {
             boss.generateData()

@@ -74,18 +74,14 @@ fun main() {
     fun CoroutineScope.execute(messageCount: Int, workerCount: Int) {
         val data = List(workerCount) { Channel<Int>() }
         val results = List(workerCount) { Channel<Results>() }
+        val boss = Boss(messageCount, data, results)
 
         repeat(workerCount) { i ->
             launch {
-                Worker(
-                    "Worker-${i.toString().padStart((workerCount - 1).toString().length, '0')}",
-                    data[i],
-                    results[i]
-                ).process()
+                val id = "Worker-${i.toString().padStart((workerCount - 1).toString().length, '0')}"
+                Worker(id, data[i], results[i]).process()
             }
         }
-
-        val boss = Boss(messageCount, data, results)
 
         launch {
             boss.generateData()
