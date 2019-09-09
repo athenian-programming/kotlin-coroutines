@@ -9,6 +9,7 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
+import kotlinx.coroutines.selects.selectUnbiased
 import org.athenian.delay
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
@@ -25,14 +26,18 @@ fun main() {
                            val data: List<SendChannel<Int>>,
                            val results: List<ReceiveChannel<Results>>) {
 
-        suspend fun generateData() {
+        suspend fun generateData(biased: Boolean) {
             repeat(messageCount) {
                 val r = Random.nextInt()
-                select<Unit> {
-                    data.onEach { worker ->
-                        worker.onSend(r) {}
+                if (biased)
+                    select<Unit> {
+                        data.onEach { it.onSend(r) {} }
                     }
-                }
+                else
+                    selectUnbiased<Unit> {
+                        data.onEach { it.onSend(r) {} }
+                    }
+
                 delay(10.milliseconds)
             }
             data.onEach { it.close() }
@@ -64,7 +69,7 @@ fun main() {
             for (d in data) {
                 println("$id got value: $d")
                 counter++
-                delay(100.milliseconds)
+                //delay(100.milliseconds)
             }
             println("$id writing results")
             results.send(Results(id, counter))
@@ -84,7 +89,7 @@ fun main() {
         }
 
         launch {
-            boss.generateData()
+            boss.generateData(true)
         }
 
         launch {
