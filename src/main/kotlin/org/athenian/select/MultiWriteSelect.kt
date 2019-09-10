@@ -67,16 +67,16 @@ fun main() {
         suspend fun process() {
             var counter = 0
             for (d in data) {
-                println("$id got value: $d")
+                //println("$id got value: $d")
                 counter++
                 //delay(100.milliseconds)
             }
-            println("$id writing results")
+            // println("$id writing results")
             results.send(Results(id, counter))
         }
     }
 
-    fun CoroutineScope.execute(messageCount: Int, workerCount: Int) {
+    fun CoroutineScope.execute(messageCount: Int, workerCount: Int, biased: Boolean) {
         val data = List(workerCount) { Channel<Int>() }
         val results = List(workerCount) { Channel<Results>() }
         val boss = Boss(messageCount, data, results)
@@ -89,15 +89,20 @@ fun main() {
         }
 
         launch {
-            boss.generateData(true)
+            boss.generateData(biased)
         }
 
         launch {
+            println("\nBiased writes: $biased")
             println(boss.aggregateData())
         }
     }
 
     runBlocking {
-        execute(1_000, 100)
+        execute(1_000, 100, true)
+    }
+
+    runBlocking {
+        execute(1_000, 100, false)
     }
 }

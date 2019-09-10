@@ -9,6 +9,7 @@ import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
+import kotlinx.coroutines.selects.selectUnbiased
 import org.athenian.delay
 import kotlin.random.Random
 import kotlin.time.Duration
@@ -34,20 +35,38 @@ fun main() {
             data.close()
         }
 
-        suspend fun aggregateData(): Map<String, Int> {
+        suspend fun aggregateData(biased: Boolean): Pair<MutableMap<String, Int>, List<Int>> {
             val resultsMap = mutableMapOf<String, Int>()
-            while (resultsMap.size < results.size)
-                select<Unit> {
-                    results
-                        .filter { !it.isClosedForReceive }
-                        .onEach {
-                            it.onReceiveOrClosed { value ->
-                                if (!value.isClosed)
-                                    resultsMap[value.value.id] = value.value.total
+            val orderRead = mutableListOf<Int>()
+            while (resultsMap.size < results.size) {
+                val notClosedChannels = results.withIndex()
+                    .filter { (i, channel) -> !channel.isClosedForReceive }
+                if (biased)
+                    select<Unit> {
+                        notClosedChannels
+                            .onEach { (i, channel) ->
+                                channel.onReceiveOrClosed { value ->
+                                    if (!value.isClosed) {
+                                        resultsMap[value.value.id] = value.value.total
+                                        orderRead.add(i)
+                                    }
+                                }
                             }
-                        }
-                }
-            return resultsMap
+                    }
+                else
+                    selectUnbiased<Unit> {
+                        notClosedChannels
+                            .onEach { (i, channel) ->
+                                channel.onReceiveOrClosed { value ->
+                                    if (!value.isClosed) {
+                                        resultsMap[value.value.id] = value.value.total
+                                        orderRead.add(i)
+                                    }
+                                }
+                            }
+                    }
+            }
+            return Pair(resultsMap, orderRead)
         }
     }
 
@@ -58,16 +77,16 @@ fun main() {
         suspend fun process() {
             var counter = 0
             for (d in data) {
-                println("$id got value: $d")
+                // println("$id got value: $d")
                 counter++
                 delay(d)
             }
-            println("$id writing results")
+            // println("$id writing results")
             results.send(Results(id, counter))
         }
     }
 
-    fun CoroutineScope.execute(messageCount: Int, workerCount: Int) {
+    fun CoroutineScope.execute(messageCount: Int, workerCount: Int, biased: Boolean) {
         val data = Channel<Duration>()
         val results = List(workerCount) { Channel<Results>() }
         val boss = SelectReadBoss(messageCount, data, results)
@@ -84,11 +103,20 @@ fun main() {
         }
 
         launch {
-            println(boss.aggregateData())
+            val (resultsMap, orderRead) = boss.aggregateData(biased)
+            println("\nBiased reads: $biased")
+            println("Results map:")
+            println(resultsMap)
+            println("Order read:")
+            println(orderRead)
         }
     }
 
     runBlocking {
-        execute(1_000, 100)
+        execute(1_000, 100, true)
+    }
+
+    runBlocking {
+        execute(1_000, 100, false)
     }
 }
