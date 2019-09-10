@@ -33,13 +33,11 @@ fun main() {
                     val selected =
                         if (biased)
                             select<TaskInfo> {
-                                tasks.filter { !it.joined }
-                                    .onEach { it.job.onJoin { it } }
+                                tasks.filter { !it.joined }.onEach { it.job.onJoin { it } }
                             }
                         else
                             selectUnbiased {
-                                tasks.filter { !it.joined }
-                                    .onEach { it.job.onJoin { it } }
+                                tasks.filter { !it.joined }.onEach { it.job.onJoin { it } }
                             }
                     orderJoined.add(selected.id)
                     selected.joined = true
