@@ -3,6 +3,7 @@ package org.athenian.select
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.NonCancellable.isActive
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
@@ -42,7 +43,7 @@ fun main() {
 
         suspend fun aggregateData(): Map<String, Int> {
             val resultsMap = mutableMapOf<String, Int>()
-            while (resultsMap.size < results.size)
+            while (resultsMap.size < results.size && isActive)
                 select<Unit> {
                     results
                         .filter { !it.isClosedForReceive }
