@@ -1,20 +1,20 @@
 package org.athenian.select
 
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.selects.selectUnbiased
 import org.athenian.delay
+import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
 @ExperimentalTime
 fun main() {
 
-    data class TaskInfo(val id: Int, val job: Job, var joined: Boolean = false)
+    data class TaskInfo(val id: Int, val deferred: Deferred<Int>, var joined: Boolean = false)
 
     class Worker(val count: Int) {
 
@@ -26,7 +26,11 @@ fun main() {
 
                 val tasks =
                     List(count) { i ->
-                        TaskInfo(i, launch { delay(1.seconds) })
+                        TaskInfo(i,
+                            async {
+                                delay(1.seconds)
+                                Random.nextInt()
+                            })
                     }
 
                 repeat(tasks.size) {
@@ -34,12 +38,12 @@ fun main() {
                         if (biased)
                             select<TaskInfo> {
                                 tasks.filter { !it.joined }
-                                    .onEach { it.job.onJoin { it } }
+                                    .onEach { it.deferred.onJoin { it } }
                             }
                         else
                             selectUnbiased {
                                 tasks.filter { !it.joined }
-                                    .onEach { it.job.onJoin { it } }
+                                    .onEach { it.deferred.onJoin { it } }
                             }
                     orderJoined.add(selected.id)
                     selected.joined = true

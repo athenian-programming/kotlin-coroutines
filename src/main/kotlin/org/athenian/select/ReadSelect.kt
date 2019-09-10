@@ -41,7 +41,7 @@ fun main() {
             while (resultsMap.size < results.size) {
                 val notClosedChannels =
                     results.withIndex()
-                        .filter { (i, channel) -> !channel.isClosedForReceive }
+                        .filter { (_, channel) -> !channel.isClosedForReceive }
                 if (biased)
                     select<Unit> {
                         notClosedChannels
