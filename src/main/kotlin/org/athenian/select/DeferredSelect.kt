@@ -14,35 +14,35 @@ import kotlin.time.seconds
 @ExperimentalTime
 fun main() {
 
-    data class TaskInfo(val id: Int, val deferred: Deferred<Int>, var joined: Boolean = false)
+    class DeferredWrapper(val id: Int, val deferred: Deferred<Int>, var joined: Boolean = false)
 
     class Worker(val count: Int) {
 
-        suspend fun execute(biased: Boolean) {
+        suspend fun selectDeferred(biased: Boolean) {
 
             val orderJoined = mutableListOf<Int>()
 
             coroutineScope {
 
-                val tasks =
+                val wrappers =
                     List(count) { i ->
-                        TaskInfo(i,
+                        DeferredWrapper(i,
                             async {
                                 delay(1.seconds)
                                 Random.nextInt()
                             })
                     }
 
-                repeat(tasks.size) {
+                repeat(wrappers.size) {
                     val selected =
                         if (biased)
-                            select<TaskInfo> {
-                                tasks.filter { !it.joined }
+                            select<DeferredWrapper> {
+                                wrappers.filter { !it.joined }
                                     .onEach { taskInfo -> taskInfo.deferred.onAwait { result -> taskInfo } }
                             }
                         else
                             selectUnbiased {
-                                tasks.filter { !it.joined }
+                                wrappers.filter { !it.joined }
                                     .onEach { taskInfo -> taskInfo.deferred.onAwait { result -> taskInfo } }
                             }
                     orderJoined.add(selected.id)
@@ -58,7 +58,7 @@ fun main() {
     runBlocking {
         val worker = Worker(100)
 
-        async { worker.execute(true) }.await()
-        async { worker.execute(false) }.await()
+        async { worker.selectDeferred(true) }.await()
+        async { worker.selectDeferred(false) }.await()
     }
 }

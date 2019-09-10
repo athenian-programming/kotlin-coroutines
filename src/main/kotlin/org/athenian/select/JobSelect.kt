@@ -14,30 +14,27 @@ import kotlin.time.seconds
 @ExperimentalTime
 fun main() {
 
-    data class TaskInfo(val id: Int, val job: Job, var joined: Boolean = false)
+    class JobWrapper(val id: Int, val job: Job, var joined: Boolean = false)
 
     class Worker(val count: Int) {
 
-        suspend fun execute(biased: Boolean) {
+        suspend fun selectJobs(biased: Boolean) {
 
             val orderJoined = mutableListOf<Int>()
 
             coroutineScope {
 
-                val tasks =
-                    List(count) { i ->
-                        TaskInfo(i, launch { delay(1.seconds) })
-                    }
+                val wrappers = List(count) { i -> JobWrapper(i, launch { delay(1.seconds) }) }
 
-                repeat(tasks.size) {
+                repeat(wrappers.size) {
                     val selected =
                         if (biased)
-                            select<TaskInfo> {
-                                tasks.filter { !it.joined }.onEach { it.job.onJoin { it } }
+                            select<JobWrapper> {
+                                wrappers.filter { !it.joined }.onEach { it.job.onJoin { it } }
                             }
                         else
                             selectUnbiased {
-                                tasks.filter { !it.joined }.onEach { it.job.onJoin { it } }
+                                wrappers.filter { !it.joined }.onEach { it.job.onJoin { it } }
                             }
                     orderJoined.add(selected.id)
                     selected.joined = true
@@ -52,7 +49,7 @@ fun main() {
     runBlocking {
         val worker = Worker(100)
 
-        async { worker.execute(true) }.await()
-        async { worker.execute(false) }.await()
+        async { worker.selectJobs(true) }.await()
+        async { worker.selectJobs(false) }.await()
     }
 }
