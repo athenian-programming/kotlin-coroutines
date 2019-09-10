@@ -72,11 +72,11 @@ fun selectOnLock() {
 }
 
 fun main() {
-    // I woould not expect this to work
-    println("Calling onUnlock()")
+    // I would not expect this to work
+    println("Calling selectOnUnlock()")
     selectOnUnlock()
 
     //I would expect this to work
-    println("\nCalling onLock()")
+    println("\nCalling selectOnLock()")
     selectOnLock()
 }
