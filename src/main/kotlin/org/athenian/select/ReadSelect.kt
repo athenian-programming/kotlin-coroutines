@@ -39,8 +39,9 @@ fun main() {
             val resultsMap = mutableMapOf<String, Int>()
             val orderRead = mutableListOf<Int>()
             while (resultsMap.size < results.size) {
-                val notClosedChannels = results.withIndex()
-                    .filter { (i, channel) -> !channel.isClosedForReceive }
+                val notClosedChannels =
+                    results.withIndex()
+                        .filter { (i, channel) -> !channel.isClosedForReceive }
                 if (biased)
                     select<Unit> {
                         notClosedChannels
