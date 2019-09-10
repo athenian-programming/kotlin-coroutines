@@ -37,11 +37,13 @@ fun main() {
                     val selected =
                         if (biased)
                             select<TaskInfo> {
-                                tasks.filter { !it.joined }.onEach { it.deferred.onJoin { it } }
+                                tasks.filter { !it.joined }
+                                    .onEach { taskInfo -> taskInfo.deferred.onAwait { result -> taskInfo } }
                             }
                         else
                             selectUnbiased {
-                                tasks.filter { !it.joined }.onEach { it.deferred.onJoin { it } }
+                                tasks.filter { !it.joined }
+                                    .onEach { taskInfo -> taskInfo.deferred.onAwait { result -> taskInfo } }
                             }
                     orderJoined.add(selected.id)
                     selected.joined = true
@@ -51,7 +53,6 @@ fun main() {
             println("\nBiased: $biased")
             println(orderJoined)
         }
-
     }
 
     runBlocking {
