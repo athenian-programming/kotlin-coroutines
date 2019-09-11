@@ -6,77 +6,33 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.sync.Mutex
 
-fun selectOnUnlock() {
-    // Initialize mutexes as locked
-    val mutext0 = Mutex(true)
-    val mutext1 = Mutex(true)
-    val mutext2 = Mutex(true)
-
-    runBlocking() {
-        launch {
-            repeat(3) {
-                val selected =
-                    select<String> {
-                        mutext0.onLock { "mutex0" }
-                        mutext1.onLock { "mutex1" }
-                        mutext2.onLock { "mutex2" }
-                    }
-                println("Selected: $selected")
-            }
-        }
-
-        println("Unlocking: mutext2")
-        mutext2.unlock()
-
-        delay(100)
-        println("Unlocking: mutext1")
-        mutext1.unlock()
-
-        delay(100)
-        println("Unlocking: mutext0")
-        mutext0.unlock()
-    }
-}
-
-fun selectOnLock() {
-    // Initialize mutexes as unlocked
-    val mutext0 = Mutex(false)
-    val mutext1 = Mutex(false)
-    val mutext2 = Mutex(false)
-
-    runBlocking() {
-        launch {
-            repeat(3) {
-                val selected =
-                    select<String> {
-                        mutext0.onLock { "mutex0" }
-                        mutext1.onLock { "mutex1" }
-                        mutext2.onLock { "mutex2" }
-                    }
-                println("Selected: $selected")
-            }
-        }
-
-
-        println("Locking: mutext2")
-        mutext2.lock()
-
-        delay(100)
-        println("Locking: mutext1")
-        mutext1.lock()
-
-        delay(100)
-        println("Locking: mutext0")
-        mutext0.lock()
-    }
-}
-
 fun main() {
-    // I would not expect this to work
-    println("Calling selectOnUnlock()")
-    selectOnUnlock()
+    val mutex0 = Mutex(true)
+    val mutex1 = Mutex(true)
+    val mutex2 = Mutex(true)
 
-    //I would expect this to work
-    println("\nCalling selectOnLock()")
-    selectOnLock()
+    runBlocking() {
+        launch {
+            repeat(3) {
+                val selected =
+                    select<Pair<Mutex, String>> {
+                        mutex0.onLock { mutex -> Pair(mutex, "mutex0") }
+                        mutex1.onLock { mutex -> Pair(mutex, "mutex1") }
+                        mutex2.onLock { mutex -> Pair(mutex, "mutex2") }
+                    }
+                println("Selected: $selected")
+            }
+        }
+
+        println("Unlocking: mutex2")
+        mutex2.unlock()
+
+        delay(100)
+        println("Unlocking: mutex1")
+        mutex1.unlock()
+
+        delay(100)
+        println("Unlocking: mutex0")
+        mutex0.unlock()
+    }
 }

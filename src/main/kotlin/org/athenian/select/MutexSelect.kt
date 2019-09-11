@@ -1,5 +1,8 @@
 package org.athenian.select
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
@@ -9,70 +12,93 @@ import org.athenian.delay
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
-import kotlin.time.seconds
 
+@ExperimentalCoroutinesApi
+@InternalCoroutinesApi
 @ExperimentalTime
 fun main() {
 
-    class MutexWrapper(val id: Int, val mutext: Mutex = Mutex())
+    class MutexWrapper(val id: Int, val channel: Channel<Int>, val mutex: Mutex, val action: suspend () -> Unit)
 
-    class Worker(val count: Int) {
+    class Worker(mutexCount: Int) {
 
-        val mutexes = List(count) { i -> MutexWrapper(i) }
+        val wrappers = mutableListOf<MutexWrapper>()
 
-        suspend fun lock(id: Int) {
-            println("Locking: $id ${mutexes[id].mutext}")
-            mutexes[id].mutext.withLock {
-                delay(1.seconds)
-            }
-        }
-
-        fun unlock(id: Int) {
-            println("Unlocking: $id ${mutexes[id].mutext}")
-            mutexes[id].mutext.unlock()
-        }
-
-        suspend fun selectMutexes() {
-
-            val orderLocked = mutableListOf<Int>()
-
-            println("Locking prior to selects:")
-            mutexes.onEach {
-                it.mutext.lock()
-                println("${it.id} ${it.mutext}")
-            }
-
-            repeat(count) {
-                println("Selecting...")
-                val selected =
-                    select<Int> {
-                        mutexes.onEach {
-                            it.mutext.onLock { mutex ->
-                                println("Selected: ${it.id} ${mutex}")
-                                it.id
+        init {
+            repeat(mutexCount) { i ->
+                val c = Channel<Int>()
+                val m = Mutex()
+                wrappers += MutexWrapper(i, c, m) {
+                    var active = true
+                    while (active) {
+                        m.withLock {
+                            println("Acquired lock for $i")
+                            val v = c.receiveOrClosed()
+                            if (v.isClosed) {
+                                active = false
+                            } else {
+                                println("Unlocking $i")
                             }
                         }
                     }
-                orderLocked.add(selected)
+                    println("Completed action for $i")
+                }
+            }
+        }
+
+        suspend fun selectMutexes(iterationCount: Int) {
+
+            val mutexOrder = mutableListOf<Int>()
+
+            repeat(iterationCount) {
+                // println("Selecting...")
+                val selected =
+                    select<MutexWrapper> {
+                        wrappers
+                            .onEach { wrapper ->
+                                wrapper.mutex.onLock { mutex ->
+                                    println("Selected: ${wrapper.id} ${mutex}")
+                                    wrapper
+                                }
+                            }
+                    }
+                println("Unlocking ${selected.id}")
+                selected.mutex.unlock()
+                mutexOrder.add(selected.id)
             }
 
-            println(orderLocked)
+            delay(50.milliseconds)
+            println("Mutex order: $mutexOrder")
         }
     }
 
     runBlocking {
-        val count = 5
-        val worker = Worker(count)
+        val iterationCount = 3
+        val workerCount = 5
+        val worker = Worker(workerCount)
 
-        launch {
-            worker.selectMutexes()
-        }
+        worker.wrappers
+            .forEach {
+                launch {
+                    it.action()
+                }
+            }
 
-        launch {
-            repeat(count) {
-                worker.unlock(Random.nextInt(count))
+        val j =
+            launch {
+                worker.selectMutexes(iterationCount)
                 delay(50.milliseconds)
             }
+
+        repeat(iterationCount) {
+            worker.wrappers[Random.nextInt(workerCount)].channel.send(Random.nextInt())
         }
+
+        //j.join()
+
+        repeat(workerCount) { i ->
+            worker.wrappers[i].channel.close()
+        }
+
     }
 }
