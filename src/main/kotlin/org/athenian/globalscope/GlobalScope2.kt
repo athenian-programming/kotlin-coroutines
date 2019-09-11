@@ -38,7 +38,7 @@ fun nonConcurrent() {
         measureTimedValue {
             runBlocking {
                 repeat(2) {
-                    launch() {
+                    launch {
                         nosuspendWork(it, "nonConcurrent()")
                     }
                 }
@@ -70,7 +70,7 @@ fun differentScope() {
         measureTimedValue {
             runBlocking {
                 repeat(2) {
-                    GlobalScope.launch() {
+                    GlobalScope.launch {
                         nosuspendWork(it, "differentScope()")
                     }
                 }
@@ -87,7 +87,7 @@ fun differentScopeWithJoin() {
             runBlocking {
                 val jobs = mutableListOf<Job>()
                 repeat(2) {
-                    jobs += GlobalScope.launch() {
+                    jobs += GlobalScope.launch {
                         nosuspendWork(it, "differentScopeWithJoin()")
                     }
                 }

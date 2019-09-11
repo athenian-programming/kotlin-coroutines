@@ -20,7 +20,7 @@ fun main() {
 
 fun sleepFunction1() {
     log("sleepFunction1")
-    GlobalScope.launch() {
+    GlobalScope.launch {
         log("Before first sleep")
         Thread.sleep(200)
         log("After first sleep")
