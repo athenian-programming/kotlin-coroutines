@@ -10,9 +10,27 @@ import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
+
 @ExperimentalCoroutinesApi
 @ExperimentalTime
 fun main() {
+    fun CoroutineScope.produceNumbers() =
+        produce {
+            var x = 1
+            while (true) {
+                log("Sending $x")
+                send(x++)
+            }
+        }
+
+    fun CoroutineScope.square(numbers: ReceiveChannel<Int>): ReceiveChannel<Int> =
+        produce {
+            for (x in numbers) {
+                log("Sending squared ${x * x}")
+                send(x * x)
+            }
+        }
+
     runBlocking {
         val numbers = produceNumbers()
         val squares = square(numbers)
@@ -26,23 +44,3 @@ fun main() {
     }
     log("Done")
 }
-
-@ExperimentalCoroutinesApi
-fun CoroutineScope.produceNumbers() =
-    produce {
-        var x = 1
-        while (true) {
-            log("Sending $x")
-            send(x++)
-        }
-    }
-
-@ExperimentalCoroutinesApi
-fun CoroutineScope.square(numbers: ReceiveChannel<Int>): ReceiveChannel<Int> =
-    produce {
-        for (x in numbers) {
-            log("Sending squared ${x * x}")
-            send(x * x)
-        }
-    }
-
