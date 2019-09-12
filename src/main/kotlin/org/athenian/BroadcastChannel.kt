@@ -22,19 +22,17 @@ fun main() {
                 if (id == 0)
                     delay(2.seconds)
             }
-            println("Receiver $id ending")
+            println("Receiver $id completed")
         }
     }
 
     val workerCount = 3
     val channelCapacity = 5
     val iterations = 10
-
     val channel = BroadcastChannel<Int>(channelCapacity)
     val receivers = List(workerCount) { Receiver(it, channel.openSubscription()) }
 
     runBlocking {
-
         // Start each of the receivers in a coroutine
         receivers.onEach { launch { it.listen() } }
 
@@ -44,6 +42,7 @@ fun main() {
             delay(10.milliseconds)
         }
 
+        // Close channel inside coroutine scope
         channel.close()
     }
 }
