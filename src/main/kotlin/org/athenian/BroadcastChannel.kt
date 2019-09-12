@@ -1,20 +1,22 @@
 package org.athenian
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.select
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 import kotlin.time.seconds
 
+@InternalCoroutinesApi
 @ExperimentalTime
 @ExperimentalCoroutinesApi
 fun main() {
-
-    class Receiver(val id: Int, val channel: ReceiveChannel<Int>) {
-        suspend fun listen() {
+    open class Receiver(val id: Int, val channel: ReceiveChannel<Int>) {
+        open suspend fun listen() {
             for (v in channel) {
                 println("Receiver $id read value: $v")
 
@@ -26,11 +28,43 @@ fun main() {
         }
     }
 
+    class ImpatientReceiver(id: Int, channel: ReceiveChannel<Int>) : Receiver(id, channel) {
+        override suspend fun listen() {
+            var active = true
+            while (active) {
+                active =
+                    select {
+                        channel.onReceiveOrClosed { v ->
+                            if (!v.isClosed) {
+                                println("Receiver $id read value: ${v.value}")
+
+                                // Introduce a delay to see a pause for all reads to take place
+                                if (id == 0)
+                                    delay(2.seconds)
+                            }
+                            !v.isClosed
+                        }
+                        onTimeout(500.milliseconds.toLongMilliseconds()) {
+                            println("Receiver $id is impatient for values")
+                            true
+                        }
+                    }
+            }
+            println("Receiver $id completed")
+        }
+    }
+
     val workerCount = 3
     val channelCapacity = 5
     val iterations = 10
     val channel = BroadcastChannel<Int>(channelCapacity)
-    val receivers = List(workerCount) { Receiver(it, channel.openSubscription()) }
+    val receivers =
+        List(workerCount) {
+            if (it == 1)
+                ImpatientReceiver(it, channel.openSubscription())
+            else
+                Receiver(it, channel.openSubscription())
+        }
 
     runBlocking {
         // Start each of the receivers in a coroutine
