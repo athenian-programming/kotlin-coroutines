@@ -44,6 +44,7 @@ fun main() {
                             }
                             !v.isClosed
                         }
+                        // Timeout after waiting 500ms for a read
                         onTimeout(500.milliseconds.toLongMilliseconds()) {
                             println("Receiver $id is impatient for values")
                             true
@@ -61,15 +62,17 @@ fun main() {
     val receivers =
         List(workerCount) {
             if (it == 1)
+            // Create only a single impatient receiver
                 ImpatientReceiver(it, channel.openSubscription())
             else
                 Receiver(it, channel.openSubscription())
         }
 
     runBlocking {
-        // Start each of the receivers in a coroutine
+        // Start each of the receivers in a separate coroutine
         receivers.onEach { launch { it.listen() } }
 
+        // Send values to receivers
         repeat(iterations) {
             println("Sending value $it")
             channel.send(it)
