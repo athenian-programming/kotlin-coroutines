@@ -38,7 +38,7 @@ fun main() {
                         val v = c.receiveOrClosed()
                         active = !v.isClosed
                         if (active)
-                            println("Block surrendering lock for: $i")
+                            println("Block surrendered lock for: $i")
                     }
                     delay(50.milliseconds)
                 }
@@ -58,9 +58,10 @@ fun main() {
                     }
             }
 
-        println("selectMutex surrendering lock for: ${selected.id}")
         mutexOrder += selected.id
+        println("selectMutex surrendered lock for: ${selected.id}")
         selected.mutex.unlock()
+        delay(50.milliseconds)
     }
 
     runBlocking {
@@ -72,7 +73,6 @@ fun main() {
         launch {
             repeat(iterationCount) {
                 selectMutex(iterationCount)
-                delay(50.milliseconds)
             }
         }
 
@@ -83,7 +83,7 @@ fun main() {
         randomVals.onEach { i ->
             println("Choosing to unlock: $i")
             wrappers[i].channel.send(Unit)
-            delay(50.milliseconds)
+            delay(100.milliseconds)
         }
 
         // Stop coroutines
