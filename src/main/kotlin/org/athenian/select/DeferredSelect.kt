@@ -17,13 +17,10 @@ fun main() {
     class DeferredWrapper(val id: Int, val deferred: Deferred<Int>, var joined: Boolean = false)
 
     class Worker(val count: Int) {
-
         suspend fun selectDeferred(biased: Boolean) {
-
             val orderJoined = mutableListOf<Int>()
 
             coroutineScope {
-
                 val wrappers =
                     List(count) { i ->
                         DeferredWrapper(i,

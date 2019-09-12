@@ -23,28 +23,26 @@ fun main() {
 
     class Results(val id: String, val total: Int)
 
-    class SelectReadBoss constructor(val messageCount: Int,
-                                     val data: SendChannel<Duration>,
-                                     val results: List<ReceiveChannel<Results>>) {
+    class Boss constructor(val messageCount: Int,
+                           val channel: SendChannel<Duration>,
+                           val results: List<ReceiveChannel<Results>>) {
 
         suspend fun generateData() {
             repeat(messageCount) {
-                data.send(Random.nextInt(10).milliseconds)
+                channel.send(Random.nextInt(10).milliseconds)
                 delay(Random.nextInt(5).milliseconds)
             }
-            data.close()
+            channel.close()
         }
 
         suspend fun aggregateData(biased: Boolean): Pair<MutableMap<String, Int>, List<Int>> {
             val resultsMap = mutableMapOf<String, Int>()
             val orderRead = mutableListOf<Int>()
             while (resultsMap.size < results.size) {
-                val notClosedChannels =
-                    results.withIndex()
-                        .filter { (_, channel) -> !channel.isClosedForReceive }
                 if (biased)
                     select<Unit> {
-                        notClosedChannels
+                        results.withIndex()
+                            .filter { (_, channel) -> !channel.isClosedForReceive }
                             .onEach { (i, channel) ->
                                 channel.onReceiveOrClosed { value ->
                                     if (!value.isClosed) {
@@ -56,7 +54,8 @@ fun main() {
                     }
                 else
                     selectUnbiased<Unit> {
-                        notClosedChannels
+                        results.withIndex()
+                            .filter { (_, channel) -> !channel.isClosedForReceive }
                             .onEach { (i, channel) ->
                                 channel.onReceiveOrClosed { value ->
                                     if (!value.isClosed) {
@@ -72,12 +71,11 @@ fun main() {
     }
 
     class Worker constructor(val id: String,
-                             val data: ReceiveChannel<Duration>,
+                             val channel: ReceiveChannel<Duration>,
                              val results: SendChannel<Results>) {
-
         suspend fun process() {
             var counter = 0
-            for (d in data) {
+            for (d in channel) {
                 // println("$id got value: $d")
                 counter++
                 delay(d)
@@ -90,7 +88,7 @@ fun main() {
     fun CoroutineScope.execute(messageCount: Int, workerCount: Int, biased: Boolean) {
         val data = Channel<Duration>()
         val results = List(workerCount) { Channel<Results>() }
-        val boss = SelectReadBoss(messageCount, data, results)
+        val boss = Boss(messageCount, data, results)
 
         repeat(workerCount) { i ->
             launch {

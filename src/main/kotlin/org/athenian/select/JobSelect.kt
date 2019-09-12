@@ -13,17 +13,13 @@ import kotlin.time.seconds
 
 @ExperimentalTime
 fun main() {
-
     class JobWrapper(val id: Int, val job: Job, var joined: Boolean = false)
 
     class Worker(val count: Int) {
-
         suspend fun selectJobs(biased: Boolean) {
-
             val orderJoined = mutableListOf<Int>()
 
             coroutineScope {
-
                 val wrappers = List(count) { i -> JobWrapper(i, launch { delay(1.seconds) }) }
 
                 repeat(wrappers.size) {

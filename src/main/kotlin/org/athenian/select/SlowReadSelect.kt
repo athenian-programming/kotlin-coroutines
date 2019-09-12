@@ -60,12 +60,12 @@ fun main() {
 
     class Worker constructor(val id: String,
                              val delay: Duration,
-                             val data: ReceiveChannel<Int>,
+                             val channel: ReceiveChannel<Int>,
                              val results: SendChannel<Results>) {
 
         suspend fun process() {
             var counter = 0
-            for (d in data) {
+            for (d in channel) {
                 println("$id got value: $d")
                 counter++
                 delay(delay)

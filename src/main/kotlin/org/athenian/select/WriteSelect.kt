@@ -23,24 +23,23 @@ fun main() {
     class Results(val id: String, val total: Int)
 
     class Boss constructor(val messageCount: Int,
-                           val data: List<SendChannel<Int>>,
+                           val channel: List<SendChannel<Int>>,
                            val results: List<ReceiveChannel<Results>>) {
-
         suspend fun generateData(biased: Boolean) {
             repeat(messageCount) {
                 val r = Random.nextInt()
                 if (biased)
                     select<Unit> {
-                        data.onEach { it.onSend(r) {} }
+                        channel.onEach { it.onSend(r) {} }
                     }
                 else
                     selectUnbiased<Unit> {
-                        data.onEach { it.onSend(r) {} }
+                        channel.onEach { it.onSend(r) {} }
                     }
 
                 delay(10.milliseconds)
             }
-            data.onEach { it.close() }
+            channel.onEach { it.close() }
         }
 
         suspend fun aggregateData(): Map<String, Int> {
@@ -61,12 +60,11 @@ fun main() {
     }
 
     class Worker constructor(val id: String,
-                             val data: ReceiveChannel<Int>,
+                             val channel: ReceiveChannel<Int>,
                              val results: SendChannel<Results>) {
-
         suspend fun process() {
             var counter = 0
-            for (d in data) {
+            for (d in channel) {
                 //println("$id got value: $d")
                 counter++
                 //delay(100.milliseconds)
@@ -88,9 +86,7 @@ fun main() {
             }
         }
 
-        launch {
-            boss.generateData(biased)
-        }
+        launch { boss.generateData(biased) }
 
         launch {
             println("\nBiased writes: $biased")

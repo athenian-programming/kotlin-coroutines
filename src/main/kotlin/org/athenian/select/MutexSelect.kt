@@ -17,7 +17,6 @@ import kotlin.time.milliseconds
 @InternalCoroutinesApi
 @ExperimentalTime
 fun main() {
-
     class MutexWrapper(val id: Int, val channel: Channel<Unit>, val mutex: Mutex, val block: suspend () -> Unit)
 
     val mutexCount = 100
@@ -65,16 +64,11 @@ fun main() {
     }
 
     runBlocking {
-
         // Start the actions of each of the wrappers in a corputine
         wrappers.forEach { launch { it.block.invoke() } }
 
         // Repeatedly select a mutex in a coroutine
-        launch {
-            repeat(iterationCount) {
-                selectMutex(iterationCount)
-            }
-        }
+        launch { repeat(iterationCount) { selectMutex(iterationCount) } }
 
         // Give coroutines a chance to get setup
         delay(50.milliseconds)

@@ -23,7 +23,6 @@ fun main() {
                 }
             println(selected)
         }
-
     }
 
     runBlocking {
