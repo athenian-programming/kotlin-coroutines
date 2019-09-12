@@ -20,9 +20,10 @@ fun main() {
 
     class MutexWrapper(val id: Int, val channel: Channel<Int>, val mutex: Mutex, val action: suspend () -> Unit)
 
-    class Worker(mutexCount: Int) {
+    class Worker(val mutexCount: Int) {
 
         val wrappers = mutableListOf<MutexWrapper>()
+        val mutexOrder = mutableListOf<Int>()
 
         init {
             repeat(mutexCount) { i ->
@@ -32,14 +33,15 @@ fun main() {
                     var active = true
                     while (active) {
                         m.withLock {
-                            println("Acquired lock for $i")
+                            println("Acquired lock for: $i")
                             val v = c.receiveOrClosed()
                             if (v.isClosed) {
                                 active = false
                             } else {
-                                println("Unlocking $i")
+                                println("Surrendering lock for: $i")
                             }
                         }
+                        delay(50.milliseconds)
                     }
                     println("Completed action for $i")
                 }
@@ -48,57 +50,59 @@ fun main() {
 
         suspend fun selectMutexes(iterationCount: Int) {
 
-            val mutexOrder = mutableListOf<Int>()
-
             repeat(iterationCount) {
-                // println("Selecting...")
                 val selected =
                     select<MutexWrapper> {
                         wrappers
                             .onEach { wrapper ->
                                 wrapper.mutex.onLock { mutex ->
-                                    println("Selected: ${wrapper.id} ${mutex}")
+                                    println("Locked on select: ${wrapper.id}")
                                     wrapper
                                 }
                             }
                     }
-                println("Unlocking ${selected.id}")
+
+                println("Unlocked on select: ${selected.id}")
                 selected.mutex.unlock()
                 mutexOrder.add(selected.id)
+                delay(50.milliseconds)
             }
-
-            delay(50.milliseconds)
-            println("Mutex order: $mutexOrder")
         }
     }
 
+    val iterationCount = 200
+    val mutexCount = 100
+    val worker = Worker(mutexCount)
+
     runBlocking {
-        val iterationCount = 3
-        val workerCount = 5
-        val worker = Worker(workerCount)
 
         worker.wrappers
-            .forEach {
+            .forEach { wrapper ->
                 launch {
-                    it.action()
+                    wrapper.action.invoke()
                 }
             }
 
-        val j =
-            launch {
-                worker.selectMutexes(iterationCount)
-                delay(50.milliseconds)
-            }
-
-        repeat(iterationCount) {
-            worker.wrappers[Random.nextInt(workerCount)].channel.send(Random.nextInt())
+        launch {
+            worker.selectMutexes(iterationCount)
+            delay(50.milliseconds)
         }
 
-        //j.join()
+        delay(50.milliseconds)
 
-        repeat(workerCount) { i ->
+        repeat(iterationCount) { i ->
+            val v = Random.nextInt(mutexCount)
+            println("Choosing to unlock: $v")
+            worker.wrappers[v].channel.send(1)
+            delay(50.milliseconds)
+        }
+
+        repeat(mutexCount) { i ->
             worker.wrappers[i].channel.close()
         }
 
     }
+
+    println("Size: ${worker.mutexOrder.size} Mutex order: ${worker.mutexOrder}")
+
 }
