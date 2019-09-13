@@ -27,14 +27,16 @@ fun main() {
 
         launch {
             repeat(iterations) { i ->
+                println("\n")
                 val cs = if (i % 2 == 0) CoroutineStart.DEFAULT else CoroutineStart.LAZY
                 val d =
                     async(start = cs) {
                         println("Calculating value $i")
                         delay(10.milliseconds)
-                        "Calculated value $i"
+                        "Async value $i"
                     }
-                println("\nSending value $i")
+                delay(10.milliseconds)
+                println("Sending value $i")
                 channel.send(d)
                 delay(100.milliseconds)
             }

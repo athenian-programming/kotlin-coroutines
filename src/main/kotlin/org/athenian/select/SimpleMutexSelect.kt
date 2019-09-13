@@ -1,5 +1,6 @@
 package org.athenian.select
 
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -34,5 +35,7 @@ fun main() {
         delay(100)
         println("Unlocking: mutex0")
         mutex0.unlock()
+
+        coroutineContext.cancelChildren()
     }
 }

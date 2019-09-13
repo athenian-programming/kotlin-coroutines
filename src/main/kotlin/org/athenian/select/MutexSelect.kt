@@ -2,6 +2,7 @@ package org.athenian.select
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -82,6 +83,8 @@ fun main() {
 
         // Stop coroutines
         wrappers.onEach { it.channel.close() }
+
+        coroutineContext.cancelChildren()
     }
 
     // Report results
