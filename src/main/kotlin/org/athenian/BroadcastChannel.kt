@@ -70,7 +70,7 @@ fun main() {
 
     runBlocking {
         // Start each of the receivers in a separate coroutine
-        receivers.onEach { launch { it.listen() } }
+        receivers.forEach { launch { it.listen() } }
 
         // Send values to receivers
         repeat(iterations) {

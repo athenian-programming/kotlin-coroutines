@@ -47,7 +47,7 @@ fun main() {
                 select<Unit> {
                     results
                         .filter { !it.isClosedForReceive }
-                        .onEach {
+                        .forEach {
                             it.onReceiveOrClosed { value ->
                                 if (!value.isClosed)
                                     resultsMap[value.value.id] = value.value.total

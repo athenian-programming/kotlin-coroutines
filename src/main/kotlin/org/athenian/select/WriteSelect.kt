@@ -30,16 +30,16 @@ fun main() {
                 val r = Random.nextInt()
                 if (biased)
                     select<Unit> {
-                        channel.onEach { it.onSend(r) {} }
+                        channel.forEach { it.onSend(r) {} }
                     }
                 else
                     selectUnbiased<Unit> {
-                        channel.onEach { it.onSend(r) {} }
+                        channel.forEach { it.onSend(r) {} }
                     }
 
                 delay(10.milliseconds)
             }
-            channel.onEach { it.close() }
+            channel.forEach { it.close() }
         }
 
         suspend fun aggregateData(): Map<String, Int> {
@@ -48,7 +48,7 @@ fun main() {
                 select<Unit> {
                     results
                         .filter { !it.isClosedForReceive }
-                        .onEach {
+                        .forEach {
                             it.onReceiveOrClosed { value ->
                                 if (!value.isClosed)
                                     resultsMap[value.value.id] = value.value.total

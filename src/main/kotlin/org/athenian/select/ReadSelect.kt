@@ -43,7 +43,7 @@ fun main() {
                     select<Unit> {
                         results.withIndex()
                             .filter { (_, channel) -> !channel.isClosedForReceive }
-                            .onEach { (i, channel) ->
+                            .forEach { (i, channel) ->
                                 channel.onReceiveOrClosed { value ->
                                     if (!value.isClosed) {
                                         resultsMap[value.value.id] = value.value.total
@@ -56,7 +56,7 @@ fun main() {
                     selectUnbiased<Unit> {
                         results.withIndex()
                             .filter { (_, channel) -> !channel.isClosedForReceive }
-                            .onEach { (i, channel) ->
+                            .forEach { (i, channel) ->
                                 channel.onReceiveOrClosed { value ->
                                     if (!value.isClosed) {
                                         resultsMap[value.value.id] = value.value.total

@@ -34,12 +34,14 @@ fun main() {
                     val selected =
                         if (biased)
                             select<DeferredWrapper> {
-                                wrappers.filter { !it.joined }
+                                wrappers
+                                    .filter { !it.joined }
                                     .onEach { taskInfo -> taskInfo.deferred.onAwait { result -> taskInfo } }
                             }
                         else
                             selectUnbiased {
-                                wrappers.filter { !it.joined }
+                                wrappers
+                                    .filter { !it.joined }
                                     .onEach { taskInfo -> taskInfo.deferred.onAwait { result -> taskInfo } }
                             }
                     orderJoined.add(selected.id)

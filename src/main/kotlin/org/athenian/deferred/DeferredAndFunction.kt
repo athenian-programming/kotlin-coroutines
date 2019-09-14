@@ -1,9 +1,10 @@
-package org.athenian
+package org.athenian.deferred
 
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
+import org.athenian.delay
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
@@ -20,7 +21,7 @@ fun main() {
         }
 
         repeat(iterations) { i ->
-            println("\n")
+            println()
             val cs = if (i % 2 == 0) CoroutineStart.DEFAULT else CoroutineStart.LAZY
             val d =
                 async(start = cs) {
