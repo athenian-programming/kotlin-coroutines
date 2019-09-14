@@ -11,6 +11,20 @@ import kotlin.time.seconds
 
 @ExperimentalTime
 fun main() {
+    suspend fun func1() {
+        withContext(Dispatchers.Default + CoroutineName("func1")) {
+            delay(2.seconds)
+            log("I am in func1")
+        }
+    }
+
+    suspend fun func2() {
+        withContext(Dispatchers.Default + CoroutineName("func2")) {
+            delay(1.seconds)
+            log("I am in func2")
+        }
+    }
+
     runBlocking {
         val (_, dur) =
             measureTimedValue {
@@ -37,18 +51,3 @@ fun main() {
     log("Done")
 }
 
-@ExperimentalTime
-suspend fun func1() {
-    withContext(Dispatchers.Default + CoroutineName("func1")) {
-        delay(2.seconds)
-        log("I am in func1")
-    }
-}
-
-@ExperimentalTime
-suspend fun func2() {
-    withContext(Dispatchers.Default + CoroutineName("func2")) {
-        delay(1.seconds)
-        log("I am in func2")
-    }
-}

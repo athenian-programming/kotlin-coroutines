@@ -11,7 +11,6 @@ import kotlin.time.milliseconds
 
 @ExperimentalTime
 fun main() {
-
     val mult = { a: Int, b: Int ->
         log("Calculating value")
         a * b

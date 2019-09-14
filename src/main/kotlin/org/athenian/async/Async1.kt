@@ -11,9 +11,12 @@ import kotlin.time.seconds
 
 @ExperimentalTime
 fun main() {
+    suspend fun calc(): String {
+        delay(3.seconds)
+        return "A string val"
+    }
 
     runBlocking {
-
         val (val1, dur1) =
             measureTimedValue {
                 val a = calc()
@@ -39,10 +42,4 @@ fun main() {
             }
         log("Vals = $val3 took ${dur3.toLongMilliseconds()}ms")
     }
-}
-
-@ExperimentalTime
-suspend fun calc(): String {
-    delay(3.seconds)
-    return "A string val"
 }

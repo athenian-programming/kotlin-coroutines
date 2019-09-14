@@ -12,10 +12,13 @@ import kotlin.time.milliseconds
 
 @ExperimentalTime
 fun main() {
+    suspend fun scopeCheck(scope: CoroutineScope) {
+        log("coroutineContext are equal: ${scope.coroutineContext === coroutineContext}")
+    }
+
     runBlocking {
 
         launch { scopeCheck(this) }
-
 
         launch {
             delay(200.milliseconds)
@@ -36,6 +39,3 @@ fun main() {
     }
 }
 
-suspend fun scopeCheck(scope: CoroutineScope) {
-    log("coroutineContext are equal: ${scope.coroutineContext === coroutineContext}")
-}

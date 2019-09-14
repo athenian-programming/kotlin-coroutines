@@ -12,7 +12,6 @@ import kotlin.time.milliseconds
 @ExperimentalCoroutinesApi
 @ExperimentalTime
 fun main() {
-
     suspend fun execute() {
         coroutineScope {
             val job = launch { delay(100.milliseconds) }

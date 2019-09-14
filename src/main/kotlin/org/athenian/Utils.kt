@@ -7,7 +7,7 @@ import kotlin.time.ExperimentalTime
 fun getThreadName() = Thread.currentThread().name
 
 // Run with -Dkotlinx.coroutines.debug to see custom coroutine names
-fun log(msg: String = "") = println("[${Thread.currentThread().name}] $msg")
+fun log(msg: String = "") = println("[${getThreadName()}] $msg")
 
 fun log(obj: Any) = log(obj.toString())
 

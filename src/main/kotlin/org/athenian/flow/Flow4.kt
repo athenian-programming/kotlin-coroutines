@@ -11,6 +11,27 @@ import org.athenian.log
 // Custom flow operators
 
 fun main() {
+    fun <T> Flow<T>.everyOther(): Flow<T> =
+        flow {
+            var skip = false
+            collect { value ->
+                if (!skip)
+                    emit(value)
+                skip = !skip
+            }
+
+        }
+
+    fun <T> Flow<T>.everyNth(inc: Int): Flow<T> =
+        flow {
+            var counter = 0
+            collect { value ->
+                if (counter % inc == 0)
+                    emit(value)
+                counter++
+            }
+        }
+
     val vals = flowOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 
     runBlocking {
@@ -23,25 +44,4 @@ fun main() {
             .collect { log(it) }
     }
 }
-
-fun <T> Flow<T>.everyOther(): Flow<T> =
-    flow {
-        var skip = false
-        collect { value ->
-            if (!skip)
-                emit(value)
-            skip = !skip
-        }
-
-    }
-
-fun <T> Flow<T>.everyNth(inc: Int): Flow<T> =
-    flow {
-        var counter = 0
-        collect { value ->
-            if (counter % inc == 0)
-                emit(value)
-            counter++
-        }
-    }
 

@@ -16,6 +16,18 @@ import kotlin.time.seconds
 
 @ExperimentalTime
 fun main() {
+    suspend fun sleepingCall(context: CoroutineContext) {
+        withContext(context) {
+            log("sleeping")
+            Thread.sleep(3_000)
+        }
+    }
+
+    suspend fun delayingCall() {
+        log("delaying")
+        delay(3.seconds)
+    }
+
     Executors.newFixedThreadPool(20).asCoroutineDispatcher()
         .use { poolDispatcher ->
             for (count in listOf(8, 9, 16, 17)) {
@@ -56,17 +68,4 @@ fun main() {
                 log("Total time for $count calls of delayingCalls: ${dur3.inSeconds.toInt()} secs\n")
             }
         }
-}
-
-suspend fun sleepingCall(context: CoroutineContext) {
-    withContext(context) {
-        log("sleeping")
-        Thread.sleep(3_000)
-    }
-}
-
-@ExperimentalTime
-suspend fun delayingCall() {
-    log("delaying")
-    delay(3.seconds)
 }

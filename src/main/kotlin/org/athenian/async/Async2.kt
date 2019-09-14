@@ -13,7 +13,6 @@ val reps = 10
 @ExperimentalTime
 fun main() {
     runBlocking {
-
         val (val1, dur1) =
             measureTimedValue {
                 (1..reps)

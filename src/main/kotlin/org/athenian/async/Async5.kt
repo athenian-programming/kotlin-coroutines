@@ -11,15 +11,12 @@ import kotlin.time.seconds
 
 @ExperimentalTime
 fun main() {
-
-    @ExperimentalTime
     suspend fun calc(): String {
         delay(3.seconds)
         return "A string value"
     }
 
     runBlocking {
-
         val calcCall = async(Dispatchers.Default) { calc() }
 
         while (true) {

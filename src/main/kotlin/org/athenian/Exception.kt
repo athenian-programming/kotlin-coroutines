@@ -22,76 +22,76 @@ import kotlin.time.milliseconds
 @InternalCoroutinesApi
 @ExperimentalTime
 fun main() {
+    fun launchException() {
+        runBlocking {
+            val job =
+                launch {
+                    try {
+                        withContext<Unit>(Dispatchers.Default + CoroutineName("launchException")) {
+                            log("Throwing exception")
+                            delay(100.milliseconds)
+                            throw IndexOutOfBoundsException()
+                        }
+                    } catch (e: Exception) {
+                        log("Caught exception ${e.javaClass.simpleName}")
+                    }
+                }
+            job.join()
+            log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName
+                ?: "None"}")
+
+        }
+        log("Finished launchException()")
+    }
+
+    val handler =
+        CoroutineExceptionHandler { context, e ->
+            log("Handler caught $e")
+        }
+
+    fun launchWithHandlerException() {
+        log()
+        val job =
+            GlobalScope.launch(handler) {
+                log("Throwing exception")
+                delay(100.milliseconds)
+                throw IndexOutOfBoundsException()
+            }
+
+        runBlocking {
+            job.join()
+            log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName
+                ?: "None"}")
+        }
+        log("Finished launchWithHandlerException()")
+    }
+
+    fun asyncException() {
+        log()
+
+        // Create a custom CoroutineScope
+        val appScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+
+        val deferred: Deferred<Int> =
+            appScope.async {
+                log("Throwing exception in asyncException")
+                throw IndexOutOfBoundsException()
+            }
+
+        runBlocking(handler) {
+            try {
+                deferred.await()
+            } catch (e: Exception) {
+                log("asyncException caught ${e.javaClass.simpleName}")
+            }
+        }
+        log("Finished asyncException()")
+    }
+
     launchException()
     launchWithHandlerException()
     asyncException()
+
     log("Done")
 }
 
-@InternalCoroutinesApi
-@ExperimentalTime
-fun launchException() {
-    runBlocking {
-        val job =
-            launch {
-                try {
-                    withContext(Dispatchers.Default + CoroutineName("launchException")) {
-                        log("Throwing exception")
-                        delay(100.milliseconds)
-                        throw IndexOutOfBoundsException()
-                    }
-                } catch (e: Exception) {
-                    log("Caught exception ${e.javaClass.simpleName}")
-                }
-            }
-        job.join()
-        log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName ?: "None"}")
-
-    }
-    log("Finished launchException()")
-}
-
-val handler =
-    CoroutineExceptionHandler { context, e ->
-        log("Handler caught $e")
-    }
-
-@InternalCoroutinesApi
-@ExperimentalTime
-fun launchWithHandlerException() {
-    log()
-    val job =
-        GlobalScope.launch(handler) {
-            log("Throwing exception")
-            delay(100.milliseconds)
-            throw IndexOutOfBoundsException()
-        }
-
-    runBlocking {
-        job.join()
-        log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName ?: "None"}")
-    }
-    log("Finished launchWithHandlerException()")
-}
-
-fun asyncException() {
-    log()
-
-    // Create a custom CoroutineScope
-    val appScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
-
-    val deferred: Deferred<Int> =
-        appScope.async {
-            log("Throwing exception in asyncException")
-            throw IndexOutOfBoundsException()
-        }
-
-    runBlocking(handler) {
-        try {
-            deferred.await()
-        } catch (e: Exception) {
-            log("asyncException caught ${e.javaClass.simpleName}")
-        }
-    }
-    log("Finished asyncException()")
-}

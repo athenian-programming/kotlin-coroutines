@@ -20,7 +20,6 @@ import kotlin.time.milliseconds
 @ExperimentalCoroutinesApi
 @InternalCoroutinesApi
 fun main() {
-
     class Results(val id: String, val total: Int)
 
     class Boss constructor(val messageCount: Int,

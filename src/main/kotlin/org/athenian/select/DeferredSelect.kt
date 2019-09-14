@@ -13,7 +13,6 @@ import kotlin.time.seconds
 
 @ExperimentalTime
 fun main() {
-
     class DeferredWrapper(val id: Int, val deferred: Deferred<Int>, var joined: Boolean = false)
 
     class Worker(val count: Int) {
