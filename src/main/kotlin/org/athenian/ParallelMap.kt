@@ -12,7 +12,7 @@ import kotlin.time.milliseconds
 
 @ExperimentalTime
 fun main() {
-    val iterations = 100000
+    val iterations = 10
 
     suspend fun someCalculation(v: Int): String {
         val del = 1_000.milliseconds
@@ -36,14 +36,13 @@ fun main() {
         println("Calculated in $dur vals: $vals")
     }
 
-
-    // Push the boilerplate into a function
+    // Wrap the boilerplate code with an extension function
     suspend fun <A, B> Iterable<A>.pmap(block: suspend (A) -> B): List<B> =
         coroutineScope {
             map { async { block(it) } }.awaitAll()
         }
 
-    // Use the extension function for brevity
+    // Concise version
     runBlocking {
         val (vals, dur) =
             measureTimedValue {
