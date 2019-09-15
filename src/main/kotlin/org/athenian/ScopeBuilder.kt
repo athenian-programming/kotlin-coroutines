@@ -6,6 +6,8 @@ import kotlinx.coroutines.runBlocking
 import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
+// See: https://stackoverflow.com/questions/53535977/coroutines-runblocking-vs-coroutinescope
+
 @ExperimentalTime
 fun main() {
     fun withoutScope() =
@@ -50,6 +52,9 @@ fun main() {
             log("Coroutine scope end")
         }
 
+    println("\nwithoutScope()")
     withoutScope()
+
+    println("\nwithScope()")
     withScope()
 }
