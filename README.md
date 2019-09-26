@@ -1,6 +1,6 @@
 # Kotlin Coroutine Examples
 
-Run these wih `-Dkotlinx.coroutines.debug` JVM option.
+Run these with the `-Dkotlinx.coroutines.debug` JVM option.
 
 ## Coroutine Posts
 * [Introduction to Kotlin Coroutines](https://kotlinlang.org/docs/tutorials/coroutines-basic-jvm.html)
