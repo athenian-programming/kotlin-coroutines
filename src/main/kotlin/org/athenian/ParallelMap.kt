@@ -4,13 +4,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 import kotlin.time.milliseconds
 
 // See: https://jivimberg.io/blog/2018/05/04/parallel-map-in-kotlin/
 
-@ExperimentalTime
 fun main() {
     val iterations = 10
 

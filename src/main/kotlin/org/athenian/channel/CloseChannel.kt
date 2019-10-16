@@ -5,10 +5,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import kotlin.random.Random
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@ExperimentalTime
 fun main() {
 
     fun withoutClose() {

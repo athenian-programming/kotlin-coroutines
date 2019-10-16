@@ -10,10 +10,8 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-@ExperimentalTime
 fun main() {
     fun threadedAtomicInt(count: Int) {
         val atomic = AtomicInteger(0)

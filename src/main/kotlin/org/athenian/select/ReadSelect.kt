@@ -1,8 +1,6 @@
 package org.athenian.select
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.SendChannel
@@ -13,12 +11,8 @@ import kotlinx.coroutines.selects.selectUnbiased
 import org.athenian.delay
 import kotlin.random.Random
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@ExperimentalTime
-@ExperimentalCoroutinesApi
-@InternalCoroutinesApi
 fun main() {
     class Results(val id: String, val total: Int)
 

@@ -1,15 +1,11 @@
 package org.athenian.deferred
 
 import kotlinx.coroutines.CoroutineStart
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@ExperimentalCoroutinesApi
-@ExperimentalTime
 fun main() {
     val iterations = 4
 

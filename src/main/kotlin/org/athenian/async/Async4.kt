@@ -6,10 +6,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@ExperimentalTime
 fun main() {
     val cnt = 5
 

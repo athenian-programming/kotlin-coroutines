@@ -7,12 +7,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.athenian.log
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
 // See https://medium.com/@elizarov/the-reason-to-avoid-globalscope-835337445abc
 
-@ExperimentalTime
 fun main() {
     fun nosuspendWork(i: Int, desc: String) {
         Thread.sleep(1_000)

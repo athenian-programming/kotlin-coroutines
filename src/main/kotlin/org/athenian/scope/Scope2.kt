@@ -5,12 +5,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
 // See https://medium.com/@elizarov/explicit-concurrency-67a8e8fd9b25
 
-@ExperimentalTime
 fun main() {
     suspend fun delayedCall1() {
         log("Starting delayedCall1()")

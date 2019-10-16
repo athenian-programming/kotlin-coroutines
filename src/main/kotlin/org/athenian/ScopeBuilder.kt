@@ -3,12 +3,10 @@ package org.athenian
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 // See: https://stackoverflow.com/questions/53535977/coroutines-runblocking-vs-coroutinescope
 
-@ExperimentalTime
 fun main() {
     fun withoutScope() =
         runBlocking {

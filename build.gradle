@@ -1,7 +1,7 @@
 plugins {
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version '1.3.50'
-    id "com.github.ben-manes.versions" version "0.25.0"
+    id "com.github.ben-manes.versions" version "0.27.0"
 }
 
 group 'org.athenian'
@@ -35,7 +35,18 @@ sourceSets {
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.freeCompilerArgs += ['-Xuse-experimental=kotlin.time.ExperimentalTime',
+                                       '-Xuse-experimental=kotlinx.serialization.UnstableDefault',
+                                       '-Xuse-experimental=kotlinx.coroutines.FlowPreview',
+                                       '-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi',
+                                       '-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi']
 }
+
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.freeCompilerArgs += ['-Xuse-experimental=kotlin.time.ExperimentalTime',
+                                       '-Xuse-experimental=kotlinx.serialization.UnstableDefault',
+                                       '-Xuse-experimental=kotlinx.coroutines.FlowPreview',
+                                       '-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi',
+                                       '-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi']
 }

@@ -8,10 +8,8 @@ import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.selects.selectUnbiased
 import org.athenian.delay
 import kotlin.random.Random
-import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
-@ExperimentalTime
 fun main() {
     class DeferredWrapper(val id: Int, val deferred: Deferred<Int>, var joined: Boolean = false)
 

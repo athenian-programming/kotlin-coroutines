@@ -4,13 +4,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 import kotlin.time.seconds
 
 val reps = 10
 
-@ExperimentalTime
 fun main() {
     runBlocking {
         val (val1, dur1) =

@@ -1,7 +1,6 @@
 package org.athenian.flow
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
@@ -14,13 +13,10 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 // See https://proandroiddev.com/an-early-look-at-kotlin-coroutines-flow-62e46baa6eb0
 
-@ExperimentalCoroutinesApi
-@ExperimentalTime
 fun main() {
     fun flowExample() {
         val intVals =

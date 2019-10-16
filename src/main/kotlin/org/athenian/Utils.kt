@@ -2,7 +2,6 @@ package org.athenian
 
 import kotlinx.coroutines.delay
 import kotlin.time.Duration
-import kotlin.time.ExperimentalTime
 
 fun getThreadName() = Thread.currentThread().name
 
@@ -13,7 +12,6 @@ fun log(obj: Any) = log(obj.toString())
 
 fun log(block: () -> String) = log(block())
 
-@ExperimentalTime
 suspend fun delay(duration: Duration) {
     delay(duration.toLongMilliseconds())
 }

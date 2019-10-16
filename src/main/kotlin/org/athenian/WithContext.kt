@@ -4,13 +4,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 import kotlin.time.seconds
 
 // See https://codinginfinite.com/kotlin-coroutines-best-practices-example/
 
-@ExperimentalTime
 fun main() {
     fun usingWithContext() =
         runBlocking {

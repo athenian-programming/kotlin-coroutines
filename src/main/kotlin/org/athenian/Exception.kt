@@ -6,21 +6,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
 // The key to this working properly is that the launch and async calls use a different CoroutineScope
 // See https://proandroiddev.com/coroutines-snags-6bf6fb53a3d1 for other details
 // Also see https://proandroiddev.com/kotlin-coroutines-patterns-anti-patterns-f9d12984c68e
 
-@InternalCoroutinesApi
-@ExperimentalTime
 fun main() {
     fun launchException() {
         runBlocking {

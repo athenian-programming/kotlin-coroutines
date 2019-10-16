@@ -10,11 +10,9 @@ import org.athenian.delay
 import org.athenian.log
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 import kotlin.time.seconds
 
-@ExperimentalTime
 fun main() {
     suspend fun sleepingCall(context: CoroutineContext) {
         withContext(context) {

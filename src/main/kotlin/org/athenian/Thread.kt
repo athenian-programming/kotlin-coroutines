@@ -1,10 +1,8 @@
 package org.athenian
 
 import kotlin.concurrent.thread
-import kotlin.time.ExperimentalTime
 import kotlin.time.measureTimedValue
 
-@ExperimentalTime
 fun main() {
     fun daemonThread() {
         val t =

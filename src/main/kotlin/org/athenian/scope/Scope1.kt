@@ -7,10 +7,8 @@ import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
 import kotlin.coroutines.coroutineContext
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@ExperimentalTime
 fun main() {
     suspend fun scopeCheck(scope: CoroutineScope) {
         log("coroutineContext are equal: ${scope.coroutineContext === coroutineContext}")

@@ -1,13 +1,11 @@
 package org.athenian
 
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.runBlocking
 
-@ExperimentalCoroutinesApi
 fun main() {
     fun CoroutineScope.numbersFrom(start: Int) =
         produce {

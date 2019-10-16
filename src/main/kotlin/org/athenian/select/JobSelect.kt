@@ -8,10 +8,8 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.selects.selectUnbiased
 import org.athenian.delay
-import kotlin.time.ExperimentalTime
 import kotlin.time.seconds
 
-@ExperimentalTime
 fun main() {
     class JobWrapper(val id: Int, val job: Job, var joined: Boolean = false)
 

@@ -5,11 +5,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.athenian.delay
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 import kotlin.time.seconds
 
-@ExperimentalTime
 fun main() {
     suspend fun calc(): String {
         delay(3.seconds)

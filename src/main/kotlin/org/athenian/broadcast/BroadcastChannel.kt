@@ -1,20 +1,14 @@
 package org.athenian.broadcast
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import org.athenian.delay
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 import kotlin.time.seconds
 
-@InternalCoroutinesApi
-@ExperimentalTime
-@ExperimentalCoroutinesApi
 fun main() {
     open class Receiver(val id: Int, val channel: ReceiveChannel<Int>) {
         open suspend fun listen() {

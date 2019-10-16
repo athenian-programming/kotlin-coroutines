@@ -1,7 +1,5 @@
 package org.athenian.select
 
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
@@ -11,12 +9,8 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.athenian.delay
 import kotlin.random.Random
-import kotlin.time.ExperimentalTime
 import kotlin.time.milliseconds
 
-@ExperimentalCoroutinesApi
-@InternalCoroutinesApi
-@ExperimentalTime
 fun main() {
     class MutexWrapper(val id: Int, val channel: Channel<Unit>, val mutex: Mutex, val block: suspend () -> Unit)
 
