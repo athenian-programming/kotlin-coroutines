@@ -12,7 +12,5 @@ fun log(obj: Any) = log(obj.toString())
 
 fun log(block: () -> String) = log(block())
 
-suspend fun delay(duration: Duration) {
-    delay(duration.toLongMilliseconds())
-}
+suspend fun delay(duration: Duration) = delay(duration.toLongMilliseconds())
 
