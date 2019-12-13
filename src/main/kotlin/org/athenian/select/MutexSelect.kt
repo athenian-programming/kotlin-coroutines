@@ -82,5 +82,5 @@ fun main() {
     }
 
     // Report results
-    println("\nSize: ${mutexOrder.size} \nMatching: ${mutexOrder == randomVals} \nMutex order: ${mutexOrder}")
+    println("\nSize: ${mutexOrder.size} \nMatching: ${mutexOrder == randomVals} \nMutex order: $mutexOrder")
 }

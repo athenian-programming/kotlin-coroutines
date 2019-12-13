@@ -5,14 +5,14 @@ import kotlin.time.measureTimedValue
 
 fun main() {
     val count = 100_000
-    val delay_ms = 1_000L
+    val delayMillis = 1_000L
 
     val (_, dur) =
         measureTimedValue {
             val jobs =
                 List(count) {
                     thread {
-                        Thread.sleep(delay_ms)
+                        Thread.sleep(delayMillis)
                         print(".")
                     }
                 }

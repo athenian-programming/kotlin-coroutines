@@ -1,12 +1,13 @@
 package org.athenian.select
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.selects.selectUnbiased
+import kotlinx.coroutines.withContext
 import org.athenian.delay
 import kotlin.time.seconds
 
@@ -43,7 +44,7 @@ fun main() {
     runBlocking {
         val worker = Worker(100)
 
-        async { worker.selectJobs(true) }.await()
-        async { worker.selectJobs(false) }.await()
+        withContext(Dispatchers.Default) { worker.selectJobs(true) }
+        withContext(Dispatchers.Default) { worker.selectJobs(false) }
     }
 }

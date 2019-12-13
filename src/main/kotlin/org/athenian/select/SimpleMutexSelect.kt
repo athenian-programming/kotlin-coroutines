@@ -12,7 +12,7 @@ fun main() {
     val mutex1 = Mutex(true)
     val mutex2 = Mutex(true)
 
-    runBlocking() {
+    runBlocking {
         launch {
             repeat(3) {
                 val selected =

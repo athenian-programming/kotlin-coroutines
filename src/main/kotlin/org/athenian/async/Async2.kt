@@ -7,7 +7,7 @@ import org.athenian.log
 import kotlin.time.measureTimedValue
 import kotlin.time.seconds
 
-val reps = 10
+const val reps = 10
 
 fun main() {
     runBlocking {
