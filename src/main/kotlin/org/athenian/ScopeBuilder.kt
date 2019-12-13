@@ -8,51 +8,51 @@ import kotlin.time.milliseconds
 // See: https://stackoverflow.com/questions/53535977/coroutines-runblocking-vs-coroutinescope
 
 fun main() {
-    fun withoutScope() =
-        runBlocking {
-            log("Coroutine scope begin")
+  fun withoutScope() =
+    runBlocking {
+      log("Coroutine scope begin")
 
-            launch {
-                delay(200.milliseconds)
-                log("Task from runBlocking")
-            }
+      launch {
+        delay(200.milliseconds)
+        log("Task from runBlocking")
+      }
 
-            launch {
-                delay(500.milliseconds)
-                log("Task from nested launch")
-            }
+      launch {
+        delay(500.milliseconds)
+        log("Task from nested launch")
+      }
 
-            delay(100.milliseconds)
-            log("Task from coroutine scope")
+      delay(100.milliseconds)
+      log("Task from coroutine scope")
 
-            log("Coroutine scope end")
+      log("Coroutine scope end")
+    }
+
+  fun withScope() =
+    runBlocking {
+      log("Coroutine scope begin")
+
+      launch {
+        delay(200.milliseconds)
+        log("Task from runBlocking")
+      }
+
+      coroutineScope {
+        launch {
+          delay(500.milliseconds)
+          log("Task from nested launch")
         }
 
-    fun withScope() =
-        runBlocking {
-            log("Coroutine scope begin")
+        delay(100.milliseconds)
+        log("Task from coroutine scope")
+      }
 
-            launch {
-                delay(200.milliseconds)
-                log("Task from runBlocking")
-            }
+      log("Coroutine scope end")
+    }
 
-            coroutineScope {
-                launch {
-                    delay(500.milliseconds)
-                    log("Task from nested launch")
-                }
+  println("\nwithoutScope()")
+  withoutScope()
 
-                delay(100.milliseconds)
-                log("Task from coroutine scope")
-            }
-
-            log("Coroutine scope end")
-        }
-
-    println("\nwithoutScope()")
-    withoutScope()
-
-    println("\nwithScope()")
-    withScope()
+  println("\nwithScope()")
+  withScope()
 }

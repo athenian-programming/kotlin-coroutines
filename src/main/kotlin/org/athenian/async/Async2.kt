@@ -10,29 +10,29 @@ import kotlin.time.seconds
 const val reps = 10
 
 fun main() {
-    runBlocking {
-        val (val1, dur1) =
-            measureTimedValue {
-                (1..reps)
-                    .map {
-                        delay(1.seconds)
-                        it
-                    }
-                    .sumBy { it }
-            }
-        log("val1 = $val1 in ${dur1.toLongMilliseconds()}ms")
+  runBlocking {
+    val (val1, dur1) =
+      measureTimedValue {
+        (1..reps)
+          .map {
+            delay(1.seconds)
+            it
+          }
+          .sumBy { it }
+      }
+    log("val1 = $val1 in ${dur1.toLongMilliseconds()}ms")
 
-        val (val2, dur2) =
-            measureTimedValue {
-                (1..reps)
-                    .map {
-                        async {
-                            delay(1.seconds)
-                            it
-                        }
-                    }
-                    .sumBy { it.await() }
+    val (val2, dur2) =
+      measureTimedValue {
+        (1..reps)
+          .map {
+            async {
+              delay(1.seconds)
+              it
             }
-        log("val2 = $val2 in ${dur2.toLongMilliseconds()}ms")
-    }
+          }
+          .sumBy { it.await() }
+      }
+    log("val2 = $val2 in ${dur2.toLongMilliseconds()}ms")
+  }
 }

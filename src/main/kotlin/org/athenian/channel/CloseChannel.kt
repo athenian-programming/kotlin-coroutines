@@ -9,37 +9,37 @@ import kotlin.time.milliseconds
 
 fun main() {
 
-    fun withoutClose() {
-        runBlocking {
-            val channel = Channel<Int>()
-            launch {
-                repeat(5) {
-                    channel.send(it * it)
-                    delay(Random.nextLong(1_000).milliseconds)
-                }
-            }
-
-            repeat(5) { println(channel.receive()) }
+  fun withoutClose() {
+    runBlocking {
+      val channel = Channel<Int>()
+      launch {
+        repeat(5) {
+          channel.send(it * it)
+          delay(Random.nextLong(1_000).milliseconds)
         }
-        println("withoutClose complete")
+      }
+
+      repeat(5) { println(channel.receive()) }
     }
+    println("withoutClose complete")
+  }
 
-    fun withClose() {
-        runBlocking {
-            val channel = Channel<Int>()
-            launch {
-                repeat(5) {
-                    channel.send(it * it)
-                    delay(Random.nextLong(1_000).milliseconds)
-                }
-                channel.close()
-            }
-
-            for (y in channel) println(y)
+  fun withClose() {
+    runBlocking {
+      val channel = Channel<Int>()
+      launch {
+        repeat(5) {
+          channel.send(it * it)
+          delay(Random.nextLong(1_000).milliseconds)
         }
-        println("withClose complete")
-    }
+        channel.close()
+      }
 
-    withoutClose()
-    withClose()
+      for (y in channel) println(y)
+    }
+    println("withClose complete")
+  }
+
+  withoutClose()
+  withClose()
 }

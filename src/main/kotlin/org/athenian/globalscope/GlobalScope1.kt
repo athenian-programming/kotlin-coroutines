@@ -9,34 +9,34 @@ import kotlin.time.measureTimedValue
 import kotlin.time.seconds
 
 fun main() {
-    fun withGlobalScope() {
-        GlobalScope.launch {
-            delay(1.seconds)
-            log("World!")
-        }
-
-        log("Hello, ")
-
-        runBlocking {
-            delay(2.seconds)
-        }
+  fun withGlobalScope() {
+    GlobalScope.launch {
+      delay(1.seconds)
+      log("World!")
     }
 
-    fun withoutGlobalScope() {
-        runBlocking {
-            launch {
-                delay(2.seconds)
-                log("there")
-            }
+    log("Hello, ")
 
-            log("Hi ")
-        }
+    runBlocking {
+      delay(2.seconds)
     }
+  }
 
-    val (_, dur1) = measureTimedValue { withGlobalScope() }
-    val (_, dur2) = measureTimedValue { withoutGlobalScope() }
+  fun withoutGlobalScope() {
+    runBlocking {
+      launch {
+        delay(2.seconds)
+        log("there")
+      }
 
-    log("With GlobalScope total time: ${dur1.inSeconds.toInt()} secs")
-    log("Without GlobalScope total time: ${dur2.inSeconds.toInt()} secs")
+      log("Hi ")
+    }
+  }
+
+  val (_, dur1) = measureTimedValue { withGlobalScope() }
+  val (_, dur2) = measureTimedValue { withoutGlobalScope() }
+
+  log("With GlobalScope total time: ${dur1.inSeconds.toInt()} secs")
+  log("Without GlobalScope total time: ${dur2.inSeconds.toInt()} secs")
 }
 

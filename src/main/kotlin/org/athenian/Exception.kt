@@ -18,76 +18,76 @@ import kotlin.time.milliseconds
 // Also see https://proandroiddev.com/kotlin-coroutines-patterns-anti-patterns-f9d12984c68e
 
 fun main() {
-    fun launchException() {
-        runBlocking {
-            val job =
-                launch {
-                    try {
-                        withContext<Unit>(Dispatchers.Default + CoroutineName("launchException")) {
-                            log("Throwing exception")
-                            delay(100.milliseconds)
-                            throw IndexOutOfBoundsException()
-                        }
-                    } catch (e: Exception) {
-                        log("Caught exception ${e.javaClass.simpleName}")
-                    }
-                }
-            job.join()
-            log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName
-                ?: "None"}")
-
+  fun launchException() {
+    runBlocking {
+      val job =
+        launch {
+          try {
+            withContext<Unit>(Dispatchers.Default + CoroutineName("launchException")) {
+              log("Throwing exception")
+              delay(100.milliseconds)
+              throw IndexOutOfBoundsException()
+            }
+          } catch (e: Exception) {
+            log("Caught exception ${e.javaClass.simpleName}")
+          }
         }
-        log("Finished launchException()")
+      job.join()
+      log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName
+        ?: "None"}")
+
+    }
+    log("Finished launchException()")
+  }
+
+  val handler =
+    CoroutineExceptionHandler { context, e ->
+      log("Handler caught $e")
     }
 
-    val handler =
-        CoroutineExceptionHandler { context, e ->
-            log("Handler caught $e")
-        }
+  fun launchWithHandlerException() {
+    log()
+    val job =
+      GlobalScope.launch(handler) {
+        log("Throwing exception")
+        delay(100.milliseconds)
+        throw IndexOutOfBoundsException()
+      }
 
-    fun launchWithHandlerException() {
-        log()
-        val job =
-            GlobalScope.launch(handler) {
-                log("Throwing exception")
-                delay(100.milliseconds)
-                throw IndexOutOfBoundsException()
-            }
-
-        runBlocking {
-            job.join()
-            log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName
-                ?: "None"}")
-        }
-        log("Finished launchWithHandlerException()")
+    runBlocking {
+      job.join()
+      log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName
+        ?: "None"}")
     }
+    log("Finished launchWithHandlerException()")
+  }
 
-    fun asyncException() {
-        log()
+  fun asyncException() {
+    log()
 
-        // Create a custom CoroutineScope
-        val appScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+    // Create a custom CoroutineScope
+    val appScope = CoroutineScope(Dispatchers.Default + SupervisorJob())
 
-        val deferred: Deferred<Int> =
-            appScope.async {
-                log("Throwing exception in asyncException")
-                throw IndexOutOfBoundsException()
-            }
+    val deferred: Deferred<Int> =
+      appScope.async {
+        log("Throwing exception in asyncException")
+        throw IndexOutOfBoundsException()
+      }
 
-        runBlocking(handler) {
-            try {
-                deferred.await()
-            } catch (e: Exception) {
-                log("asyncException caught ${e.javaClass.simpleName}")
-            }
-        }
-        log("Finished asyncException()")
+    runBlocking(handler) {
+      try {
+        deferred.await()
+      } catch (e: Exception) {
+        log("asyncException caught ${e.javaClass.simpleName}")
+      }
     }
+    log("Finished asyncException()")
+  }
 
-    launchException()
-    launchWithHandlerException()
-    asyncException()
+  launchException()
+  launchWithHandlerException()
+  asyncException()
 
-    log("Done")
+  log("Done")
 }
 

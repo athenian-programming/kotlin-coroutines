@@ -9,25 +9,25 @@ import kotlin.time.milliseconds
 import kotlin.time.seconds
 
 fun main() {
-    suspend fun calc(): String {
-        delay(3.seconds)
-        return "A string value"
-    }
+  suspend fun calc(): String {
+    delay(3.seconds)
+    return "A string value"
+  }
 
-    runBlocking {
-        val calcCall = async(Dispatchers.Default) { calc() }
+  runBlocking {
+    val calcCall = async(Dispatchers.Default) { calc() }
 
-        while (true) {
-            val completed =
-                withTimeoutOrNull(500.milliseconds.toLongMilliseconds()) {
-                    println("Waiting")
-                    println("Got back: ${calcCall.await()}")
-                }
-
-            if (completed == null)
-                println("Timed out")
-            else
-                break
+    while (true) {
+      val completed =
+        withTimeoutOrNull(500.milliseconds.toLongMilliseconds()) {
+          println("Waiting")
+          println("Got back: ${calcCall.await()}")
         }
+
+      if (completed == null)
+        println("Timed out")
+      else
+        break
     }
+  }
 }

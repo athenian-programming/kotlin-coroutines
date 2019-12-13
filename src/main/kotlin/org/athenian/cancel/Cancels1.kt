@@ -7,25 +7,25 @@ import org.athenian.log
 import kotlin.time.milliseconds
 
 fun main() {
-    runBlocking {
-        val outerLaunch =
-            launch {
-                repeat(5) {
-                    launch {
-                        while (true) {
-                            delay(300.milliseconds)
-                            log("Hello from first inner launch #$it")
-                        }
-                    }
-                }
-            }.apply {
-                invokeOnCompletion { log("Completed launch job") }
+  runBlocking {
+    val outerLaunch =
+      launch {
+        repeat(5) {
+          launch {
+            while (true) {
+              delay(300.milliseconds)
+              log("Hello from first inner launch #$it")
             }
+          }
+        }
+      }.apply {
+        invokeOnCompletion { log("Completed launch job") }
+      }
 
-        log("Hello from runBlocking after outer launch")
-        delay(800.milliseconds)
-        outerLaunch.cancel()
-    }
+    log("Hello from runBlocking after outer launch")
+    delay(800.milliseconds)
+    outerLaunch.cancel()
+  }
 
-    log("Done")
+  log("Done")
 }

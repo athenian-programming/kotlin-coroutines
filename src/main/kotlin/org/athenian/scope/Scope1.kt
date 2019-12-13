@@ -10,30 +10,30 @@ import kotlin.coroutines.coroutineContext
 import kotlin.time.milliseconds
 
 fun main() {
-    suspend fun scopeCheck(scope: CoroutineScope) {
-        log("coroutineContext are equal: ${scope.coroutineContext === coroutineContext}")
+  suspend fun scopeCheck(scope: CoroutineScope) {
+    log("coroutineContext are equal: ${scope.coroutineContext === coroutineContext}")
+  }
+
+  runBlocking {
+
+    launch { scopeCheck(this) }
+
+    launch {
+      delay(200.milliseconds)
+      log("Task from runBlocking")
     }
 
-    runBlocking {
+    coroutineScope {
+      launch {
+        delay(500.milliseconds)
+        log("Task from nested launch")
+      }
 
-        launch { scopeCheck(this) }
-
-        launch {
-            delay(200.milliseconds)
-            log("Task from runBlocking")
-        }
-
-        coroutineScope {
-            launch {
-                delay(500.milliseconds)
-                log("Task from nested launch")
-            }
-
-            delay(100.milliseconds)
-            log("Task from coroutine scope")
-        }
-
-        log("Coroutine scope is over")
+      delay(100.milliseconds)
+      log("Task from coroutine scope")
     }
+
+    log("Coroutine scope is over")
+  }
 }
 

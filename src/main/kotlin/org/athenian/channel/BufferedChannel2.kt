@@ -7,21 +7,21 @@ import org.athenian.delay
 import kotlin.time.milliseconds
 
 fun main() {
-    val iterations = 10
-    runBlocking {
-        val channel = Channel<Int>(Channel.UNLIMITED)
+  val iterations = 10
+  runBlocking {
+    val channel = Channel<Int>(Channel.UNLIMITED)
 
-        launch {
-            repeat(iterations) {
-                println("Writing $it")
-                channel.send(it)
-            }
-            channel.close()
-        }
-
-        for (i in channel) {
-            println("Reading $i")
-            delay(1_000.milliseconds)
-        }
+    launch {
+      repeat(iterations) {
+        println("Writing $it")
+        channel.send(it)
+      }
+      channel.close()
     }
+
+    for (i in channel) {
+      println("Reading $i")
+      delay(1_000.milliseconds)
+    }
+  }
 }

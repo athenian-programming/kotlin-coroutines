@@ -14,36 +14,36 @@ import kotlin.time.milliseconds
 import kotlin.time.seconds
 
 fun main() {
-    open class Receiver(val id: Int, val flow: Flow<Int>) {
-        open suspend fun listen() {
-            flow.onStart { println("Starting Receiver $id") }
-                .onEach {
-                    println("Receiver $id read value: $it")
-                    // Introduce a delay to see a pause for all reads to take place
-                    delay(2.seconds)
-                }
-                .onCompletion { println("Completed Receiver $id") }
-                .collect { println("Collected Receiver $id") }
+  open class Receiver(val id: Int, val flow: Flow<Int>) {
+    open suspend fun listen() {
+      flow.onStart { println("Starting Receiver $id") }
+        .onEach {
+          println("Receiver $id read value: $it")
+          // Introduce a delay to see a pause for all reads to take place
+          delay(2.seconds)
         }
+        .onCompletion { println("Completed Receiver $id") }
+        .collect { println("Collected Receiver $id") }
+    }
+  }
+
+  val workerCount = 3
+  val channelCapacity = 5
+  val iterations = 10
+  val channel = BroadcastChannel<Int>(channelCapacity)
+
+  runBlocking {
+    // Start each of the receivers in a separate coroutine
+    (1..workerCount).forEach { launch { Receiver(it, channel.asFlow()).listen() } }
+
+    // Send values to receivers
+    repeat(iterations) {
+      println("Sending value $it")
+      channel.send(it)
+      delay(1000.milliseconds)
     }
 
-    val workerCount = 3
-    val channelCapacity = 5
-    val iterations = 10
-    val channel = BroadcastChannel<Int>(channelCapacity)
-
-    runBlocking {
-        // Start each of the receivers in a separate coroutine
-        (1..workerCount).forEach { launch { Receiver(it, channel.asFlow()).listen() } }
-
-        // Send values to receivers
-        repeat(iterations) {
-            println("Sending value $it")
-            channel.send(it)
-            delay(1000.milliseconds)
-        }
-
-        // Close channel inside coroutine scope
-        channel.close()
-    }
+    // Close channel inside coroutine scope
+    channel.close()
+  }
 }

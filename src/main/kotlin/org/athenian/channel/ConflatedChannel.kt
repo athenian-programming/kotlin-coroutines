@@ -7,21 +7,21 @@ import org.athenian.delay
 import kotlin.time.milliseconds
 
 fun main() {
-    runBlocking {
-        val channel = Channel<Int>(Channel.CONFLATED)
+  runBlocking {
+    val channel = Channel<Int>(Channel.CONFLATED)
 
-        launch {
-            repeat(10) {
-                println("Writing $it")
-                channel.send(it)
-                delay(200.milliseconds)
-            }
-            channel.close()
-        }
-
-        while (!channel.isClosedForReceive) {
-            println("Reading ${channel.receive()}")
-            delay(1_000.milliseconds)
-        }
+    launch {
+      repeat(10) {
+        println("Writing $it")
+        channel.send(it)
+        delay(200.milliseconds)
+      }
+      channel.close()
     }
+
+    while (!channel.isClosedForReceive) {
+      println("Reading ${channel.receive()}")
+      delay(1_000.milliseconds)
+    }
+  }
 }

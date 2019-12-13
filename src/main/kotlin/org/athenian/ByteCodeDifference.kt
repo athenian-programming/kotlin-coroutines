@@ -1,13 +1,13 @@
 package org.athenian
 
 class ByteCodeDifference {
-    fun first(): Int {
-        return 2
-    }
+  fun first(): Int {
+    return 2
+  }
 
-    suspend fun second(): Int {
-        return 2
-    }
+  suspend fun second(): Int {
+    return 2
+  }
 }
 
 /*

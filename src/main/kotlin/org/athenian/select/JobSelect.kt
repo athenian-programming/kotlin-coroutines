@@ -12,39 +12,39 @@ import org.athenian.delay
 import kotlin.time.seconds
 
 fun main() {
-    class JobWrapper(val id: Int, val job: Job, var joined: Boolean = false)
+  class JobWrapper(val id: Int, val job: Job, var joined: Boolean = false)
 
-    class Worker(val count: Int) {
-        suspend fun selectJobs(biased: Boolean) {
-            val orderJoined = mutableListOf<Int>()
+  class Worker(val count: Int) {
+    suspend fun selectJobs(biased: Boolean) {
+      val orderJoined = mutableListOf<Int>()
 
-            coroutineScope {
-                val wrappers = List(count) { i -> JobWrapper(i, launch { delay(1.seconds) }) }
+      coroutineScope {
+        val wrappers = List(count) { i -> JobWrapper(i, launch { delay(1.seconds) }) }
 
-                repeat(wrappers.size) {
-                    val selected =
-                        if (biased)
-                            select<JobWrapper> {
-                                wrappers.filter { !it.joined }.onEach { it.job.onJoin { it } }
-                            }
-                        else
-                            selectUnbiased {
-                                wrappers.filter { !it.joined }.onEach { it.job.onJoin { it } }
-                            }
-                    orderJoined.add(selected.id)
-                    selected.joined = true
-                }
-            }
-
-            println("\nBiased: $biased")
-            println(orderJoined)
+        repeat(wrappers.size) {
+          val selected =
+            if (biased)
+              select<JobWrapper> {
+                wrappers.filter { !it.joined }.onEach { it.job.onJoin { it } }
+              }
+            else
+              selectUnbiased {
+                wrappers.filter { !it.joined }.onEach { it.job.onJoin { it } }
+              }
+          orderJoined.add(selected.id)
+          selected.joined = true
         }
-    }
+      }
 
-    runBlocking {
-        val worker = Worker(100)
-
-        withContext(Dispatchers.Default) { worker.selectJobs(true) }
-        withContext(Dispatchers.Default) { worker.selectJobs(false) }
+      println("\nBiased: $biased")
+      println(orderJoined)
     }
+  }
+
+  runBlocking {
+    val worker = Worker(100)
+
+    withContext(Dispatchers.Default) { worker.selectJobs(true) }
+    withContext(Dispatchers.Default) { worker.selectJobs(false) }
+  }
 }

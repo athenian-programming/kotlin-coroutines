@@ -9,22 +9,22 @@ import org.athenian.log
 import kotlin.time.seconds
 
 fun main() {
-    runBlocking {
-        val job =
-            launch {
-                log("Coroutine start")
-                launch {
-                    log("Child coroutine start")
-                    try {
-                        delay(Long.MAX_VALUE)
-                    } catch (e: CancellationException) {
-                        log("Coroutine cancelled - ${e.message}")
-                        throw e
-                    }
-                }
-            }
-        org.athenian.delay(1.seconds)
-        job.cancelAndJoin()
-        log("Done")
-    }
+  runBlocking {
+    val job =
+      launch {
+        log("Coroutine start")
+        launch {
+          log("Child coroutine start")
+          try {
+            delay(Long.MAX_VALUE)
+          } catch (e: CancellationException) {
+            log("Coroutine cancelled - ${e.message}")
+            throw e
+          }
+        }
+      }
+    org.athenian.delay(1.seconds)
+    job.cancelAndJoin()
+    log("Done")
+  }
 }

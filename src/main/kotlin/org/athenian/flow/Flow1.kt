@@ -14,37 +14,37 @@ import kotlin.time.seconds
 // Demonstrates a hot stream -- values are produced regardless of a consumer being present
 
 fun main() {
-    runBlocking {
-        val hot =
-            produce(capacity = 5) {
-                repeat(100) {
-                    send(it)
-                    log("sent $it")
-                }
-            }
-
-        delay(5.seconds)
-
-        repeat(5) {
-            log("Recieved ${hot.receive()}")
-            delay(1.seconds)
+  runBlocking {
+    val hot =
+      produce(capacity = 5) {
+        repeat(100) {
+          send(it)
+          log("sent $it")
         }
+      }
 
-        log("Cancel hot")
-        hot.cancel()
+    delay(5.seconds)
 
-        val cold =
-            flow {
-                repeat(100) {
-                    emit(it)
-                    log("emitted $it")
-                }
-            }
-
-        delay(5.seconds)
-
-        cold.take(5)
-            .onEach { delay(1.seconds) }
-            .collect { log("Collected $it") }
+    repeat(5) {
+      log("Recieved ${hot.receive()}")
+      delay(1.seconds)
     }
+
+    log("Cancel hot")
+    hot.cancel()
+
+    val cold =
+      flow {
+        repeat(100) {
+          emit(it)
+          log("emitted $it")
+        }
+      }
+
+    delay(5.seconds)
+
+    cold.take(5)
+      .onEach { delay(1.seconds) }
+      .collect { log("Collected $it") }
+  }
 }

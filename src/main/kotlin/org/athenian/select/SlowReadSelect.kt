@@ -14,84 +14,84 @@ import kotlin.time.Duration
 import kotlin.time.milliseconds
 
 fun main() {
-    class Results(val id: String, val total: Int)
+  class Results(val id: String, val total: Int)
 
-    class Boss constructor(val messageCount: Int,
-                           val slowWorker: SendChannel<Int>,
-                           val fastWorker: SendChannel<Int>,
-                           val results: List<ReceiveChannel<Results>>) {
+  class Boss constructor(val messageCount: Int,
+                         val slowWorker: SendChannel<Int>,
+                         val fastWorker: SendChannel<Int>,
+                         val results: List<ReceiveChannel<Results>>) {
 
-        suspend fun generateData() {
-            repeat(messageCount) {
-                val r = Random.nextInt()
-                select<Unit> {
-                    slowWorker.onSend(r) { }
-                    fastWorker.onSend(r) { }
-                }
-                delay(10.milliseconds)
+    suspend fun generateData() {
+      repeat(messageCount) {
+        val r = Random.nextInt()
+        select<Unit> {
+          slowWorker.onSend(r) { }
+          fastWorker.onSend(r) { }
+        }
+        delay(10.milliseconds)
+      }
+      slowWorker.close()
+      fastWorker.close()
+    }
+
+    suspend fun aggregateData(): Map<String, Int> {
+      val resultsMap = mutableMapOf<String, Int>()
+      while (resultsMap.size < results.size && isActive)
+        select<Unit> {
+          results
+            .filter { !it.isClosedForReceive }
+            .forEach {
+              it.onReceiveOrClosed { value ->
+                if (!value.isClosed)
+                  resultsMap[value.value.id] = value.value.total
+              }
             }
-            slowWorker.close()
-            fastWorker.close()
         }
+      return resultsMap.toSortedMap()
+    }
+  }
 
-        suspend fun aggregateData(): Map<String, Int> {
-            val resultsMap = mutableMapOf<String, Int>()
-            while (resultsMap.size < results.size && isActive)
-                select<Unit> {
-                    results
-                        .filter { !it.isClosedForReceive }
-                        .forEach {
-                            it.onReceiveOrClosed { value ->
-                                if (!value.isClosed)
-                                    resultsMap[value.value.id] = value.value.total
-                            }
-                        }
-                }
-            return resultsMap.toSortedMap()
-        }
+  class Worker constructor(val id: String,
+                           val delay: Duration,
+                           val channel: ReceiveChannel<Int>,
+                           val results: SendChannel<Results>) {
+
+    suspend fun process() {
+      var counter = 0
+      for (d in channel) {
+        println("$id got value: $d")
+        counter++
+        delay(delay)
+      }
+      println("$id writing results")
+      results.send(Results(id, counter))
+    }
+  }
+
+  fun CoroutineScope.execute(messageCount: Int, slowDuration: Duration, fastDuration: Duration) {
+    val slowData = Channel<Int>()
+    val fastData = Channel<Int>()
+    val results = List(2) { Channel<Results>() }
+    val boss = Boss(messageCount, slowData, fastData, results)
+
+    launch {
+      Worker("Slow Worker", slowDuration, slowData, results[0]).process()
     }
 
-    class Worker constructor(val id: String,
-                             val delay: Duration,
-                             val channel: ReceiveChannel<Int>,
-                             val results: SendChannel<Results>) {
-
-        suspend fun process() {
-            var counter = 0
-            for (d in channel) {
-                println("$id got value: $d")
-                counter++
-                delay(delay)
-            }
-            println("$id writing results")
-            results.send(Results(id, counter))
-        }
+    launch {
+      Worker("Fast Worker", fastDuration, fastData, results[1]).process()
     }
 
-    fun CoroutineScope.execute(messageCount: Int, slowDuration: Duration, fastDuration: Duration) {
-        val slowData = Channel<Int>()
-        val fastData = Channel<Int>()
-        val results = List(2) { Channel<Results>() }
-        val boss = Boss(messageCount, slowData, fastData, results)
-
-        launch {
-            Worker("Slow Worker", slowDuration, slowData, results[0]).process()
-        }
-
-        launch {
-            Worker("Fast Worker", fastDuration, fastData, results[1]).process()
-        }
-
-        launch {
-            boss.generateData()
-        }
-
-        launch {
-            println(boss.aggregateData())
-        }
+    launch {
+      boss.generateData()
     }
 
-    runBlocking {
-        execute(1_000, 100.milliseconds, 10.milliseconds)
+    launch {
+      println(boss.aggregateData())
     }
+  }
+
+  runBlocking {
+    execute(1_000, 100.milliseconds, 10.milliseconds)
+  }
 }
