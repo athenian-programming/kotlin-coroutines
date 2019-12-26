@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.take
@@ -50,7 +51,9 @@ fun main() {
         .flowOn(Dispatchers.Default) //changes upstream context
         .onEach { log("Second asFlowExample onEach()") }
         .map { it * 2 }
+        .onCompletion() { log("Finished asFlowExample") }
         .collect { log("Collecting asFlowExample $it") }
+
     }
 
   fun flowOfExample() =
@@ -65,6 +68,7 @@ fun main() {
         .flowOn(Dispatchers.Default) //changes upstream context
         .onEach { log("Second flowOfExample onEach()") }
         .map { it * 2 }
+        .onCompletion() { log("Finished flowOfExample") }
         .collect { log("Collecting flowOfExample $it") }
     }
 
