@@ -9,6 +9,7 @@ import kotlin.time.measureTimedValue
 import kotlin.time.seconds
 
 fun main() {
+
   suspend fun calc(): String {
     delay(3.seconds)
     return "A string val"

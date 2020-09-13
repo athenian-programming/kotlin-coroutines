@@ -10,3 +10,6 @@ build:
 
 versioncheck:
 	./gradlew dependencyUpdates
+
+upgrade-wrapper:
+	./gradlew wrapper --gradle-version=6.6.1 --distribution-type=bin
