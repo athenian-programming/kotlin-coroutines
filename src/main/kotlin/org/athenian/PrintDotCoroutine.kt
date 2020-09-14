@@ -20,7 +20,7 @@ fun main() {
         }
       jobs.forEach { it.join() }
     }
-  }.apply { log("\nFinished $count iterations in $this") }
+  }.apply { log("\nFinished in $this") }
 }
 
 
