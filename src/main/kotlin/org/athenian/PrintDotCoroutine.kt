@@ -2,14 +2,14 @@ package org.athenian
 
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlin.time.measureTimedValue
+import kotlin.time.measureTime
 import kotlin.time.seconds
 
 fun main() {
   val count = 100_000
   val delay = 1.seconds
 
-  measureTimedValue {
+  measureTime {
     runBlocking {
       List(count) {
         launch {
@@ -18,5 +18,5 @@ fun main() {
         }
       }.forEach { it.join() }
     }
-  }.also { log("\nFinished $count iterations in ${it.duration}") }
+  }.apply { log("\nFinished $count iterations in $this") }
 }
