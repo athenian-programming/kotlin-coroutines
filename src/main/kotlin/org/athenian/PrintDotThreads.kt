@@ -9,11 +9,15 @@ fun main() {
   val delay = 1.seconds
 
   measureTime {
-    List(count) {
-      thread {
-        Thread.sleep(delay.toLongMilliseconds())
-        print(".")
+    val jobs =
+      List(count) {
+        thread {
+          Thread.sleep(delay.toLongMilliseconds())
+          print(".")
+        }
       }
-    }.forEach { it.join() }
+    jobs.forEach { it.join() }
   }.apply { log("\nFinished in $this") }
 }
+
+

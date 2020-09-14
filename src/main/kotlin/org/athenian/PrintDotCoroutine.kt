@@ -11,12 +11,16 @@ fun main() {
 
   measureTime {
     runBlocking {
-      List(count) {
-        launch {
-          delay(delay)
-          print(".")
+      val jobs =
+        List(count) {
+          launch {
+            delay(delay)
+            print(".")
+          }
         }
-      }.forEach { it.join() }
+      jobs.forEach { it.join() }
     }
   }.apply { log("\nFinished $count iterations in $this") }
 }
+
+
