@@ -6,17 +6,17 @@ import kotlin.time.measureTimedValue
 import kotlin.time.seconds
 
 fun main() {
-  val (_, dur) =
-    measureTimedValue {
-      runBlocking {
-        repeat(100_000) {
-          launch {
-            delay(1.seconds)
-            print(".")
-          }
-        }
-      }
-    }
+  val count = 100_000
+  val delay = 1.seconds
 
-  log("\nFinished in ${dur.toLongMilliseconds()}ms")
+  measureTimedValue {
+    runBlocking {
+      List(count) {
+        launch {
+          delay(delay)
+          print(".")
+        }
+      }.forEach { it.join() }
+    }
+  }.also { log("\nFinished $count iterations in ${it.duration}") }
 }
