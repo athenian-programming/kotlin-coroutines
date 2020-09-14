@@ -5,7 +5,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlin.time.measureTimedValue
+import kotlin.time.measureTime
 import kotlin.time.seconds
 
 fun main() {
@@ -24,27 +24,23 @@ fun main() {
   }
 
   runBlocking {
-    val (_, dur) =
-      measureTimedValue {
-        launch {
-          func1()
-          func2()
-        }
+    measureTime {
+      launch {
+        func1()
+        func2()
       }
-    log("Finished serial launch in ${dur.toLongMilliseconds()}ms")
+    }.also { log("Finished serial launch in $it") }
   }
 
   runBlocking {
-    val (_, dur) =
-      measureTimedValue {
-        launch {
-          func1()
-        }
-        launch {
-          func2()
-        }
+    measureTime {
+      launch {
+        func1()
       }
-    log("Finished concurrent launch in ${dur.toLongMilliseconds()}ms")
+      launch {
+        func2()
+      }
+    }.also { log("Finished concurrent launch in $it") }
   }
   log("Done")
 }

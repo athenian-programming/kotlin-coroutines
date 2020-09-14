@@ -10,24 +10,23 @@ import kotlinx.coroutines.withContext
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicInteger
 import kotlin.concurrent.thread
-import kotlin.time.measureTimedValue
+import kotlin.time.measureTime
 
 fun main() {
   fun threadedAtomicInt(count: Int) {
     val atomic = AtomicInteger(0)
     var nonatomic = 0
 
-    val (_, dur) =
-      measureTimedValue {
-        List(count) {
-          thread {
-            nonatomic++
-            atomic.incrementAndGet()
-          }
-        }.forEach { thread -> thread.join() }
-      }
-
-    log("Threaded atomic: ${atomic.get()} nonatomic: $nonatomic finished in ${dur.toLongMilliseconds()}ms")
+    measureTime {
+      List(count) {
+        thread {
+          nonatomic++
+          atomic.incrementAndGet()
+        }
+      }.forEach { thread -> thread.join() }
+    }.also {
+      log("Threaded atomic: ${atomic.get()} nonatomic: $nonatomic finished in $it")
+    }
   }
 
   fun executorAtomicInt(count: Int) {
@@ -35,8 +34,8 @@ fun main() {
     val atomic = AtomicInteger(0)
     var nonatomic = 0
 
-    val (_, dur) =
-      measureTimedValue {
+    val dur =
+      measureTime {
         List(count) {
           executor.submit {
             nonatomic++
@@ -46,7 +45,7 @@ fun main() {
       }
     executor.shutdown()
 
-    log("Executor atomic: ${atomic.get()} nonatomic: $nonatomic finished in ${dur.toLongMilliseconds()}ms")
+    log("Executor atomic: ${atomic.get()} nonatomic: $nonatomic finished in $dur")
   }
 
   fun coroutineAtomicInt(count: Int) {
@@ -54,23 +53,22 @@ fun main() {
     var nonatomic = 0
     var mutexcnt = 0
 
-    val (_, dur) =
-      measureTimedValue {
-        runBlocking {
-          val mutex = Mutex()
-          repeat(count) {
-            // Use Dispatchers.Default to use multiple threads
-            launch(Dispatchers.Default) {
-              // log("Incrementing")
-              nonatomic++
-              atomic.incrementAndGet()
-              mutex.withLock { mutexcnt++ }
-            }
+    measureTime {
+      runBlocking {
+        val mutex = Mutex()
+        repeat(count) {
+          // Use Dispatchers.Default to use multiple threads
+          launch(Dispatchers.Default) {
+            // log("Incrementing")
+            nonatomic++
+            atomic.incrementAndGet()
+            mutex.withLock { mutexcnt++ }
           }
         }
       }
-
-    log("Coroutine atomic: ${atomic.get()} mutex: $mutexcnt nonatomic: $nonatomic finished in ${dur.toLongMilliseconds()}ms")
+    }.also {
+      log("Coroutine atomic: ${atomic.get()} mutex: $mutexcnt nonatomic: $nonatomic finished in $it")
+    }
   }
 
   fun variableContextCounter(count: Int, singleThreaded: Boolean) =
@@ -79,8 +77,8 @@ fun main() {
       var nonatomic = 0
       val context = if (singleThreaded) singleThreadedContext else Dispatchers.Default
 
-      val (_, dur) =
-        measureTimedValue {
+      val dur =
+        measureTime {
           withContext(context) {
             repeat(count) {
               launch {
@@ -91,7 +89,7 @@ fun main() {
         }
       singleThreadedContext.close()
 
-      log("Variable context (single threaded = $singleThreaded) nonatomic: $nonatomic finished in ${dur.toLongMilliseconds()}ms")
+      log("Variable context (single threaded = $singleThreaded) nonatomic: $nonatomic finished in $dur")
     }
 
   val count = 100_000

@@ -10,7 +10,7 @@ import org.athenian.delay
 import org.athenian.log
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
-import kotlin.time.measureTimedValue
+import kotlin.time.measureTime
 import kotlin.time.seconds
 
 fun main() {
@@ -29,41 +29,37 @@ fun main() {
   Executors.newFixedThreadPool(20).asCoroutineDispatcher()
     .use { poolDispatcher ->
       for (count in listOf(8, 9, 16, 17)) {
-        val (_, dur1) =
-          measureTimedValue {
-            runBlocking {
-              repeat(count) {
-                launch(CoroutineName("Dispatchers.Default-item-$it")) {
-                  sleepingCall(Dispatchers.Default)
-                }
+        measureTime {
+          runBlocking {
+            repeat(count) {
+              launch(CoroutineName("Dispatchers.Default-item-$it")) {
+                sleepingCall(Dispatchers.Default)
               }
             }
           }
-        log("Total time for $count calls of sleepingCalls with Dispatchers.Default: ${dur1.inSeconds.toInt()} secs\n")
+        }.also {
+          log("Total time for $count calls of sleepingCalls with Dispatchers.Default: $it\n")
+        }
 
-        val (_, dur2) =
-          measureTimedValue {
-            runBlocking {
-              repeat(count) {
-                launch(CoroutineName("poolDispatcher-item-$it")) {
-                  sleepingCall(poolDispatcher)
-                }
+        measureTime {
+          runBlocking {
+            repeat(count) {
+              launch(CoroutineName("poolDispatcher-item-$it")) {
+                sleepingCall(poolDispatcher)
               }
             }
           }
-        log("Total time for $count calls of sleepingCalls with poolDispatcher: ${dur2.inSeconds.toInt()} secs\n")
+        }.also { log("Total time for $count calls of sleepingCalls with poolDispatcher: $it\n") }
 
-        val (_, dur3) =
-          measureTimedValue {
-            runBlocking {
-              repeat(count) {
-                launch(CoroutineName("delaying-item-$it")) {
-                  delayingCall()
-                }
+        measureTime {
+          runBlocking {
+            repeat(count) {
+              launch(CoroutineName("delaying-item-$it")) {
+                delayingCall()
               }
             }
           }
-        log("Total time for $count calls of delayingCalls: ${dur3.inSeconds.toInt()} secs\n")
+        }.also { log("Total time for $count calls of delayingCalls: $it\n") }
       }
     }
 }

@@ -22,7 +22,7 @@ fun main() {
         val b = calc()
         listOf(a, b)
       }
-    log("Vals = $val1 took ${dur1.toLongMilliseconds()}ms")
+    log("Vals = $val1 took $dur1")
 
     val (val2, dur2) =
       measureTimedValue {
@@ -31,7 +31,7 @@ fun main() {
         println("Vals prior to .await() = ${listOf(a, b)}")
         listOf(a.await(), b.await())
       }
-    log("Vals = $val2 took ${dur2.toLongMilliseconds()}ms")
+    log("Vals = $val2 took $dur2")
 
     val (val3, dur3) =
       measureTimedValue {
@@ -39,6 +39,6 @@ fun main() {
         val b = async(start = CoroutineStart.LAZY) { calc() }
         listOf(a.await(), b.await())
       }
-    log("Vals = $val3 took ${dur3.toLongMilliseconds()}ms")
+    log("Vals = $val3 took $dur3")
   }
 }

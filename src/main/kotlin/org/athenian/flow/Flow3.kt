@@ -30,7 +30,7 @@ fun main() {
         }
         counter
       }
-    log("Total time for $v vals withSequences(): ${dur.toLongMilliseconds()}ms")
+    log("Total time for $v values withSequences(): $dur")
   }
 
   fun withFlow(useBuffer: Boolean) {
@@ -57,7 +57,7 @@ fun main() {
           counter
         }
       }
-    log("Total time for $v vals withFlow(${useBuffer}): ${dur.toLongMilliseconds()}ms")
+    log("Total time for $v vals withFlow(${useBuffer}): $dur")
   }
 
   withSequences()

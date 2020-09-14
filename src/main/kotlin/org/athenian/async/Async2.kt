@@ -20,7 +20,7 @@ fun main() {
           }
           .sumBy { it }
       }
-    log("val1 = $val1 in ${dur1.toLongMilliseconds()}ms")
+    log("val1 = $val1 in $dur1")
 
     val (val2, dur2) =
       measureTimedValue {
@@ -33,6 +33,6 @@ fun main() {
           }
           .sumBy { it.await() }
       }
-    log("val2 = $val2 in ${dur2.toLongMilliseconds()}ms")
+    log("val2 = $val2 in $dur2")
   }
 }
