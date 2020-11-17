@@ -10,7 +10,6 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
-import kotlin.time.milliseconds
 import kotlin.time.seconds
 
 fun main() {
@@ -34,13 +33,18 @@ fun main() {
 
   runBlocking {
     // Start each of the receivers in a separate coroutine
-    (1..workerCount).forEach { launch { Receiver(it, channel.asFlow()).listen() } }
+    (1..workerCount).forEach {
+      launch {
+        delay(2.seconds)
+        Receiver(it, channel.asFlow()).listen()
+      }
+    }
 
     // Send values to receivers
     repeat(iterations) {
       println("Sending value $it")
       channel.send(it)
-      delay(1000.milliseconds)
+      delay(1.seconds)
     }
 
     // Close channel inside coroutine scope
