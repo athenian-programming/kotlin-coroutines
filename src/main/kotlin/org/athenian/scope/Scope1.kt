@@ -7,7 +7,7 @@ import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
 import kotlin.coroutines.coroutineContext
-import kotlin.time.milliseconds
+import kotlin.time.Duration
 
 fun main() {
   suspend fun scopeCheck(scope: CoroutineScope) {
@@ -19,17 +19,17 @@ fun main() {
     launch { scopeCheck(this) }
 
     launch {
-      delay(200.milliseconds)
+      delay(Duration.milliseconds(200))
       log("Task from runBlocking")
     }
 
     coroutineScope {
       launch {
-        delay(500.milliseconds)
+        delay(Duration.milliseconds(500))
         log("Task from nested launch")
       }
 
-      delay(100.milliseconds)
+      delay(Duration.milliseconds(100))
       log("Task from coroutine scope")
     }
 

@@ -5,16 +5,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import org.athenian.delay
-import kotlin.time.milliseconds
+import kotlin.time.Duration
 
 fun main() {
   suspend fun execute() {
     coroutineScope {
-      val job = launch { delay(100.milliseconds) }
+      val job = launch { delay(Duration.milliseconds(100)) }
       val selected =
         select<String> {
           job.onJoin { "Joined job" }
-          onTimeout(10.milliseconds.toLongMilliseconds()) { "Timed out" }
+          onTimeout(Duration.milliseconds(10).inWholeMilliseconds) { "Timed out" }
         }
       println(selected)
     }

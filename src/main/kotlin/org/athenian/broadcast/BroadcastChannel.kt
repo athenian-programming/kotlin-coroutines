@@ -6,8 +6,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import org.athenian.delay
-import kotlin.time.milliseconds
-import kotlin.time.seconds
+import kotlin.time.Duration
 
 fun main() {
   open class Receiver(val id: Int, val channel: ReceiveChannel<Int>) {
@@ -17,7 +16,7 @@ fun main() {
 
         // Introduce a delay to see a pause for all reads to take place
         if (id == 0)
-          delay(2.seconds)
+          delay(Duration.seconds(2))
       }
       println("Receiver $id completed")
     }
@@ -29,18 +28,18 @@ fun main() {
       while (active) {
         active =
           select {
-            channel.onReceiveOrClosed { v ->
+            channel.onReceiveCatching { v ->
               if (!v.isClosed) {
-                println("Receiver $id read value: ${v.value}")
+                println("Receiver $id read value: ${v.getOrNull()}")
 
                 // Introduce a delay to see a pause for all reads to take place
                 if (id == 0)
-                  delay(2.seconds)
+                  delay(Duration.seconds(2))
               }
               !v.isClosed
             }
             // Timeout after waiting 500ms for a read
-            onTimeout(500.milliseconds.toLongMilliseconds()) {
+            onTimeout(Duration.milliseconds(500).inWholeMilliseconds) {
               println("Receiver $id is impatient for values")
               true
             }
@@ -71,7 +70,7 @@ fun main() {
     repeat(iterations) {
       println("Sending value $it")
       channel.send(it)
-      delay(10.milliseconds)
+      delay(Duration.milliseconds(10))
     }
 
     // Close channel inside coroutine scope

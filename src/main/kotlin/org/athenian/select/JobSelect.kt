@@ -9,7 +9,7 @@ import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.selects.selectUnbiased
 import kotlinx.coroutines.withContext
 import org.athenian.delay
-import kotlin.time.seconds
+import kotlin.time.Duration
 
 fun main() {
   class JobWrapper(val id: Int, val job: Job, var joined: Boolean = false)
@@ -19,7 +19,7 @@ fun main() {
       val orderJoined = mutableListOf<Int>()
 
       coroutineScope {
-        val wrappers = List(count) { i -> JobWrapper(i, launch { delay(1.seconds) }) }
+        val wrappers = List(count) { i -> JobWrapper(i, launch { delay(Duration.seconds(1)) }) }
 
         repeat(wrappers.size) {
           val selected =

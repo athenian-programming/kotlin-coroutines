@@ -6,7 +6,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.milliseconds
+import kotlin.time.Duration
 
 fun main() {
   val mult = { a: Int, b: Int ->
@@ -18,7 +18,7 @@ fun main() {
   val deferred2 = GlobalScope.async(start = CoroutineStart.LAZY) { mult(7, 9) }
 
   runBlocking {
-    delay(100.milliseconds)
+    delay(Duration.milliseconds(100))
     log("Deferred1")
     log(deferred1.await())
 

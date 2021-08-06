@@ -10,7 +10,7 @@ import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.selects.selectUnbiased
 import org.athenian.delay
 import kotlin.random.Random
-import kotlin.time.milliseconds
+import kotlin.time.Duration
 
 fun main() {
   class Results(val id: String, val total: Int)
@@ -30,7 +30,7 @@ fun main() {
             channel.forEach { it.onSend(r) {} }
           }
 
-        delay(10.milliseconds)
+        delay(Duration.milliseconds(10))
       }
       channel.forEach { it.close() }
     }
@@ -42,9 +42,9 @@ fun main() {
           results
             .filter { !it.isClosedForReceive }
             .forEach {
-              it.onReceiveOrClosed { value ->
+              it.onReceiveCatching { value ->
                 if (!value.isClosed)
-                  resultsMap[value.value.id] = value.value.total
+                  resultsMap[value.getOrThrow().id] = value.getOrThrow().total
               }
             }
         }

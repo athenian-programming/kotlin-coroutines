@@ -5,27 +5,27 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
+import kotlin.time.Duration
 import kotlin.time.measureTime
-import kotlin.time.seconds
 
 fun main() {
   fun withGlobalScope() {
     GlobalScope.launch {
-      delay(1.seconds)
+      delay(Duration.seconds(1))
       log("World!")
     }
 
     log("Hello, ")
 
     runBlocking {
-      delay(2.seconds)
+      delay(Duration.seconds(2))
     }
   }
 
   fun withoutGlobalScope() {
     runBlocking {
       launch {
-        delay(2.seconds)
+        delay(Duration.seconds(2))
         log("there")
       }
 

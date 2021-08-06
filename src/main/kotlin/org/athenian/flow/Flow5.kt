@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
+import kotlin.time.Duration
 import kotlin.time.measureTime
-import kotlin.time.seconds
 
 fun main() {
 
@@ -18,7 +18,7 @@ fun main() {
       repeat(5) {
         emit(it)
         log("emitted $it")
-        delay(1.seconds)
+        delay(Duration.seconds(1))
       }
     }
 
@@ -27,7 +27,7 @@ fun main() {
     measureTime {
       runBlocking {
         cold
-          .onEach { delay(1.seconds) }
+          .onEach { delay(Duration.seconds(1)) }
           .collect { log("Collected $it") }
       }
     }
@@ -37,7 +37,7 @@ fun main() {
       runBlocking {
         cold
           .buffer()
-          .onEach { delay(1.seconds) }
+          .onEach { delay(Duration.seconds(1)) }
           .collect { log("Collected $it") }
       }
     }

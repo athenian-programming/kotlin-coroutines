@@ -5,20 +5,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import kotlin.time.Duration
 import kotlin.time.measureTime
-import kotlin.time.seconds
 
 fun main() {
   suspend fun func1() {
     withContext(Dispatchers.Default + CoroutineName("func1")) {
-      delay(2.seconds)
+      delay(Duration.seconds(2))
       log("I am in func1")
     }
   }
 
   suspend fun func2() {
     withContext(Dispatchers.Default + CoroutineName("func2")) {
-      delay(1.seconds)
+      delay(Duration.seconds(1))
       log("I am in func2")
     }
   }

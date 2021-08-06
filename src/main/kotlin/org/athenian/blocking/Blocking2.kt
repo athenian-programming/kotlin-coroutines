@@ -10,8 +10,8 @@ import org.athenian.delay
 import org.athenian.log
 import java.util.concurrent.Executors
 import kotlin.coroutines.CoroutineContext
+import kotlin.time.Duration
 import kotlin.time.measureTime
-import kotlin.time.seconds
 
 fun main() {
   suspend fun sleepingCall(context: CoroutineContext) {
@@ -23,7 +23,7 @@ fun main() {
 
   suspend fun delayingCall() {
     log("delaying")
-    delay(3.seconds)
+    delay(Duration.seconds(3))
   }
 
   Executors.newFixedThreadPool(20).asCoroutineDispatcher()

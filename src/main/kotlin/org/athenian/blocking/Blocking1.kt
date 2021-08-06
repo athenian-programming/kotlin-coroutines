@@ -6,7 +6,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.milliseconds
+import kotlin.time.Duration
 
 fun main() {
   fun sleepFunction1() {
@@ -57,12 +57,12 @@ fun main() {
     runBlocking {
       launch {
         log("Before first delay")
-        delay(200.milliseconds)
+        delay(Duration.milliseconds(200))
         log("After first delay")
       }
 
       log("Before second delay")
-      delay(300.milliseconds)
+      delay(Duration.milliseconds(300))
       log("After second delay")
     }
   }

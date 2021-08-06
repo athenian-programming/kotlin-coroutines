@@ -6,7 +6,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.milliseconds
+import kotlin.time.Duration
 
 fun main() {
   val cnt = 5
@@ -22,7 +22,7 @@ fun main() {
         .onEach { log("Completed deferred0 for $it") }
 
     log("Summing deferred0")
-    log("Sum of deferred0: ${deferred0.sumBy { it }}")
+    log("Sum of deferred0: ${deferred0.sumOf { it }}")
   }
 
   fun sequenceNoAsync() {
@@ -39,7 +39,7 @@ fun main() {
         .take(cnt)
 
     log("Summing deferred1")
-    log("Sum of deferred1: ${deferred1.sumBy { it }}")
+    log("Sum of deferred1: ${deferred1.sumOf { it }}")
   }
 
   fun nonlazyAsync() {
@@ -57,9 +57,9 @@ fun main() {
         .onEach { log("Completed deferred2 for $it") }
 
     runBlocking {
-      delay(100.milliseconds)
+      delay(Duration.milliseconds(100))
       log("Summing deferred2")
-      log("Sum of deferred2: ${deferred2.sumBy { it.await() }}")
+      log("Sum of deferred2: ${deferred2.sumOf { it.await() }}")
     }
   }
 
@@ -77,9 +77,9 @@ fun main() {
         .onEach { log("Completed deferred3 for $it") }
 
     runBlocking {
-      delay(100.milliseconds)
+      delay(Duration.milliseconds(100))
       log("Summing deferred3")
-      log("Sum of deferred3: ${deferred3.sumBy { it.await() }}")
+      log("Sum of deferred3: ${deferred3.sumOf { it.await() }}")
     }
 
   }

@@ -10,7 +10,7 @@ import kotlinx.coroutines.selects.selectUnbiased
 import kotlinx.coroutines.withContext
 import org.athenian.delay
 import kotlin.random.Random
-import kotlin.time.seconds
+import kotlin.time.Duration
 
 fun main() {
   class DeferredWrapper(val id: Int, val deferred: Deferred<Int>, var joined: Boolean = false)
@@ -24,7 +24,7 @@ fun main() {
           List(count) { i ->
             DeferredWrapper(i,
               async {
-                delay(1.seconds)
+                delay(Duration.seconds(1))
                 Random.nextInt()
               })
           }

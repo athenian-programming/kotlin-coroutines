@@ -4,7 +4,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
-import kotlin.time.milliseconds
+import kotlin.time.Duration
 
 fun main() {
   val iterations = 10
@@ -21,7 +21,7 @@ fun main() {
 
     repeat(iterations) {
       println("Reading ${channel.receive()}")
-      delay(1_000.milliseconds)
+      delay(Duration.milliseconds(1_000))
     }
   }
 }

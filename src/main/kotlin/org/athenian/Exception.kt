@@ -11,7 +11,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlin.time.milliseconds
+import kotlin.time.Duration
 
 // The key to this working properly is that the launch and async calls use a different CoroutineScope
 // See https://proandroiddev.com/coroutines-snags-6bf6fb53a3d1 for other details
@@ -25,7 +25,7 @@ fun main() {
           try {
             withContext<Unit>(Dispatchers.Default + CoroutineName("launchException")) {
               log("Throwing exception")
-              delay(100.milliseconds)
+              delay(Duration.milliseconds(100))
               throw IndexOutOfBoundsException()
             }
           } catch (e: Exception) {
@@ -33,8 +33,10 @@ fun main() {
           }
         }
       job.join()
-      log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName
-        ?: "None"}")
+      log("Caught cancellation exception: ${
+        job.getCancellationException().cause?.javaClass?.simpleName
+          ?: "None"
+      }")
 
     }
     log("Finished launchException()")
@@ -50,14 +52,16 @@ fun main() {
     val job =
       GlobalScope.launch(handler) {
         log("Throwing exception")
-        delay(100.milliseconds)
+        delay(Duration.milliseconds(100))
         throw IndexOutOfBoundsException()
       }
 
     runBlocking {
       job.join()
-      log("Caught cancellation exception: ${job.getCancellationException().cause?.javaClass?.simpleName
-        ?: "None"}")
+      log("Caught cancellation exception: ${
+        job.getCancellationException().cause?.javaClass?.simpleName
+          ?: "None"
+      }")
     }
     log("Finished launchWithHandlerException()")
   }

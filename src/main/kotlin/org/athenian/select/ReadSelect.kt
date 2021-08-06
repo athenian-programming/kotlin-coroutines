@@ -11,7 +11,6 @@ import kotlinx.coroutines.selects.selectUnbiased
 import org.athenian.delay
 import kotlin.random.Random
 import kotlin.time.Duration
-import kotlin.time.milliseconds
 
 fun main() {
   class Results(val id: String, val total: Int)
@@ -22,8 +21,8 @@ fun main() {
 
     suspend fun generateData() {
       repeat(messageCount) {
-        channel.send(Random.nextInt(10).milliseconds)
-        delay(Random.nextInt(5).milliseconds)
+        channel.send(Duration.milliseconds(Random.nextInt(10)))
+        delay(Duration.milliseconds(Random.nextInt(5)))
       }
       channel.close()
     }
@@ -37,9 +36,9 @@ fun main() {
             results.withIndex()
               .filter { (_, channel) -> !channel.isClosedForReceive }
               .forEach { (i, channel) ->
-                channel.onReceiveOrClosed { value ->
+                channel.onReceiveCatching { value ->
                   if (!value.isClosed) {
-                    resultsMap[value.value.id] = value.value.total
+                    resultsMap[value.getOrThrow().id] = value.getOrThrow().total
                     orderRead.add(i)
                   }
                 }
@@ -50,9 +49,9 @@ fun main() {
             results.withIndex()
               .filter { (_, channel) -> !channel.isClosedForReceive }
               .forEach { (i, channel) ->
-                channel.onReceiveOrClosed { value ->
+                channel.onReceiveCatching { value ->
                   if (!value.isClosed) {
-                    resultsMap[value.value.id] = value.value.total
+                    resultsMap[value.getOrThrow().id] = value.getOrThrow().total
                     orderRead.add(i)
                   }
                 }

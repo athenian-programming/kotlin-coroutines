@@ -6,7 +6,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.log
-import kotlin.time.seconds
+import kotlin.time.Duration
 
 fun main() {
   runBlocking {
@@ -23,7 +23,7 @@ fun main() {
           }
         }
       }
-    org.athenian.delay(1.seconds)
+    org.athenian.delay(Duration.seconds(1))
     job.cancelAndJoin()
     log("Done")
   }

@@ -5,7 +5,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import kotlin.random.Random
-import kotlin.time.milliseconds
+import kotlin.time.Duration
 
 fun main() {
 
@@ -15,7 +15,7 @@ fun main() {
       launch {
         repeat(5) {
           channel.send(it * it)
-          delay(Random.nextLong(1_000).milliseconds)
+          delay(Duration.milliseconds(Random.nextLong(1_000)))
         }
       }
 
@@ -30,7 +30,7 @@ fun main() {
       launch {
         repeat(5) {
           channel.send(it * it)
-          delay(Random.nextLong(1_000).milliseconds)
+          delay(Duration.milliseconds(Random.nextLong(1_000)))
         }
         channel.close()
       }

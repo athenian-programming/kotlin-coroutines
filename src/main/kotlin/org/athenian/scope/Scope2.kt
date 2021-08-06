@@ -5,20 +5,20 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.seconds
+import kotlin.time.Duration
 
 // See https://medium.com/@elizarov/explicit-concurrency-67a8e8fd9b25
 
 fun main() {
   suspend fun delayedCall1() {
     log("Starting delayedCall1()")
-    delay(1.seconds)
+    delay(Duration.seconds(1))
     log("Ending delayedCall1()")
   }
 
   suspend fun delayedCall2() {
     log("Starting delayedCall2()")
-    delay(1.seconds)
+    delay(Duration.seconds(1))
     log("Ending delayedCall2()")
   }
 

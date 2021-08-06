@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
-import kotlin.time.seconds
+import kotlin.time.Duration
 
 fun main() {
   open class Receiver(val id: Int, val flow: Flow<Int>) {
@@ -19,7 +19,7 @@ fun main() {
         .onEach {
           println("Receiver $id read value: $it")
           // Introduce a delay to see a pause for all reads to take place
-          delay(2.seconds)
+          delay(Duration.seconds(2))
         }
         .onCompletion { println("Completed Receiver $id") }
         .collect { println("Collected Receiver $id") }
@@ -35,7 +35,7 @@ fun main() {
     // Start each of the receivers in a separate coroutine
     (1..workerCount).forEach {
       launch {
-        delay(2.seconds)
+        delay(Duration.seconds(2))
         Receiver(it, channel.asFlow()).listen()
       }
     }
@@ -44,7 +44,7 @@ fun main() {
     repeat(iterations) {
       println("Sending value $it")
       channel.send(it)
-      delay(1.seconds)
+      delay(Duration.seconds(1))
     }
 
     // Close channel inside coroutine scope

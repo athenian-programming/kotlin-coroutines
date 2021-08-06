@@ -5,12 +5,11 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeoutOrNull
 import org.athenian.delay
-import kotlin.time.milliseconds
-import kotlin.time.seconds
+import kotlin.time.Duration
 
 fun main() {
   suspend fun calc(): String {
-    delay(3.seconds)
+    delay(Duration.seconds(3))
     return "A string value"
   }
 
@@ -19,7 +18,7 @@ fun main() {
 
     while (true) {
       val completed =
-        withTimeoutOrNull(500.milliseconds.toLongMilliseconds()) {
+        withTimeoutOrNull(Duration.milliseconds(500).inWholeMilliseconds) {
           println("Waiting")
           println("Got back: ${calcCall.await()}")
         }

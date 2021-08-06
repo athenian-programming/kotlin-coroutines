@@ -4,8 +4,8 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.runBlocking
+import kotlin.time.Duration
 import kotlin.time.measureTimedValue
-import kotlin.time.milliseconds
 
 // See: https://jivimberg.io/blog/2018/05/04/parallel-map-in-kotlin/
 
@@ -13,7 +13,7 @@ fun main() {
   val iterations = 10
 
   suspend fun someCalculation(v: Int): String {
-    val del = 1_000.milliseconds
+    val del = Duration.milliseconds(1_000)
     delay(del)
     println("$v paused $del")
     return "Value $v"

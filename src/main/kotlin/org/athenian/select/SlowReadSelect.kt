@@ -11,7 +11,6 @@ import kotlinx.coroutines.selects.select
 import org.athenian.delay
 import kotlin.random.Random
 import kotlin.time.Duration
-import kotlin.time.milliseconds
 
 fun main() {
   class Results(val id: String, val total: Int)
@@ -28,7 +27,7 @@ fun main() {
           slowWorker.onSend(r) { }
           fastWorker.onSend(r) { }
         }
-        delay(10.milliseconds)
+        delay(Duration.milliseconds(10))
       }
       slowWorker.close()
       fastWorker.close()
@@ -41,9 +40,9 @@ fun main() {
           results
             .filter { !it.isClosedForReceive }
             .forEach {
-              it.onReceiveOrClosed { value ->
+              it.onReceiveCatching { value ->
                 if (!value.isClosed)
-                  resultsMap[value.value.id] = value.value.total
+                  resultsMap[value.getOrThrow().id] = value.getOrThrow().total
               }
             }
         }
@@ -92,6 +91,6 @@ fun main() {
   }
 
   runBlocking {
-    execute(1_000, 100.milliseconds, 10.milliseconds)
+    execute(1_000, Duration.milliseconds(100), Duration.milliseconds(10))
   }
 }

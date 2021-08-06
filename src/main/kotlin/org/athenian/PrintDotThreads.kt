@@ -1,18 +1,18 @@
 package org.athenian
 
 import kotlin.concurrent.thread
+import kotlin.time.Duration
 import kotlin.time.measureTime
-import kotlin.time.seconds
 
 fun main() {
   val count = 100_000
-  val delay = 1.seconds
+  val delay = Duration.seconds(1)
 
   measureTime {
     val jobs =
       List(count) {
         thread {
-          Thread.sleep(delay.toLongMilliseconds())
+          Thread.sleep(delay.inWholeMilliseconds)
           print(".")
         }
       }

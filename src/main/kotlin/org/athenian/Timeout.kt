@@ -4,7 +4,7 @@ import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withTimeout
 import kotlinx.coroutines.withTimeoutOrNull
-import kotlin.time.milliseconds
+import kotlin.time.Duration
 
 fun main() {
   suspend fun timeout1() {
@@ -12,7 +12,7 @@ fun main() {
       withTimeout(1300) {
         repeat(1_000) { i ->
           log("I'm sleeping $i ...")
-          delay(500.milliseconds)
+          delay(Duration.milliseconds(500))
         }
       }
     } catch (e: TimeoutCancellationException) {
@@ -25,7 +25,7 @@ fun main() {
       withTimeoutOrNull(1300) {
         repeat(1_000) { i ->
           log("I'm sleeping $i ...")
-          delay(500.milliseconds)
+          delay(Duration.milliseconds(500))
         }
         "Done"
       }
@@ -37,7 +37,7 @@ fun main() {
       withTimeoutOrNull(1_300) {
         repeat(2) { i ->
           log("I'm sleeping $i ...")
-          delay(500.milliseconds)
+          delay(Duration.milliseconds(500))
         }
         "Done"
       }
