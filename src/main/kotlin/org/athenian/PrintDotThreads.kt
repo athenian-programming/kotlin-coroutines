@@ -17,7 +17,7 @@ fun main() {
         }
       }
     jobs.forEach { it.join() }
-  }.apply { log("\nFinished in $this") }
+  }.apply { println("\nFinished in $this") }
 }
 
 

@@ -4,6 +4,7 @@ import kotlin.concurrent.thread
 import kotlin.time.measureTime
 
 fun main() {
+
   fun daemonThread() {
     val t =
       thread(isDaemon = true) {
@@ -39,8 +40,9 @@ fun main() {
   fun maxThreadsAtOnce() {
     measureTime {
       val threads =
-        List(128) {
+        List(12800) {
           thread {
+            log("Started")
             Thread.sleep(1_000)
             log("Done")
           }
@@ -48,9 +50,9 @@ fun main() {
 
       threads.forEach { it.join() }
     }.also { log("Total time: $it") }
-
-    daemonThread()
-    delayedThread()
-    maxThreadsAtOnce()
   }
+
+  //daemonThread()
+  //delayedThread()
+  maxThreadsAtOnce()
 }

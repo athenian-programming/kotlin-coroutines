@@ -11,6 +11,7 @@ import kotlin.time.Duration
 fun main() {
   fun sleepFunction1() {
     log("sleepFunction1")
+
     GlobalScope.launch {
       log("Before first sleep")
       Thread.sleep(200)
