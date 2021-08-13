@@ -19,5 +19,3 @@ fun main() {
     jobs.forEach { it.join() }
   }.apply { println("\nFinished in $this") }
 }
-
-

@@ -22,5 +22,3 @@ fun main() {
     }
   }.apply { println("\nFinished in $this") }
 }
-
-
