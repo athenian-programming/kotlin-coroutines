@@ -8,6 +8,8 @@ import java.io.IOException
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
 
+// https://elizarov.medium.com/shared-flows-broadcast-channels-899b675e805c
+
 fun runCommand(cmd: String, workingDir: String = ".") =
   try {
     val parts = cmd.split("\\s".toRegex())

@@ -65,8 +65,8 @@ fun main() {
   val sharedFlow = MutableSharedFlow<Int>(channelCapacity)
   val receivers =
     List(workerCount) {
-      if (it == 1)
       // Create only a single impatient receiver
+      if (it == 1)
         ImpatientFlowListener(it, sharedFlow.produceIn(GlobalScope))
       else
         FlowListener(it, sharedFlow.produceIn(GlobalScope))

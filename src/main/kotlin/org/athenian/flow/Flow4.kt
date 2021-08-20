@@ -35,13 +35,9 @@ fun main() {
   val vals = flowOf(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
 
   runBlocking {
-    vals
-      .everyOther()
-      .collect { log(it) }
+    vals.everyOther().collect { log(it) }
     log()
-    vals
-      .everyNth(3)
-      .collect { log(it) }
+    vals.everyNth(3).collect { log(it) }
   }
 }
 
