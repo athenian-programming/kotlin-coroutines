@@ -4,7 +4,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
@@ -25,22 +24,20 @@ fun main() {
     launch {
       sharedFlow.onStart { println("Starting square receiver") }
         .takeWhile { it != -1 }
-        .onEach {
+        .onCompletion { results.close() }
+        .collect {
           //println("Read square value: $it")
           results.send("$it squared id ${it * it}")
         }
-        .onCompletion { results.close() }
-        .collect { println("Collecting square receiver") }
     }
 
     launch {
       sharedFlow.onStart { println("Starting cube receiver") }
         .takeWhile { it != -1 }
-        .onEach {
+        .collect {
           //println("Read cube value: $it")
           results.send("$it cubed id ${it * it * it}")
         }
-        .collect { println("Collecting cube receiver") }
     }
 
     launch {
