@@ -5,13 +5,13 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTimedValue
 
 fun main() {
 
   suspend fun calc(): String {
-    delay(Duration.seconds(3))
+    delay(seconds(3))
     return "A string val"
   }
 

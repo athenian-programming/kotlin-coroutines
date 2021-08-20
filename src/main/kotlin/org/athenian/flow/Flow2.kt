@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 // See https://proandroiddev.com/an-early-look-at-kotlin-coroutines-flow-62e46baa6eb0
 
@@ -33,7 +33,7 @@ fun main() {
       intVals
         .take(5)
         .map { it * it }
-        .onEach { delay(Duration.milliseconds(100)) }
+        .onEach { delay(milliseconds(100)) }
         .collect { log("Collecting flowExample $it") }
     }
   }
@@ -47,7 +47,7 @@ fun main() {
         .take(5)
         .map { it * it }
         .onEach { log("First asFlowExample onEach()") }
-        .onEach { delay(Duration.milliseconds(100)) }
+        .onEach { delay(milliseconds(100)) }
         .flowOn(Dispatchers.Default) //changes upstream context
         .onEach { log("Second asFlowExample onEach()") }
         .map { it * 2 }
@@ -64,7 +64,7 @@ fun main() {
         .take(5)
         .map { it * it }
         .onEach { log("First flowOfExample onEach()") }
-        .onEach { delay(Duration.milliseconds(100)) }
+        .onEach { delay(milliseconds(100)) }
         .flowOn(Dispatchers.Default) //changes upstream context
         .onEach { log("Second flowOfExample onEach()") }
         .map { it * 2 }

@@ -7,7 +7,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
   val iterations = 4
@@ -31,13 +31,13 @@ fun main() {
         val d =
           async(start = cs) {
             println("Calculating value $i")
-            delay(Duration.milliseconds(10))
+            delay(milliseconds(10))
             "Async value $i"
           }
-        delay(Duration.milliseconds(10))
+        delay(milliseconds(10))
         println("Sending value $i")
         channel.send(d)
-        delay(Duration.milliseconds(100))
+        delay(milliseconds(100))
       }
     }
   }

@@ -2,13 +2,13 @@ package org.athenian
 
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
   runBlocking {
     val jobs = List(10) {
       launch {
-        delay(Duration.milliseconds(1_000))
+        delay(milliseconds(1_000))
         println("${Thread.currentThread()} has run.")
       }
     }

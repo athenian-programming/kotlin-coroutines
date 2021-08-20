@@ -6,7 +6,7 @@ import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.runBlocking
 import kotlin.random.Random
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
   fun CoroutineScope.produceNumbers() =
@@ -32,7 +32,7 @@ fun main() {
 
     repeat(5) {
       log("Received ${squares.receive()}")
-      delay(Duration.milliseconds(Random.nextLong(2_000)))
+      delay(milliseconds(Random.nextLong(2_000)))
     }
 
     coroutineContext.cancelChildren()

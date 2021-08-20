@@ -4,7 +4,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.measureTimedValue
 
 const val reps = 10
@@ -15,7 +15,7 @@ fun main() {
       measureTimedValue {
         (1..reps)
           .map {
-            delay(Duration.seconds(1))
+            delay(seconds(1))
             it
           }
           .sumOf { it }
@@ -27,7 +27,7 @@ fun main() {
         (1..reps)
           .map {
             async {
-              delay(Duration.seconds(1))
+              delay(seconds(1))
               it
             }
           }

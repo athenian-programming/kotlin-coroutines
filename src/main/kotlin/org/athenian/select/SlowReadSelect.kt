@@ -11,6 +11,7 @@ import kotlinx.coroutines.selects.select
 import org.athenian.delay
 import kotlin.random.Random
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
   class Results(val id: String, val total: Int)
@@ -27,7 +28,7 @@ fun main() {
           slowWorker.onSend(r) { }
           fastWorker.onSend(r) { }
         }
-        delay(Duration.milliseconds(10))
+        delay(milliseconds(10))
       }
       slowWorker.close()
       fastWorker.close()
@@ -91,6 +92,6 @@ fun main() {
   }
 
   runBlocking {
-    execute(1_000, Duration.milliseconds(100), Duration.milliseconds(10))
+    execute(1_000, milliseconds(100), milliseconds(10))
   }
 }

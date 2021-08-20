@@ -4,7 +4,7 @@ import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
   val iterations = 4
@@ -17,11 +17,11 @@ fun main() {
           Pair(i,
             async(start = cs) {
               println("Calculating value $i")
-              delay(Duration.milliseconds(10))
+              delay(milliseconds(10))
               "Async value $i"
             })
         }
-        .onEach { delay(Duration.milliseconds(100)) }
+        .onEach { delay(milliseconds(100)) }
         .onEach { (i, deferred) ->
           println("Waiting for value $i")
           println("Received value: ${deferred.await()}")

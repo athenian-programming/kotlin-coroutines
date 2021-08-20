@@ -10,7 +10,7 @@ import kotlinx.coroutines.selects.select
 import kotlinx.coroutines.selects.selectUnbiased
 import org.athenian.delay
 import kotlin.random.Random
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
   class Results(val id: String, val total: Int)
@@ -30,7 +30,7 @@ fun main() {
             channel.forEach { it.onSend(r) {} }
           }
 
-        delay(Duration.milliseconds(10))
+        delay(milliseconds(10))
       }
       channel.forEach { it.close() }
     }

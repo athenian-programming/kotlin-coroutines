@@ -6,7 +6,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
   val cnt = 5
@@ -57,7 +57,7 @@ fun main() {
         .onEach { log("Completed deferred2 for $it") }
 
     runBlocking {
-      delay(Duration.milliseconds(100))
+      delay(milliseconds(100))
       log("Summing deferred2")
       log("Sum of deferred2: ${deferred2.sumOf { it.await() }}")
     }
@@ -77,7 +77,7 @@ fun main() {
         .onEach { log("Completed deferred3 for $it") }
 
     runBlocking {
-      delay(Duration.milliseconds(100))
+      delay(milliseconds(100))
       log("Summing deferred3")
       log("Sum of deferred3: ${deferred3.sumOf { it.await() }}")
     }

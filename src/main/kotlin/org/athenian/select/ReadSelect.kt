@@ -11,6 +11,7 @@ import kotlinx.coroutines.selects.selectUnbiased
 import org.athenian.delay
 import kotlin.random.Random
 import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
   class Results(val id: String, val total: Int)
@@ -21,8 +22,8 @@ fun main() {
 
     suspend fun generateData() {
       repeat(messageCount) {
-        channel.send(Duration.milliseconds(Random.nextInt(10)))
-        delay(Duration.milliseconds(Random.nextInt(5)))
+        channel.send(milliseconds(Random.nextInt(10)))
+        delay(milliseconds(Random.nextInt(5)))
       }
       channel.close()
     }

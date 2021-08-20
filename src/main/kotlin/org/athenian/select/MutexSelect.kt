@@ -9,7 +9,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import org.athenian.delay
 import kotlin.random.Random
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
   class MutexWrapper(val id: Int, val channel: Channel<Unit>, val mutex: Mutex, val block: suspend () -> Unit)
@@ -34,7 +34,7 @@ fun main() {
             if (active)
               println("Block surrendered lock for: $i")
           }
-          delay(Duration.milliseconds(50))
+          delay(milliseconds(50))
         }
         println("Completed block for $i")
       }
@@ -55,7 +55,7 @@ fun main() {
     mutexOrder += selected.id
     println("selectMutex surrendered lock for: ${selected.id}")
     selected.mutex.unlock()
-    delay(Duration.milliseconds(50))
+    delay(milliseconds(50))
   }
 
   runBlocking {
@@ -66,13 +66,13 @@ fun main() {
     launch { repeat(iterationCount) { selectMutex(iterationCount) } }
 
     // Give coroutines a chance to get setup
-    delay(Duration.milliseconds(50))
+    delay(milliseconds(50))
 
     // Send msg to unlock random mutex
     randomVals.onEach { i ->
       println("Choosing to unlock: $i")
       wrappers[i].channel.send(Unit)
-      delay(Duration.milliseconds(100))
+      delay(milliseconds(100))
     }
 
     // Stop coroutines

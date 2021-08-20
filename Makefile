@@ -1,4 +1,4 @@
-default: compile
+default: versioncheck
 
 clean:
 	./gradlew clean
@@ -12,4 +12,4 @@ versioncheck:
 	./gradlew dependencyUpdates
 
 upgrade-wrapper:
-	./gradlew wrapper --gradle-version=7.1.1 --distribution-type=bin
+	./gradlew wrapper --gradle-version=7.2 --distribution-type=bin

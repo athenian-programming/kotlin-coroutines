@@ -1,28 +1,38 @@
-package org.athenian.broadcast
+package org.athenian.sharedflow
 
-import kotlinx.coroutines.channels.BroadcastChannel
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.produceIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.selects.select
 import org.athenian.delay
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
+
+interface Listener {
+  suspend fun listen()
+}
 
 fun main() {
-  open class Receiver(val id: Int, val channel: ReceiveChannel<Int>) {
-    open suspend fun listen() {
+  class FlowListener(val id: Int, val channel: ReceiveChannel<Int>) : Listener {
+    override suspend fun listen() {
       for (v in channel) {
         println("Receiver $id read value: $v")
 
         // Introduce a delay to see a pause for all reads to take place
         if (id == 0)
-          delay(Duration.seconds(2))
+          delay(seconds(2))
+
+        if (id == -1)
+          break
       }
       println("Receiver $id completed")
     }
   }
 
-  class ImpatientReceiver(id: Int, channel: ReceiveChannel<Int>) : Receiver(id, channel) {
+  class ImpatientFlowListener(val id: Int, val channel: ReceiveChannel<Int>) : Listener {
     override suspend fun listen() {
       var active = true
       while (active) {
@@ -34,12 +44,12 @@ fun main() {
 
                 // Introduce a delay to see a pause for all reads to take place
                 if (id == 0)
-                  delay(Duration.seconds(2))
+                  delay(seconds(2))
               }
               !v.isClosed
             }
             // Timeout after waiting 500ms for a read
-            onTimeout(Duration.milliseconds(500).inWholeMilliseconds) {
+            onTimeout(milliseconds(500).inWholeMilliseconds) {
               println("Receiver $id is impatient for values")
               true
             }
@@ -52,14 +62,14 @@ fun main() {
   val workerCount = 3
   val channelCapacity = 5
   val iterations = 10
-  val channel = BroadcastChannel<Int>(channelCapacity)
+  val sharedFlow = MutableSharedFlow<Int>(channelCapacity)
   val receivers =
     List(workerCount) {
       if (it == 1)
       // Create only a single impatient receiver
-        ImpatientReceiver(it, channel.openSubscription())
+        ImpatientFlowListener(it, sharedFlow.produceIn(GlobalScope))
       else
-        Receiver(it, channel.openSubscription())
+        FlowListener(it, sharedFlow.produceIn(GlobalScope))
     }
 
   runBlocking {
@@ -69,11 +79,11 @@ fun main() {
     // Send values to receivers
     repeat(iterations) {
       println("Sending value $it")
-      channel.send(it)
-      delay(Duration.milliseconds(10))
+      sharedFlow.emit(it)
+      delay(milliseconds(10))
     }
 
     // Close channel inside coroutine scope
-    channel.close()
+    //sharedFlow.close()
   }
 }

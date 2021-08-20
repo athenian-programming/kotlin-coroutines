@@ -29,9 +29,9 @@ compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
     kotlinOptions.freeCompilerArgs += ['-Xuse-experimental=kotlin.time.ExperimentalTime',
                                        '-Xuse-experimental=kotlinx.coroutines.FlowPreview',
+                                       '-Xuse-experimental=kotlinx.coroutines.DelicateCoroutinesApi',
                                        '-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi',
-                                       '-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi',
-                                       '-Xuse-experimental=kotlinx.coroutines.DelicateCoroutinesApi'  ]
+                                       '-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi'  ]
 }
 
 compileTestKotlin {

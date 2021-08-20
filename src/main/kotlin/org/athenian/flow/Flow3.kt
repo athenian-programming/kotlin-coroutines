@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 import kotlin.time.measureTimedValue
 
 // See https://medium.com/@elizarov/kotlin-flows-and-coroutines-256260fb3bdb
@@ -37,7 +37,7 @@ fun main() {
     val flowVals =
       flow {
         repeat(500) {
-          delay(Duration.milliseconds(10))
+          delay(milliseconds(10))
           emit(it)
         }
       }
@@ -48,11 +48,11 @@ fun main() {
           if (useBuffer)
             flowVals
               .buffer()
-              .onEach { delay(Duration.milliseconds(10)) }
+              .onEach { delay(milliseconds(10)) }
               .collect { counter++ }
           else
             flowVals
-              .onEach { delay(Duration.milliseconds(10)) }
+              .onEach { delay(milliseconds(10)) }
               .collect { counter++ }
           counter
         }

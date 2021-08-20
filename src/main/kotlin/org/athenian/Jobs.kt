@@ -4,7 +4,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.CancellationException
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
+import kotlin.time.Duration.Companion.seconds
 
 val Job.status: String
   get() = "Active: ${this.isActive} Completed: ${this.isCompleted} Cancelled: ${this.isCancelled} Children: ${this.children.count()}"
@@ -15,10 +16,10 @@ fun main() {
       launch {
 
         launch {
-          delay(Duration.seconds(10))
+          delay(seconds(10))
         }
 
-        delay(Duration.milliseconds(100))
+        delay(milliseconds(100))
         val inner = coroutineContext[Job]!!
         log("inner status: ${inner.status}")
         inner.cancel(CancellationException("Test cancel"))
@@ -31,7 +32,7 @@ fun main() {
         log("Should not get here")
       }
 
-    delay(Duration.milliseconds(200))
+    delay(milliseconds(200))
     log("outer status: ${outer.status}")
     log("Cancellation exception: ${outer.getCancellationException()}")
   }

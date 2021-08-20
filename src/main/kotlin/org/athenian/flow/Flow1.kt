@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import org.athenian.log
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.seconds
 
 // See https://proandroiddev.com/an-early-look-at-kotlin-coroutines-flow-62e46baa6eb0
 // Demonstrates a hot stream -- values are produced regardless of a consumer being present
@@ -23,11 +23,11 @@ fun main() {
         }
       }
 
-    delay(Duration.seconds(5))
+    delay(seconds(5))
 
     repeat(5) {
       log("Recieved ${hot.receive()}")
-      delay(Duration.seconds(1))
+      delay(seconds(1))
     }
 
     log("Cancel hot")
@@ -41,10 +41,10 @@ fun main() {
         }
       }
 
-    delay(Duration.seconds(5))
+    delay(seconds(5))
 
     cold.take(5)
-      .onEach { delay(Duration.seconds(1)) }
+      .onEach { delay(seconds(1)) }
       .collect { log("Collected $it") }
   }
 }

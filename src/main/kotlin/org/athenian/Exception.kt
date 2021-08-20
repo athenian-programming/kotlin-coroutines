@@ -11,7 +11,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 // The key to this working properly is that the launch and async calls use a different CoroutineScope
 // See https://proandroiddev.com/coroutines-snags-6bf6fb53a3d1 for other details
@@ -25,7 +25,7 @@ fun main() {
           try {
             withContext<Unit>(Dispatchers.Default + CoroutineName("launchException")) {
               log("Throwing exception")
-              delay(Duration.milliseconds(100))
+              delay(milliseconds(100))
               throw IndexOutOfBoundsException()
             }
           } catch (e: Exception) {
@@ -52,7 +52,7 @@ fun main() {
     val job =
       GlobalScope.launch(handler) {
         log("Throwing exception")
-        delay(Duration.milliseconds(100))
+        delay(milliseconds(100))
         throw IndexOutOfBoundsException()
       }
 

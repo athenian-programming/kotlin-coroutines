@@ -4,7 +4,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
   val iterations = 10
@@ -21,7 +21,7 @@ fun main() {
 
     for (i in channel) {
       println("Reading $i")
-      delay(Duration.milliseconds(1_000))
+      delay(milliseconds(1_000))
     }
   }
 }

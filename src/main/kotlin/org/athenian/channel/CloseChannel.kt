@@ -5,7 +5,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.athenian.delay
 import kotlin.random.Random
-import kotlin.time.Duration
+import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
 
@@ -15,10 +15,9 @@ fun main() {
       launch {
         repeat(5) {
           channel.send(it * it)
-          delay(Duration.milliseconds(Random.nextLong(1_000)))
+          delay(milliseconds(Random.nextLong(1_000)))
         }
       }
-
       repeat(5) { println(channel.receive()) }
     }
     println("withoutClose complete")
@@ -30,7 +29,7 @@ fun main() {
       launch {
         repeat(5) {
           channel.send(it * it)
-          delay(Duration.milliseconds(Random.nextLong(1_000)))
+          delay(milliseconds(Random.nextLong(1_000)))
         }
         channel.close()
       }
