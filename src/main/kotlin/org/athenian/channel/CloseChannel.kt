@@ -8,7 +8,6 @@ import kotlin.random.Random
 import kotlin.time.Duration.Companion.milliseconds
 
 fun main() {
-
   fun withoutClose() {
     runBlocking {
       val channel = Channel<Int>()

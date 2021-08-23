@@ -1,6 +1,5 @@
 package org.athenian.sharedflow
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
@@ -13,20 +12,6 @@ import org.athenian.delay
 import kotlin.time.Duration.Companion.seconds
 
 fun main() {
-  open class FlowListener(val id: Int, val flow: Flow<Int>) {
-    open suspend fun listen() {
-      flow.onStart { println("Starting Receiver $id") }
-        .takeWhile { it != -1 }
-        .onEach {
-          println("Receiver $id read value: $it")
-          // Introduce a delay to see a pause for all reads to take place
-          delay(seconds(2))
-        }
-        .onCompletion { println("Completed Receiver $id") }
-        .collect { println("Collected Receiver $id") }
-    }
-  }
-
   val workerCount = 3
   val channelCapacity = 5
   val iterations = 10
@@ -37,7 +22,15 @@ fun main() {
     repeat(workerCount) { i ->
       launch {
         delay(seconds(2))
-        FlowListener(i, sharedFlow).listen()
+        sharedFlow
+          .onStart { println("Starting Listening $i") }
+          .takeWhile { it != -1 }
+          .onEach {
+            // Introduce a delay to see a pause for all reads to take place
+            delay(seconds(2))
+          }
+          .onCompletion { println("Completed Listening $i") }
+          .collect { println("Receiver $i read value: $it") }
       }
     }
 

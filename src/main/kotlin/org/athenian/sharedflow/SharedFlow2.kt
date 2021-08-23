@@ -41,7 +41,6 @@ fun main() {
             channel.onReceiveCatching { v ->
               if (!v.isClosed) {
                 println("Receiver $id read value: ${v.getOrNull()}")
-
                 // Introduce a delay to see a pause for all reads to take place
                 if (id == 0)
                   delay(seconds(2))
