@@ -19,9 +19,11 @@ fun main() {
       channel.close()
     }
 
-    for (i in channel) {
-      println("Reading $i")
-      delay(milliseconds(1_000))
+    launch {
+      for (i in channel) {
+        println("Reading $i")
+        delay(milliseconds(1_000))
+      }
     }
   }
 }
