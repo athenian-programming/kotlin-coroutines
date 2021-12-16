@@ -13,7 +13,7 @@ fun main() {
   val iterations = 10
 
   suspend fun someCalculation(v: Int): String {
-    val del = milliseconds(1_000)
+    val del = 1_000.milliseconds
     delay(del)
     println("$v paused $del")
     return "Value $v"

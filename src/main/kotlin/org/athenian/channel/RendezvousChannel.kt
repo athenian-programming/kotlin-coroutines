@@ -15,7 +15,7 @@ fun main() {
       repeat(iterations) {
         println("Writing $it")
         channel.send(it)
-        delay(milliseconds(2_000))
+        delay(2_000.milliseconds)
       }
       channel.close()
     }
@@ -28,7 +28,7 @@ fun main() {
     // Slow reader
     repeat(iterations / 2) {
       println("Slow Reading ${channel.receive()}")
-      delay(milliseconds(4_000))
+      delay(4_000.milliseconds)
     }
   }
 }

@@ -22,8 +22,8 @@ fun main() {
 
     suspend fun generateData() {
       repeat(messageCount) {
-        channel.send(milliseconds(Random.nextInt(10)))
-        delay(milliseconds(Random.nextInt(5)))
+        channel.send(Random.nextInt(10).milliseconds)
+        delay(Random.nextInt(5).milliseconds)
       }
       channel.close()
     }

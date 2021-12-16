@@ -25,7 +25,7 @@ fun main() {
           try {
             withContext<Unit>(Dispatchers.Default + CoroutineName("launchException")) {
               log("Throwing exception")
-              delay(milliseconds(100))
+              delay(100.milliseconds)
               throw IndexOutOfBoundsException()
             }
           } catch (e: Exception) {
@@ -52,7 +52,7 @@ fun main() {
     val job =
       GlobalScope.launch(handler) {
         log("Throwing exception")
-        delay(milliseconds(100))
+        delay(100.milliseconds)
         throw IndexOutOfBoundsException()
       }
 

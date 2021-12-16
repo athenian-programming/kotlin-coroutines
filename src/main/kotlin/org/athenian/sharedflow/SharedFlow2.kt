@@ -23,7 +23,7 @@ fun main() {
 
         // Introduce a delay to see a pause for all reads to take place
         if (id == 0)
-          delay(seconds(2))
+          delay(2.seconds)
 
         if (id == -1)
           break
@@ -43,12 +43,12 @@ fun main() {
                 println("Receiver $id read value: ${v.getOrNull()}")
                 // Introduce a delay to see a pause for all reads to take place
                 if (id == 0)
-                  delay(seconds(2))
+                  delay(2.seconds)
               }
               !v.isClosed
             }
             // Timeout after waiting 500ms for a read
-            onTimeout(milliseconds(500).inWholeMilliseconds) {
+            onTimeout(500.milliseconds.inWholeMilliseconds) {
               println("Receiver $id is impatient for values")
               true
             }
@@ -79,7 +79,7 @@ fun main() {
     repeat(iterations) {
       println("Sending value $it")
       sharedFlow.emit(it)
-      delay(milliseconds(10))
+      delay(10.milliseconds)
     }
 
     // Close channel inside coroutine scope

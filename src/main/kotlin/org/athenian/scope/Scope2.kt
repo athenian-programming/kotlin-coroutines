@@ -12,13 +12,13 @@ import kotlin.time.Duration.Companion.seconds
 fun main() {
   suspend fun delayedCall1() {
     log("Starting delayedCall1()")
-    delay(seconds(1))
+    delay(1.seconds)
     log("Ending delayedCall1()")
   }
 
   suspend fun delayedCall2() {
     log("Starting delayedCall2()")
-    delay(seconds(1))
+    delay(1.seconds)
     log("Ending delayedCall2()")
   }
 

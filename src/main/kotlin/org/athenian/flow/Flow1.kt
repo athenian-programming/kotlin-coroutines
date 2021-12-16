@@ -1,7 +1,6 @@
 package org.athenian.flow
 
 import kotlinx.coroutines.channels.produce
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.take
@@ -23,11 +22,11 @@ fun main() {
         }
       }
 
-    delay(seconds(5))
+    delay(5.seconds)
 
     repeat(5) {
       log("Recieved ${hot.receive()}")
-      delay(seconds(1))
+      delay(1.seconds)
     }
 
     log("Cancel hot")
@@ -41,10 +40,10 @@ fun main() {
         }
       }
 
-    delay(seconds(5))
+    delay(5.seconds)
 
     cold.take(5)
-      .onEach { delay(seconds(1)) }
+      .onEach { delay(1.seconds) }
       .collect { log("Collected $it") }
   }
 }

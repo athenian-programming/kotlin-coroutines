@@ -19,7 +19,7 @@ fun main() {
       val orderJoined = mutableListOf<Int>()
 
       coroutineScope {
-        val wrappers = List(count) { i -> JobWrapper(i, launch { delay(seconds(1)) }) }
+        val wrappers = List(count) { i -> JobWrapper(i, launch { delay(1.seconds) }) }
 
         repeat(wrappers.size) {
           val selected =

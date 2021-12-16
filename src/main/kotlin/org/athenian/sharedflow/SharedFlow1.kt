@@ -1,7 +1,6 @@
 package org.athenian.sharedflow
 
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
@@ -21,13 +20,13 @@ fun main() {
     // Start each of the receivers in a separate coroutine
     repeat(workerCount) { i ->
       launch {
-        delay(seconds(2))
+        delay(2.seconds)
         sharedFlow
           .onStart { println("Starting Listening $i") }
           .takeWhile { it != -1 }
           .onEach {
             // Introduce a delay to see a pause for all reads to take place
-            delay(seconds(2))
+            delay(2.seconds)
           }
           .onCompletion { println("Completed Listening $i") }
           .collect { println("Receiver $i read value: $it") }
@@ -38,7 +37,7 @@ fun main() {
     repeat(iterations) { i ->
       println("Sending value $i")
       sharedFlow.emit(i)
-      delay(seconds(1))
+      delay(1.seconds)
     }
 
     // Stop Receiver

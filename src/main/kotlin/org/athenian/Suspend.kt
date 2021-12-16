@@ -11,14 +11,14 @@ import kotlin.time.measureTime
 fun main() {
   suspend fun func1() {
     withContext(Dispatchers.Default + CoroutineName("func1")) {
-      delay(seconds(2))
+      delay(2.seconds)
       log("I am in func1")
     }
   }
 
   suspend fun func2() {
     withContext(Dispatchers.Default + CoroutineName("func2")) {
-      delay(seconds(1))
+      delay(1.seconds)
       log("I am in func2")
     }
   }

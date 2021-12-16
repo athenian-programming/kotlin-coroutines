@@ -23,7 +23,7 @@ fun main() {
 
   suspend fun delayingCall() {
     log("delaying")
-    delay(seconds(3))
+    delay(3.seconds)
   }
 
   Executors.newFixedThreadPool(20).asCoroutineDispatcher()

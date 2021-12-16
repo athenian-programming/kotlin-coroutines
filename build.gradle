@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.5.21'
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
     id "com.github.ben-manes.versions" version "0.39.0"
 }
 
@@ -10,13 +10,13 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 
 repositories {
-    maven { url = 'https://maven-central.storage-download.googleapis.com/repos/central/data/' }
+    google()
     mavenCentral()
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_utils"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_utils"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-jdk8:$coroutines_version"
@@ -27,17 +27,13 @@ dependencies {
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
-    kotlinOptions.freeCompilerArgs += ['-Xuse-experimental=kotlin.time.ExperimentalTime',
-                                       '-Xuse-experimental=kotlinx.coroutines.FlowPreview',
-                                       '-Xuse-experimental=kotlinx.coroutines.DelicateCoroutinesApi',
-                                       '-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi',
-                                       '-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi'  ]
+    kotlinOptions.freeCompilerArgs += ['-Xopt-in=kotlin.time.ExperimentalTime',
+                                       '-Xopt-in=kotlinx.coroutines.FlowPreview',
+                                       '-Xopt-in=kotlinx.coroutines.DelicateCoroutinesApi',
+                                       '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+                                       '-Xopt-in=kotlinx.coroutines.InternalCoroutinesApi']
 }
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
-    kotlinOptions.freeCompilerArgs += ['-Xuse-experimental=kotlin.time.ExperimentalTime',
-                                       '-Xuse-experimental=kotlinx.coroutines.FlowPreview',
-                                       '-Xuse-experimental=kotlinx.coroutines.ExperimentalCoroutinesApi',
-                                       '-Xuse-experimental=kotlinx.coroutines.InternalCoroutinesApi']
 }

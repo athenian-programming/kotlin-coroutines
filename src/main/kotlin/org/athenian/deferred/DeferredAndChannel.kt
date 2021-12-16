@@ -31,13 +31,13 @@ fun main() {
         val d =
           async(start = cs) {
             println("Calculating value $i")
-            delay(milliseconds(10))
+            delay(10.milliseconds)
             "Async value $i"
           }
-        delay(milliseconds(10))
+        delay(10.milliseconds)
         println("Sending value $i")
         channel.send(d)
-        delay(milliseconds(100))
+        delay(100.milliseconds)
       }
     }
   }

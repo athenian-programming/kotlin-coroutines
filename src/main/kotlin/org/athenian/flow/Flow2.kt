@@ -2,7 +2,6 @@ package org.athenian.flow
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.flowOn
@@ -33,7 +32,7 @@ fun main() {
       intVals
         .take(5)
         .map { it * it }
-        .onEach { delay(milliseconds(100)) }
+        .onEach { delay(100.milliseconds) }
         .collect { log("Collecting flowExample $it") }
     }
   }
@@ -47,7 +46,7 @@ fun main() {
         .take(5)
         .map { it * it }
         .onEach { log("First asFlowExample onEach()") }
-        .onEach { delay(milliseconds(100)) }
+        .onEach { delay(100.milliseconds) }
         .flowOn(Dispatchers.Default) //changes upstream context
         .onEach { log("Second asFlowExample onEach()") }
         .map { it * 2 }
@@ -64,7 +63,7 @@ fun main() {
         .take(5)
         .map { it * it }
         .onEach { log("First flowOfExample onEach()") }
-        .onEach { delay(milliseconds(100)) }
+        .onEach { delay(100.milliseconds) }
         .flowOn(Dispatchers.Default) //changes upstream context
         .onEach { log("Second flowOfExample onEach()") }
         .map { it * 2 }

@@ -11,7 +11,7 @@ import kotlin.time.measureTimedValue
 fun main() {
 
   suspend fun calc(): String {
-    delay(seconds(3))
+    delay(3.seconds)
     return "A string val"
   }
 

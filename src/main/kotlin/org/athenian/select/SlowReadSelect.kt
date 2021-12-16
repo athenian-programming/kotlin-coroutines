@@ -28,7 +28,7 @@ fun main() {
           slowWorker.onSend(r) { }
           fastWorker.onSend(r) { }
         }
-        delay(milliseconds(10))
+        delay(10.milliseconds)
       }
       slowWorker.close()
       fastWorker.close()
@@ -92,6 +92,6 @@ fun main() {
   }
 
   runBlocking {
-    execute(1_000, milliseconds(100), milliseconds(10))
+    execute(1_000, 100.milliseconds, 10.milliseconds)
   }
 }

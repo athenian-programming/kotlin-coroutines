@@ -10,11 +10,11 @@ import kotlin.time.Duration.Companion.milliseconds
 fun main() {
   suspend fun execute() {
     coroutineScope {
-      val job = launch { delay(milliseconds(100)) }
+      val job = launch { delay(100.milliseconds) }
       val selected =
         select<String> {
           job.onJoin { "Joined job" }
-          onTimeout(milliseconds(10).inWholeMilliseconds) { "Timed out" }
+          onTimeout(10.milliseconds.inWholeMilliseconds) { "Timed out" }
         }
       println(selected)
     }

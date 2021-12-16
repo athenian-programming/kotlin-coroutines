@@ -15,7 +15,7 @@ fun main() {
       measureTimedValue {
         (1..reps)
           .map {
-            delay(seconds(1))
+            delay(1.seconds)
             it
           }
           .sumOf { it }
@@ -27,7 +27,7 @@ fun main() {
         (1..reps)
           .map {
             async {
-              delay(seconds(1))
+              delay(1.seconds)
               it
             }
           }

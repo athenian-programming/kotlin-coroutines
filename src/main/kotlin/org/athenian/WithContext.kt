@@ -18,11 +18,11 @@ fun main() {
             // withContext() invocation blocks
             withContext(Dispatchers.Default) {
               log("First task")
-              delay(seconds(1))
+              delay(1.seconds)
             }
 
             log("Second task")
-            delay(seconds(1))
+            delay(1.seconds)
           }
         job.join()
       }.also { log("Finished usingWithContext() in $it") }
@@ -36,11 +36,11 @@ fun main() {
             // launch() invocation does not block
             launch(Dispatchers.Default) {
               log("First task")
-              delay(seconds(1))
+              delay(1.seconds)
             }
 
             log("Second task")
-            delay(seconds(1))
+            delay(1.seconds)
           }
         job.join()
       }.also { log("Finished usingLaunch() in $it") }

@@ -18,7 +18,7 @@ fun main() {
   val deferred2 = GlobalScope.async(start = CoroutineStart.LAZY) { mult(7, 9) }
 
   runBlocking {
-    delay(milliseconds(100))
+    delay(100.milliseconds)
     log("Deferred1")
     log(deferred1.await())
 

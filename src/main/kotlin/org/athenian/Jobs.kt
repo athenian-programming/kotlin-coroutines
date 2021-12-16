@@ -16,10 +16,10 @@ fun main() {
       launch {
 
         launch {
-          delay(seconds(10))
+          delay(10.seconds)
         }
 
-        delay(milliseconds(100))
+        delay(100.milliseconds)
         val inner = coroutineContext[Job]!!
         log("inner status: ${inner.status}")
         inner.cancel(CancellationException("Test cancel"))
@@ -32,7 +32,7 @@ fun main() {
         log("Should not get here")
       }
 
-    delay(milliseconds(200))
+    delay(200.milliseconds)
     log("outer status: ${outer.status}")
     log("Cancellation exception: ${outer.getCancellationException()}")
   }

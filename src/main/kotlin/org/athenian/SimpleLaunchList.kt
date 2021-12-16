@@ -8,7 +8,7 @@ fun main() {
   runBlocking {
     val jobs = List(10) {
       launch {
-        delay(milliseconds(1_000))
+        delay(1_000.milliseconds)
         println("${Thread.currentThread()} has run.")
       }
     }

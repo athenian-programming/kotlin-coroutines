@@ -30,7 +30,7 @@ fun main() {
             channel.forEach { it.onSend(r) {} }
           }
 
-        delay(milliseconds(10))
+        delay(10.milliseconds)
       }
       channel.forEach { it.close() }
     }

@@ -14,7 +14,7 @@ fun main() {
       launch {
         repeat(5) {
           channel.send(it * it)
-          delay(milliseconds(Random.nextLong(1_000)))
+          delay(Random.nextLong(1_000).milliseconds)
         }
       }
       repeat(5) { println(channel.receive()) }
@@ -28,7 +28,7 @@ fun main() {
       launch {
         repeat(5) {
           channel.send(it * it)
-          delay(milliseconds(Random.nextLong(1_000)))
+          delay(Random.nextLong(1_000).milliseconds)
         }
         channel.close()
       }

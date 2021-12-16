@@ -24,7 +24,7 @@ fun main() {
           List(count) { i ->
             DeferredWrapper(i,
               async {
-                delay(seconds(1))
+                delay(1.seconds)
                 Random.nextInt()
               })
           }

@@ -13,7 +13,7 @@ fun main() {
         repeat(5) {
           launch {
             try {
-              delay(milliseconds(500))
+              delay(500.milliseconds)
               log("Hello from first inner launch #$it")
             } finally {
               log("Departing #$it")
@@ -23,7 +23,7 @@ fun main() {
       }
 
     log("Hello from runBlocking after outer launch")
-    delay(milliseconds(100))
+    delay(100.milliseconds)
     outerLaunch.cancel()
   }
   log("Done")

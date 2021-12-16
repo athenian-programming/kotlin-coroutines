@@ -7,7 +7,7 @@ import kotlin.time.measureTime
 
 fun main() {
   val count = 100_000
-  val delay = seconds(1)
+  val delay = 1.seconds
 
   measureTime {
     runBlocking {

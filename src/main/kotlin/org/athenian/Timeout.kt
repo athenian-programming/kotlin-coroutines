@@ -12,7 +12,7 @@ fun main() {
       withTimeout(1300) {
         repeat(1_000) { i ->
           log("I'm sleeping $i ...")
-          delay(milliseconds(500))
+          delay(500.milliseconds)
         }
       }
     } catch (e: TimeoutCancellationException) {
@@ -25,7 +25,7 @@ fun main() {
       withTimeoutOrNull(1300) {
         repeat(1_000) { i ->
           log("I'm sleeping $i ...")
-          delay(milliseconds(500))
+          delay(500.milliseconds)
         }
         "Done"
       }
@@ -37,7 +37,7 @@ fun main() {
       withTimeoutOrNull(1_300) {
         repeat(2) { i ->
           log("I'm sleeping $i ...")
-          delay(milliseconds(500))
+          delay(500.milliseconds)
         }
         "Done"
       }

@@ -58,12 +58,12 @@ fun main() {
     runBlocking {
       launch {
         log("Before first delay")
-        delay(milliseconds(200))
+        delay(200.milliseconds)
         log("After first delay")
       }
 
       log("Before second delay")
-      delay(milliseconds(300))
+      delay(300.milliseconds)
       log("After second delay")
     }
   }

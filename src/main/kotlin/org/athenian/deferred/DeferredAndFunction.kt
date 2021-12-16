@@ -14,7 +14,7 @@ fun main() {
     suspend fun execute(id: Int, deferred: Deferred<String>) {
       println("Waiting for value $id")
       val s = deferred.await()
-      delay(milliseconds(10))
+      delay(10.milliseconds)
       println("Received value: $s")
     }
 
@@ -24,13 +24,13 @@ fun main() {
       val d =
         async(start = cs) {
           println("Calculating value $i")
-          delay(milliseconds(10))
+          delay(10.milliseconds)
           "Async value $i"
         }
-      delay(milliseconds(10))
+      delay(10.milliseconds)
       println("Sending value $i")
       execute(i, d)
-      delay(milliseconds(100))
+      delay(100.milliseconds)
     }
   }
 }

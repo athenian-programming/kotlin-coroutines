@@ -14,14 +14,14 @@ fun main() {
       repeat(10) {
         println("Writing $it")
         channel.send(it)
-        delay(milliseconds(200))
+        delay(200.milliseconds)
       }
       channel.close()
     }
 
     while (!channel.isClosedForReceive) {
       println("Reading ${channel.receive()}")
-      delay(milliseconds(1_000))
+      delay(1_000.milliseconds)
     }
   }
 }

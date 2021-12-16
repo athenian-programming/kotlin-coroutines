@@ -22,7 +22,7 @@ fun main() {
     launch {
       for (i in channel) {
         println("Reading $i")
-        delay(milliseconds(1_000))
+        delay(1_000.milliseconds)
       }
     }
   }

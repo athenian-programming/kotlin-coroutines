@@ -34,7 +34,7 @@ fun main() {
             if (active)
               println("Block surrendered lock for: $i")
           }
-          delay(milliseconds(50))
+          delay(50.milliseconds)
         }
         println("Completed block for $i")
       }
@@ -55,7 +55,7 @@ fun main() {
     mutexOrder += selected.id
     println("selectMutex surrendered lock for: ${selected.id}")
     selected.mutex.unlock()
-    delay(milliseconds(50))
+    delay(50.milliseconds)
   }
 
   runBlocking {
@@ -66,13 +66,13 @@ fun main() {
     launch { repeat(iterationCount) { selectMutex(iterationCount) } }
 
     // Give coroutines a chance to get setup
-    delay(milliseconds(50))
+    delay(50.milliseconds)
 
     // Send msg to unlock random mutex
     randomVals.onEach { i ->
       println("Choosing to unlock: $i")
       wrappers[i].channel.send(Unit)
-      delay(milliseconds(100))
+      delay(100.milliseconds)
     }
 
     // Stop coroutines

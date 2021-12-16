@@ -22,7 +22,7 @@ fun main() {
     launch {
       repeat(iterations) {
         println("Reading ${channel.receive()}")
-        delay(milliseconds(1_000))
+        delay(1_000.milliseconds)
       }
     }
   }

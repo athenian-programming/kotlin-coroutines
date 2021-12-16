@@ -11,21 +11,21 @@ import kotlin.time.measureTime
 fun main() {
   fun withGlobalScope() {
     GlobalScope.launch {
-      delay(seconds(1))
+      delay(1.seconds)
       log("World!")
     }
 
     log("Hello, ")
 
     runBlocking {
-      delay(seconds(2))
+      delay(2.seconds)
     }
   }
 
   fun withoutGlobalScope() {
     runBlocking {
       launch {
-        delay(seconds(2))
+        delay(2.seconds)
         log("there")
       }
 

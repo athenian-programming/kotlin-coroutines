@@ -13,16 +13,16 @@ fun main() {
       log("Coroutine scope begin")
 
       launch {
-        delay(milliseconds(200))
+        delay(200.milliseconds)
         log("Task from runBlocking")
       }
 
       launch {
-        delay(milliseconds(500))
+        delay(500.milliseconds)
         log("Task from nested launch")
       }
 
-      delay(milliseconds(100))
+      delay(100.milliseconds)
       log("Task from coroutine scope")
 
       log("Coroutine scope end")
@@ -33,17 +33,17 @@ fun main() {
       log("Coroutine scope begin")
 
       launch {
-        delay(milliseconds(200))
+        delay(200.milliseconds)
         log("Task from runBlocking")
       }
 
       coroutineScope {
         launch {
-          delay(milliseconds(500))
+          delay(500.milliseconds)
           log("Task from nested launch")
         }
 
-        delay(milliseconds(100))
+        delay(100.milliseconds)
         log("Task from coroutine scope")
       }
 

@@ -10,7 +10,7 @@ import kotlin.time.Duration.Companion.seconds
 
 fun main() {
   suspend fun calc(): String {
-    delay(seconds(3))
+    delay(3.seconds)
     return "A string value"
   }
 
@@ -19,7 +19,7 @@ fun main() {
 
     while (true) {
       val completed =
-        withTimeoutOrNull(milliseconds(500).inWholeMilliseconds) {
+        withTimeoutOrNull(500.milliseconds.inWholeMilliseconds) {
           println("Waiting")
           println("Got back: ${calcCall.await()}")
         }

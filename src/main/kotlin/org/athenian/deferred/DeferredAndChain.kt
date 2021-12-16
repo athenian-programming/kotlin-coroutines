@@ -17,11 +17,11 @@ fun main() {
           Pair(i,
             async(start = cs) {
               println("Calculating value $i")
-              delay(milliseconds(10))
+              delay(10.milliseconds)
               "Async value $i"
             })
         }
-        .onEach { delay(milliseconds(100)) }
+        .onEach { delay(100.milliseconds) }
         .onEach { (i, deferred) ->
           println("Waiting for value $i")
           println("Received value: ${deferred.await()}")

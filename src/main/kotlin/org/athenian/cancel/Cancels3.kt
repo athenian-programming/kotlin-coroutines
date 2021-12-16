@@ -16,14 +16,14 @@ fun main() {
         launch {
           log("Child coroutine start")
           try {
-            delay(seconds(Long.MAX_VALUE))
+            delay(Long.MAX_VALUE.seconds)
           } catch (e: CancellationException) {
             log("Coroutine cancelled - ${e.message}")
             throw e
           }
         }
       }
-    delay(seconds(1))
+    delay(1.seconds)
     job.cancelAndJoin()
     log("Done")
   }
