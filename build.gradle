@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.6.10'
-    id "com.github.ben-manes.versions" version "0.41.0"
+    id 'org.jetbrains.kotlin.jvm' version '1.6.20-M1'
+    id "com.github.ben-manes.versions" version "0.42.0"
 }
 
 group 'org.athenian'
@@ -27,11 +27,11 @@ dependencies {
 
 compileKotlin {
     kotlinOptions.jvmTarget = "1.8"
-    kotlinOptions.freeCompilerArgs += ['-Xopt-in=kotlin.time.ExperimentalTime',
-                                       '-Xopt-in=kotlinx.coroutines.FlowPreview',
-                                       '-Xopt-in=kotlinx.coroutines.DelicateCoroutinesApi',
-                                       '-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
-                                       '-Xopt-in=kotlinx.coroutines.InternalCoroutinesApi']
+    kotlinOptions.freeCompilerArgs += ['-opt-in=kotlin.time.ExperimentalTime',
+                                       '-opt-in=kotlinx.coroutines.FlowPreview',
+                                       '-opt-in=kotlinx.coroutines.DelicateCoroutinesApi',
+                                       '-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+                                       '-opt-in=kotlinx.coroutines.InternalCoroutinesApi']
 }
 
 compileTestKotlin {
