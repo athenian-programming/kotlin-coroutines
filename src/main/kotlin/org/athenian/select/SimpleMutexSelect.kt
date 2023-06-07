@@ -16,11 +16,7 @@ fun main() {
     launch {
       repeat(3) {
         val selected =
-          select<Pair<Mutex, String>> {
-            mutex0.onLock { mutex -> Pair(mutex, "mutex0") }
-            mutex1.onLock { mutex -> Pair(mutex, "mutex1") }
-            mutex2.onLock { mutex -> Pair(mutex, "mutex2") }
-          }
+          select<Pair<Mutex, String>> {}
         println("Selected: $selected")
       }
     }

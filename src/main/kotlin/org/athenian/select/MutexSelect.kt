@@ -41,17 +41,7 @@ fun main() {
     }
 
   suspend fun selectMutex(iterationCount: Int) {
-    val selected =
-      select<MutexWrapper> {
-        wrappers
-          .onEach { wrapper ->
-            wrapper.mutex.onLock { mutex ->
-              println("selectMutex acquired lock for: ${wrapper.id}")
-              wrapper
-            }
-          }
-      }
-
+    val selected = select<MutexWrapper> {}
     mutexOrder += selected.id
     println("selectMutex surrendered lock for: ${selected.id}")
     selected.mutex.unlock()

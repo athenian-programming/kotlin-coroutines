@@ -7,7 +7,8 @@ plugins {
 group 'org.athenian'
 version '1.0-SNAPSHOT'
 
-sourceCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_17
+targetCompatibility = JavaVersion.VERSION_17
 
 repositories {
     google()
@@ -23,9 +24,11 @@ dependencies {
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-debug:$coroutines_version"
 }
 
+kotlin {
+    jvmToolchain(17)
+}
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8"
     kotlinOptions.freeCompilerArgs += ['-opt-in=kotlin.time.ExperimentalTime',
                                        '-opt-in=kotlinx.coroutines.FlowPreview',
                                        '-opt-in=kotlinx.coroutines.DelicateCoroutinesApi',
@@ -34,5 +37,9 @@ compileKotlin {
 }
 
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8"
+    kotlinOptions.freeCompilerArgs += ['-opt-in=kotlin.time.ExperimentalTime',
+                                       '-opt-in=kotlinx.coroutines.FlowPreview',
+                                       '-opt-in=kotlinx.coroutines.DelicateCoroutinesApi',
+                                       '-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi',
+                                       '-opt-in=kotlinx.coroutines.InternalCoroutinesApi']
 }
