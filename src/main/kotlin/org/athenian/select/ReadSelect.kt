@@ -16,9 +16,11 @@ import kotlin.time.Duration.Companion.milliseconds
 fun main() {
   class Results(val id: String, val total: Int)
 
-  class Boss constructor(val messageCount: Int,
-                         val channel: SendChannel<Duration>,
-                         val results: List<ReceiveChannel<Results>>) {
+  class Boss(
+    val messageCount: Int,
+    val channel: SendChannel<Duration>,
+    val results: List<ReceiveChannel<Results>>
+  ) {
 
     suspend fun generateData() {
       repeat(messageCount) {
@@ -46,7 +48,7 @@ fun main() {
               }
           }
         else
-          selectUnbiased<Unit> {
+          selectUnbiased {
             results.withIndex()
               .filter { (_, channel) -> !channel.isClosedForReceive }
               .forEach { (i, channel) ->
@@ -63,9 +65,11 @@ fun main() {
     }
   }
 
-  class Worker constructor(val id: String,
-                           val channel: ReceiveChannel<Duration>,
-                           val results: SendChannel<Results>) {
+  class Worker(
+    val id: String,
+    val channel: ReceiveChannel<Duration>,
+    val results: SendChannel<Results>
+  ) {
     suspend fun process() {
       var counter = 0
       for (d in channel) {

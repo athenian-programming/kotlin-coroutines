@@ -22,9 +22,9 @@ fun main() {
         val wrappers = List(count) { i -> JobWrapper(i, launch { delay(1.seconds) }) }
 
         repeat(wrappers.size) {
-          val selected =
+          val selected: JobWrapper =
             if (biased)
-              select<JobWrapper> {
+              select {
                 wrappers.filter { !it.joined }.onEach { it.job.onJoin { it } }
               }
             else

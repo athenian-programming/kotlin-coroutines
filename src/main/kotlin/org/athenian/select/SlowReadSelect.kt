@@ -15,15 +15,16 @@ import kotlin.time.Duration.Companion.milliseconds
 fun main() {
   class Results(val id: String, val total: Int)
 
-  class Boss constructor(val messageCount: Int,
-                         val slowWorker: SendChannel<Int>,
-                         val fastWorker: SendChannel<Int>,
-                         val results: List<ReceiveChannel<Results>>) {
-
+  class Boss(
+    val messageCount: Int,
+    val slowWorker: SendChannel<Int>,
+    val fastWorker: SendChannel<Int>,
+    val results: List<ReceiveChannel<Results>>
+  ) {
     suspend fun generateData() {
       repeat(messageCount) {
         val r = Random.nextInt()
-        select<Unit> {
+        select {
           slowWorker.onSend(r) { }
           fastWorker.onSend(r) { }
         }
@@ -50,11 +51,12 @@ fun main() {
     }
   }
 
-  class Worker constructor(val id: String,
-                           val delay: Duration,
-                           val channel: ReceiveChannel<Int>,
-                           val results: SendChannel<Results>) {
-
+  class Worker(
+    val id: String,
+    val delay: Duration,
+    val channel: ReceiveChannel<Int>,
+    val results: SendChannel<Results>
+  ) {
     suspend fun process() {
       var counter = 0
       for (d in channel) {

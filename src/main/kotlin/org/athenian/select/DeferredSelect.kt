@@ -30,9 +30,9 @@ fun main() {
           }
 
         repeat(wrappers.size) {
-          val selected =
+          val selected: DeferredWrapper =
             if (biased)
-              select<DeferredWrapper> {
+              select {
                 wrappers
                   .filter { !it.joined }
                   .onEach { taskInfo -> taskInfo.deferred.onAwait { result -> taskInfo } }

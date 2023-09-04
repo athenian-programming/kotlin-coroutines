@@ -13,7 +13,7 @@ fun main() {
     coroutineScope {
       val job = launch { delay(100.milliseconds) }
       val selected =
-        select<String> {
+        select {
           job.onJoin { "Joined job" }
           onTimeout(10.milliseconds.inWholeMilliseconds) { "Timed out" }
         }

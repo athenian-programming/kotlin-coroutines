@@ -15,14 +15,16 @@ import kotlin.time.Duration.Companion.milliseconds
 fun main() {
   class Results(val id: String, val total: Int)
 
-  class Boss constructor(val messageCount: Int,
-                         val channel: List<SendChannel<Int>>,
-                         val results: List<ReceiveChannel<Results>>) {
+  class Boss(
+    val messageCount: Int,
+    val channel: List<SendChannel<Int>>,
+    val results: List<ReceiveChannel<Results>>
+  ) {
     suspend fun generateData(biased: Boolean) {
       repeat(messageCount) {
         val r = Random.nextInt()
         if (biased)
-          select<Unit> {
+          select {
             channel.forEach { it.onSend(r) {} }
           }
         else
@@ -38,7 +40,7 @@ fun main() {
     suspend fun aggregateData(): Map<String, Int> {
       val resultsMap = mutableMapOf<String, Int>()
       while (resultsMap.size < results.size)
-        select<Unit> {
+        select {
           results
             .filter { !it.isClosedForReceive }
             .forEach {
@@ -52,9 +54,11 @@ fun main() {
     }
   }
 
-  class Worker constructor(val id: String,
-                           val channel: ReceiveChannel<Int>,
-                           val results: SendChannel<Results>) {
+  class Worker(
+    val id: String,
+    val channel: ReceiveChannel<Int>,
+    val results: SendChannel<Results>
+  ) {
     suspend fun process() {
       var counter = 0
       for (d in channel) {

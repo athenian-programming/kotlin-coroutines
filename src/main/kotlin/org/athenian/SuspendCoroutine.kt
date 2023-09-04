@@ -9,7 +9,7 @@ import kotlin.coroutines.suspendCoroutine
 suspend fun main() {
   println("Before")
 
-  suspendCoroutine<Unit> { continuation ->
+  suspendCoroutine { continuation ->
     thread {
       println("Suspended")
       Thread.sleep(1000)
