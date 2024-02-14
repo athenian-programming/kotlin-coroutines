@@ -2,6 +2,7 @@ package org.athenian
 
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlin.Long.Companion.MAX_VALUE
 import kotlin.time.Duration.Companion.seconds
 
 fun main() = runBlocking {
@@ -9,7 +10,7 @@ fun main() = runBlocking {
     val child = launch {
       try {
         println("Child is starting")
-        delay(Long.MAX_VALUE.seconds)
+        delay(MAX_VALUE.seconds)
       } finally {
         println("Child is cancelled")
       }
