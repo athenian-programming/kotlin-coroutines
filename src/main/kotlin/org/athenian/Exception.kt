@@ -34,8 +34,7 @@ fun main() {
         }
       job.join()
       log("Caught cancellation exception: ${
-        job.getCancellationException().cause?.javaClass?.simpleName
-          ?: "None"
+        job.getCancellationException().cause?.javaClass?.simpleName ?: "None"
       }")
 
     }
@@ -59,9 +58,8 @@ fun main() {
     runBlocking {
       job.join()
       log("Caught cancellation exception: ${
-        job.getCancellationException().cause?.javaClass?.simpleName
-          ?: "None"
-      }")
+        job.getCancellationException().cause?.javaClass?.simpleName ?: "None"
+      } isCancelled: ${job.isCancelled}")
     }
     log("Finished launchWithHandlerException()")
   }
